@@ -36,8 +36,8 @@
     <div class="after-hours-hero__grain"></div>
 
     <div class="after-hours-hero__copy">
-      <h1 id="hero-title">Moth Milk</h1>
-      <p>Free horror fiction <i></i> apparel <i></i> odd things</p>
+      <h1 id="hero-title"><img src="/images/hero-type/wordmark.webp" alt="Moth Milk" width="1200" height="210" /></h1>
+      <p><img src="/images/hero-type/subtitle.webp" alt="Free horror fiction · apparel · odd things" width="1200" height="44" /></p>
       <div class="after-hours-hero__actions">
         <a class="room-button room-button--paper" href="#library">Open library</a>
         <a class="room-button room-button--wine" href="#shop">Shop now</a>

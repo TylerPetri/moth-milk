@@ -7,47 +7,43 @@
   left: 0;
   right: 0;
   height: $header-height;
-  padding: 0 $page-gutter;
+  padding: 0 clamp(1.5rem, 2vw, 2.2rem);
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;
   column-gap: clamp(1.5rem, 3vw, 3.5rem);
   align-items: center;
-  border-bottom: 1px solid rgba($white, 0.13);
+  border-bottom: 1px solid rgba($white, 0.1);
   color: $white;
-  box-shadow: 0 0.4rem 1.8rem rgba(#050303, 0.28);
-  backdrop-filter: blur(9px) saturate(0.7);
-  @include brocade-surface;
-  background-color: #230c0c;
-  background-image: linear-gradient(rgba(#210909, 0.83), rgba(#210909, 0.83)), url('/textures/brocade.svg');
+  box-shadow: 0 0.3rem 1rem rgba(#050303, 0.2);
+  background-color: #220b0c;
+  background-image: linear-gradient(rgba(#1d0808, 0.08), rgba(#1d0808, 0.08)), url('/images/header-brocade.webp');
+  background-position: center;
+  background-size: cover;
 
   &::after {
     position: absolute;
     inset: 0;
     content: '';
     pointer-events: none;
-    opacity: 0.18;
+    opacity: 0.07;
     background: url('/textures/ink-wear.svg') center / 19rem 10rem;
     mix-blend-mode: multiply;
   }
 
   &__logo {
     justify-self: start;
-    font-family: $font-serif;
-    font-size: clamp(1.9rem, 2.65vw, 2.7rem);
-    font-weight: 600;
-    letter-spacing: -0.035em;
-    line-height: 1;
-    text-transform: uppercase;
-    @include inked-text(#e5d5bd);
+    width: clamp(10rem, 15.5vw, 14.4rem);
+    display: block;
   }
+  &__logo img { width: 100%; height: auto; display: block; }
 
-  nav { display: flex; justify-self: end; gap: clamp(1.2rem, 2.5vw, 3rem); }
+  nav { display: flex; justify-self: end; gap: clamp(2rem, 2.65vw, 2.75rem); }
   nav a {
     position: relative;
     padding: 0.8rem 0;
-    font-size: 0.69rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.15em;
+    letter-spacing: 0.13em;
     text-transform: uppercase;
 
     &::after { position: absolute; left: 0; right: 100%; bottom: 0.45rem; height: 1px; content: ''; background: #c7a78e; transition: right 0.3s $ease-out; }
@@ -85,7 +81,7 @@
   align-items: center;
   gap: 0.6rem;
 
-  svg { width: 1.15rem; fill: none; stroke: currentColor; stroke-width: 1.25; }
+  svg { width: 1.23rem; fill: none; stroke: currentColor; stroke-width: 1.25; }
 
   span { font-family: $font-mono; font-size: 0.61rem; font-weight: 700; letter-spacing: 0.09em; }
 }
@@ -102,6 +98,8 @@
     flex-direction: column;
     gap: 0;
     @include brocade-surface;
+    background-image: linear-gradient(rgba(#180707, 0.2), rgba(#180707, 0.2)), url('/images/header-brocade.webp');
+    background-size: cover;
     border-bottom: 1px solid rgba($white, 0.25);
 
     &.open { display: flex; }

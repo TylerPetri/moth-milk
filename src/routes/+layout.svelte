@@ -6,7 +6,6 @@
   import '@fontsource/cormorant-garamond/latin-600.css';
   import '@fontsource/cormorant-garamond/latin-700.css';
   import '@fontsource/bodoni-moda/latin-700.css';
-  import '@fontsource/montserrat/latin-500.css';
   import '@fontsource/courier-prime/latin-400.css';
   import '@fontsource/courier-prime/latin-700.css';
   import '../styles/main.scss';

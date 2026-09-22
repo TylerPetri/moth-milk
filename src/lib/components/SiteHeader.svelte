@@ -12,7 +12,7 @@
 
 <header class="site-header">
   <a class="site-header__logo" href="/" aria-label="Moth Milk home">
-    <span>Moth Milk</span>
+    <img src="/images/hero-type/wordmark.webp" alt="" width="1200" height="210" />
   </a>
 
   <nav class:open={ui.menuOpen} aria-label="Main navigation">
