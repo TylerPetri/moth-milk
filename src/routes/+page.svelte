@@ -5,9 +5,14 @@
 
   /** @param {PointerEvent & { currentTarget: HTMLElement }} event */
   function trackCursor(event) {
-    const rect = event.currentTarget.getBoundingClientRect();
-    event.currentTarget.style.setProperty('--cursor-x', `${event.clientX - rect.left}px`);
-    event.currentTarget.style.setProperty('--cursor-y', `${event.clientY - rect.top}px`);
+    const surfaces = event.currentTarget.querySelectorAll('.after-hours-hero, .library-collection');
+
+    for (const surface of surfaces) {
+      if (!(surface instanceof HTMLElement)) continue;
+      const rect = surface.getBoundingClientRect();
+      surface.style.setProperty('--cursor-x', `${event.clientX - rect.left}px`);
+      surface.style.setProperty('--cursor-y', `${event.clientY - rect.top}px`);
+    }
   }
 </script>
 
@@ -19,8 +24,8 @@
   />
 </svelte:head>
 
-<main class="after-hours-home">
-  <section class="after-hours-hero" aria-labelledby="hero-title" onpointermove={trackCursor}>
+<main class="after-hours-home" onpointermove={trackCursor}>
+  <section class="after-hours-hero" aria-labelledby="hero-title">
     <img
       class="after-hours-hero__image"
       src="/images/after-hours-library-hero-v2.webp"

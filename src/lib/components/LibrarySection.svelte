@@ -40,7 +40,7 @@
       </div>
     </article>
 
-    <div class="library-collection">
+    <div class:library-collection--shelf={view === 'shelf'} class="library-collection">
       <div class="library-view" aria-label="Library view">
         <button class:active={view === 'list'} type="button" onclick={() => (view = 'list')}>List</button>
         <button class:active={view === 'shelf'} type="button" onclick={() => (view = 'shelf')}>Shelf</button>
@@ -58,6 +58,12 @@
         </div>
       {:else}
         <div class="library-shelf" aria-label="Bookshelf">
+          <div class="library-shelf__frame" aria-hidden="true">
+            <span class="library-shelf__frame-piece library-shelf__frame-piece--top"></span>
+            <span class="library-shelf__frame-piece library-shelf__frame-piece--left"></span>
+            <span class="library-shelf__frame-piece library-shelf__frame-piece--right"></span>
+            <span class="library-shelf__frame-piece library-shelf__frame-piece--bottom"></span>
+          </div>
           <div class="library-shelf__books">
             {#each libraryBooks as book, index (book.slug)}
               <BookSpine {book} selected={selectedIndex === index} onclick={() => selectBook(index)} />
