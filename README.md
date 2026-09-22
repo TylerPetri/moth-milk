@@ -20,6 +20,7 @@ Physical surfaces are reusable rather than page-specific:
 - SCSS material mixins live in `src/styles/abstracts/_mixins.scss`
 - procedural SVG paper, cloth, leather, brocade, ink, and wood textures live in `static/textures/`
 - compact photographic material and cover-art atlases live in `static/images/book-material-atlas-v1.webp` and `horror-cover-atlas-v1.webp`
+- the desktop library uses the approved composition in `static/images/reference-library-shelf-v1.webp`; interactive named-book crops live in `static/images/reference-spines/`
 - book content and spine dimensions live in `src/lib/data/library.js`
 - reusable cover/spine renderers live in `src/lib/components/BookCover.svelte` and `BookSpine.svelte`
 

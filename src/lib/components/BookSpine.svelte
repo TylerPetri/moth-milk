@@ -10,18 +10,20 @@
     <i class="book-spine__footband"></i>
   </span>
 {:else}
-  <button
-    class:selected
-    class={`book-spine book-spine--texture-${book.spine.texture} book-spine--${book.spine.decor} book-spine--${book.theme}`}
-    style={`--spine-width:${book.spine.width}rem;--spine-height:${book.spine.height}%;--spine-lean:${book.spine.lean}deg;--spine-accent:${book.spine.accent};--ornament-y:${book.spine.ornamentY ?? 54}%`}
-    type="button"
-    aria-label={`Select ${book.title}`}
-    {onclick}
-  >
-    <i class="book-spine__headband"></i>
-    <span>{book.title}</span>
-    <small>MM {book.issue}</small>
-    <b class="book-spine__ornament">{book.spine.mark ?? ''}</b>
-    <i class="book-spine__footband"></i>
-  </button>
+  <span class={`book-spine-slot book-spine-slot--${book.theme}`}>
+    <button
+      class:selected
+      class={`book-spine book-spine--texture-${book.spine.texture} book-spine--${book.spine.decor} book-spine--${book.theme}`}
+      style={`--spine-width:${book.spine.width}rem;--spine-height:${book.spine.height}%;--spine-lean:${book.spine.lean}deg;--spine-accent:${book.spine.accent};--ornament-y:${book.spine.ornamentY ?? 54}%`}
+      type="button"
+      aria-label={`Select ${book.title}`}
+      {onclick}
+    >
+      <i class="book-spine__headband"></i>
+      <span>{book.title}</span>
+      <small>MM {book.issue}</small>
+      <b class="book-spine__ornament">{book.spine.mark ?? ''}</b>
+      <i class="book-spine__footband"></i>
+    </button>
+  </span>
 {/if}
