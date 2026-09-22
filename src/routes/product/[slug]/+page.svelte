@@ -9,12 +9,12 @@
 
 <svelte:head><title>{data.product.name} — MOTH MILK</title><meta name="description" content={`${data.product.name}. ${data.product.note}`} /></svelte:head>
 
-<main class="product-page page-shell">
+<main class="product-page page-shell" data-product={data.product.slug}>
   <a class="product-page__back" href="/shop">← back to shop</a>
   <section class="product-detail">
     <div class="product-detail__gallery">
-      <figure><img src={data.product.image} alt={data.product.imageAlt} /><figcaption>{data.product.shortName} / campaign 01</figcaption></figure>
-      <div class="detail-swatch"><span></span><p>{data.product.color}</p></div>
+      <figure><img src={data.product.image} alt={data.product.imageAlt} /><figcaption>Moth Milk / {data.product.shortName}</figcaption></figure>
+      <div class="detail-swatch"><span style={`--swatch:${data.product.swatch}`}></span><p>{data.product.color}</p></div>
     </div>
 
     <div class="product-detail__info">
@@ -24,7 +24,7 @@
       <div class="product-detail__price">${data.product.price} <small>CAD</small></div>
 
       <div class="size-picker">
-        <div><span class="size-picker__label">Choose a size</span><button type="button">Fit notes ↗</button></div>
+        <div><span class="size-picker__label">Choose a size</span><span class="size-picker__fit">{data.product.fit}</span></div>
         <div>{#each data.product.sizes as item}<button class:active={size === item} type="button" onclick={() => (size = item)}>{item}</button>{/each}</div>
       </div>
 

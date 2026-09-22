@@ -1,21 +1,87 @@
 @use '../abstracts' as *;
 
-.shop-page__heading { padding-bottom: 6rem; }
-.shop-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; border-block: $line; }
-.shop-toolbar > div { display: flex; gap: 0.55rem; }
-.shop-toolbar button { padding: 0.55rem 0.9rem; border: 1px solid transparent; border-radius: 2rem; background: none; cursor: pointer; font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; }
-.shop-toolbar button { border-radius: 0; }
-.shop-toolbar button.active { border-color: currentColor; background: $cherry-deep; color: $white; transform: none; }
-.shop-toolbar > span { font-size: 0.56rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7; }
-.shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5rem 2.5vw; padding: 4rem 0 8rem; }
-.shop-note { width: min(32rem, 100%); margin-left: auto; display: flex; gap: 1rem; padding: 1.5rem; border: 1px solid rgba($white, 0.35); background: $cherry-deep; color: $white; transform: none; }
-.shop-note span { font-family: $font-hand; font-size: 2rem; }
-.shop-note p { margin: 0; font-family: $font-serif; line-height: 1.5; }
+.shop-page {
+  isolation: isolate;
+  min-height: 100vh;
+  color: $white;
+  background:
+    linear-gradient(rgba(#130c0d, 0.9), rgba(#090707, 0.98)),
+    radial-gradient(circle at 77% 8%, rgba(#701b24, 0.28), transparent 34%),
+    url('/textures/book-cloth.svg') center / 18rem 24rem;
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: '';
+    opacity: 0.1;
+    background: url('/textures/ink-wear.svg') center / 20rem 10rem;
+    mix-blend-mode: screen;
+  }
+}
+
+.shop-page__heading {
+  padding: clamp(2.5rem, 5vw, 5.5rem) clamp(1.4rem, 3vw, 3rem);
+  color: #eadbc4;
+  border: 1px solid rgba(#e8d7bd, 0.14);
+  box-shadow: 0.8rem 1rem 2.8rem rgba(#000, 0.28), inset 0 0 4rem rgba(#050303, 0.35);
+  clip-path: polygon(0.2% 1%, 13% 0.2%, 29% 0.8%, 47% 0.1%, 64% 0.7%, 81% 0.2%, 99.8% 0.9%, 99.5% 99.2%, 81% 99.8%, 61% 99.1%, 40% 99.8%, 21% 99.2%, 0.4% 99.8%);
+  @include brocade-surface;
+
+  .eyebrow { font-family: $font-mono; opacity: 0.62; }
+  h1 { @include inked-text(#eadbc4); }
+  > p:last-child {
+    margin: 0;
+    padding: 1.2rem 1.4rem;
+    color: #281b18;
+    font-family: $font-mono;
+    font-size: 0.72rem;
+    letter-spacing: 0.035em;
+    line-height: 1.55;
+    text-transform: uppercase;
+    box-shadow: 0.25rem 0.35rem 0 rgba(#080404, 0.22);
+    clip-path: polygon(1% 3%, 98% 0, 100% 94%, 96% 100%, 2% 97%, 0 9%);
+    transform: rotate(0.45deg);
+    @include paper-surface(#cdbda5);
+  }
+}
+
+.shop-toolbar {
+  position: relative;
+  margin-top: 2.5rem;
+  padding: 0.7rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid rgba(#e5d4ba, 0.18);
+  box-shadow: 0.35rem 0.45rem 1rem rgba(#000, 0.24);
+  @include wood-surface;
+}
+
+.shop-toolbar > div { display: flex; gap: 0.35rem; }
+.shop-toolbar button {
+  padding: 0.65rem 1rem 0.58rem;
+  border: 1px solid transparent;
+  background: rgba(#0e0808, 0.4);
+  color: rgba($white, 0.72);
+  cursor: pointer;
+  font-family: $font-mono;
+  font-size: 0.59rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  transition: color 0.2s ease, background 0.2s ease, transform 0.2s $ease-out;
+}
+.shop-toolbar button:hover { color: $white; transform: translateY(-0.08rem); }
+.shop-toolbar button.active { border-color: rgba(#eddbc1, 0.3); color: $white; transform: none; @include leather-surface(#611820); }
+.shop-toolbar > span { padding-right: 0.45rem; font-family: $font-mono; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.72; }
+.shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5rem 2.5vw; padding: 4.5rem 0 8rem; }
 
 @include below(760px) {
-  .shop-page__heading { padding-bottom: 4rem; }
+  .shop-page__heading { padding: 2.5rem 1.2rem; }
+  .shop-page__heading > p:last-child { margin-top: 2rem; }
   .shop-toolbar { align-items: flex-start; gap: 1rem; }
   .shop-toolbar > div { flex-wrap: wrap; }
   .shop-toolbar > span { padding-top: 0.7rem; white-space: nowrap; }
-  .shop-grid { grid-template-columns: 1fr; }
+  .shop-grid { grid-template-columns: 1fr; padding-top: 3rem; }
 }

@@ -233,12 +233,26 @@
 
 .home-shop {
   position: relative;
+  isolation: isolate;
   padding: 8rem $page-gutter 10rem;
+  overflow: hidden;
   color: $white;
   background:
-    linear-gradient(rgba(#170d0e, 0.94), rgba(#170d0e, 0.98)),
-    radial-gradient(circle at 17% 22%, rgba($cherry, 0.35), transparent 35%);
-  border-top: 1px solid rgba($white, 0.16);
+    linear-gradient(rgba(#130d0e, 0.86), rgba(#0b0808, 0.97)),
+    radial-gradient(circle at 16% 18%, rgba($cherry, 0.27), transparent 34%),
+    url('/textures/book-cloth.svg') center / 18rem 24rem;
+  border-top: 0.72rem solid #3b2018;
+  box-shadow: inset 0 0.35rem 0 rgba(#c08d65, 0.12), inset 0 2.5rem 5rem rgba(#000, 0.48);
+
+  &::before {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    content: '';
+    opacity: 0.1;
+    background: url('/textures/ink-wear.svg') center / 21rem 11rem;
+    mix-blend-mode: screen;
+  }
 
   &__header {
     margin-bottom: 4rem;
@@ -249,6 +263,7 @@
   }
 
   &__header > div > span {
+    font-family: $font-mono;
     font-size: 0.6rem;
     font-weight: 600;
     letter-spacing: 0.18em;
@@ -264,18 +279,25 @@
     letter-spacing: -0.07em;
     line-height: 0.82;
     text-transform: uppercase;
+    @include inked-text(#e3d3bb);
   }
 
   &__header > a {
-    padding-bottom: 0.45rem;
-    border-bottom: 1px solid rgba($white, 0.65);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
+    padding: 0.75rem 1rem 0.68rem;
+    border: 1px solid rgba(#e8d8bf, 0.22);
+    color: #e5d5bd;
+    font-family: $font-mono;
+    font-size: 0.59rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
     text-transform: uppercase;
+    clip-path: polygon(1% 3%, 99% 0, 100% 94%, 97% 100%, 2% 97%, 0 8%);
+    transition: transform 0.25s $ease-out, filter 0.25s ease;
+    @include leather-surface(#4c1519);
   }
 
   &__header > a span { margin-left: 0.4rem; }
+  &__header > a:hover { filter: brightness(1.14); transform: translateY(-0.12rem) rotate(-0.3deg); }
   &__grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(1rem, 2.5vw, 2.6rem); }
   .product-card__info { border-color: rgba($white, 0.24); }
   .product-card__info p { color: #bda9a2; }

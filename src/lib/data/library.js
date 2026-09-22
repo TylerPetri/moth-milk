@@ -79,5 +79,12 @@ export const shelfFillers = [
   { width: 2.25, height: 79, lean: -1.2, material: 'leather', accent: '#85262c' },
   { width: 3.15, height: 93, lean: 0.3, material: 'cloth', accent: '#806b55' },
   { width: 2.55, height: 86, lean: -0.8, material: 'paper', accent: '#a19078' },
-  { width: 3.3, height: 95, lean: 0.7, material: 'leather', accent: '#674033' }
+  { width: 3.3, height: 95, lean: 0.7, material: 'leather', accent: '#674033' },
+  { width: 2.15, height: 91, lean: -0.6, material: 'cloth', accent: '#74644f' },
+  { width: 3.65, height: 84, lean: 1.1, material: 'leather', accent: '#6f2528' },
+  { width: 2.8, height: 97, lean: -0.2, material: 'paper', accent: '#98866b' },
+  { width: 2.35, height: 88, lean: 0.5, material: 'cloth', accent: '#715645' },
+  { width: 3.4, height: 94, lean: -1, material: 'leather', accent: '#866b50' },
+  { width: 2.55, height: 81, lean: 0.9, material: 'cloth', accent: '#593c35' },
+  { width: 3.05, height: 99, lean: -0.3, material: 'paper', accent: '#8d7b62' }
 ];

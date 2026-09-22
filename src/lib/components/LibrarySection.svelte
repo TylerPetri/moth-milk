@@ -61,17 +61,24 @@
           <div class="library-shelf__books">
             <BookSpine book={shelfFillers[0]} filler />
             <BookSpine book={shelfFillers[1]} filler />
+            <BookSpine book={shelfFillers[8]} filler />
             <BookSpine book={libraryBooks[0]} selected={selectedIndex === 0} onclick={() => selectBook(0)} />
             <BookSpine book={shelfFillers[2]} filler />
             <BookSpine book={libraryBooks[1]} selected={selectedIndex === 1} onclick={() => selectBook(1)} />
+            <BookSpine book={shelfFillers[9]} filler />
             <BookSpine book={libraryBooks[2]} selected={selectedIndex === 2} onclick={() => selectBook(2)} />
             <BookSpine book={shelfFillers[3]} filler />
+            <BookSpine book={shelfFillers[10]} filler />
             <BookSpine book={libraryBooks[3]} selected={selectedIndex === 3} onclick={() => selectBook(3)} />
             <BookSpine book={shelfFillers[4]} filler />
+            <BookSpine book={shelfFillers[11]} filler />
             <BookSpine book={shelfFillers[5]} filler />
             <BookSpine book={libraryBooks[4]} selected={selectedIndex === 4} onclick={() => selectBook(4)} />
+            <BookSpine book={shelfFillers[12]} filler />
             <BookSpine book={shelfFillers[6]} filler />
             <BookSpine book={shelfFillers[7]} filler />
+            <BookSpine book={shelfFillers[13]} filler />
+            <BookSpine book={shelfFillers[14]} filler />
           </div>
           <div class="library-shelf__wood"></div>
         </div>
