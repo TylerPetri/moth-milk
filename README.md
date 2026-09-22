@@ -26,7 +26,7 @@ Physical surfaces are reusable rather than page-specific:
 - book content and spine dimensions live in `src/lib/data/library.js`
 - reusable cover/spine renderers live in `src/lib/components/BookCover.svelte` and `BookSpine.svelte`
 
-Typography is self-hosted through Fontsource: Cormorant Garamond for editorial display, IBM Plex Sans Condensed for interface text, and Courier Prime for printed metadata and controls.
+Typography is self-hosted through Fontsource: Bodoni Moda for the homepage wordmark and buttons, Montserrat for its subtitle, Cormorant Garamond for other editorial display, IBM Plex Sans Condensed for interface text, and Courier Prime for printed metadata and controls.
 
 ## Commands
 
