@@ -1,10 +1,10 @@
 <script>
   import BookCover from './BookCover.svelte';
   import BookSpine from './BookSpine.svelte';
-  import { libraryBooks, shelfFillers } from '$lib/data/library.js';
+  import { libraryBooks } from '$lib/data/library.js';
 
   let view = $state('shelf');
-  let selectedIndex = $state(0);
+  let selectedIndex = $state(3);
   let readerOpen = $state(false);
   const selectedBook = $derived(libraryBooks[selectedIndex]);
 
@@ -59,30 +59,9 @@
       {:else}
         <div class="library-shelf" aria-label="Bookshelf">
           <div class="library-shelf__books">
-            <BookSpine book={shelfFillers[0]} filler />
-            <BookSpine book={shelfFillers[1]} filler />
-            <BookSpine book={shelfFillers[8]} filler />
-            <BookSpine book={libraryBooks[0]} selected={selectedIndex === 0} onclick={() => selectBook(0)} />
-            <BookSpine book={shelfFillers[2]} filler />
-            <BookSpine book={libraryBooks[1]} selected={selectedIndex === 1} onclick={() => selectBook(1)} />
-            <BookSpine book={shelfFillers[9]} filler />
-            <BookSpine book={libraryBooks[2]} selected={selectedIndex === 2} onclick={() => selectBook(2)} />
-            <BookSpine book={shelfFillers[3]} filler />
-            <BookSpine book={shelfFillers[15]} filler />
-            <BookSpine book={shelfFillers[10]} filler />
-            <BookSpine book={libraryBooks[3]} selected={selectedIndex === 3} onclick={() => selectBook(3)} />
-            <BookSpine book={shelfFillers[4]} filler />
-            <BookSpine book={shelfFillers[11]} filler />
-            <BookSpine book={shelfFillers[5]} filler />
-            <BookSpine book={libraryBooks[4]} selected={selectedIndex === 4} onclick={() => selectBook(4)} />
-            <BookSpine book={shelfFillers[12]} filler />
-            <BookSpine book={shelfFillers[16]} filler />
-            <BookSpine book={shelfFillers[6]} filler />
-            <BookSpine book={shelfFillers[7]} filler />
-            <BookSpine book={shelfFillers[13]} filler />
-            <BookSpine book={shelfFillers[17]} filler />
-            <BookSpine book={shelfFillers[14]} filler />
-            <BookSpine book={shelfFillers[18]} filler />
+            {#each libraryBooks as book, index (book.slug)}
+              <BookSpine {book} selected={selectedIndex === index} onclick={() => selectBook(index)} />
+            {/each}
           </div>
           <div class="library-shelf__wood"></div>
         </div>

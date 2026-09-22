@@ -148,9 +148,9 @@
   color: #d9c7ad;
   background: #141011;
   box-shadow: 0.28rem 0.33rem 0 #a89a86, 0.55rem 0.62rem 1.1rem rgba(#241817, 0.36);
-  transform: rotate(-0.8deg);
+  transform: rotate(var(--cover-rotation, -0.8deg));
 
-  &__art { position: absolute; z-index: -2; inset: 0; background-image: url('/images/horror-cover-atlas-v1.webp'); background-size: 500% 100%; background-repeat: no-repeat; filter: contrast(1.08) saturate(0.84) brightness(0.78); }
+  &__art { position: absolute; z-index: -2; inset: 0; background-image: url('/images/horror-cover-atlas-v1.webp'); background-position: var(--cover-position, 0%) center; background-size: 500% 100%; background-repeat: no-repeat; filter: contrast(1.08) saturate(0.84) brightness(0.78); }
   &__edge { position: absolute; z-index: 4; inset: 0.26rem; border: 1px solid color-mix(in srgb, var(--cover-accent) 52%, #d8c6ab 10%); box-shadow: inset 0 0 0 0.14rem rgba(#050303, 0.28); pointer-events: none; }
   &__issue { position: absolute; z-index: 4; left: 0.58rem; bottom: 0.42rem; font-family: $font-mono; font-size: 0.34rem; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase; opacity: 0.76; }
   strong {
@@ -171,17 +171,6 @@
   }
   > small { position: absolute; z-index: 4; right: 0.55rem; bottom: 0.42rem; font-family: $font-mono; font-size: 0.27rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.72; }
   &__wear { position: absolute; z-index: 5; inset: 0; pointer-events: none; opacity: 0.22; background: url('/textures/ink-wear.svg') center / 13rem 7rem; mix-blend-mode: screen; }
-
-  &--signal { --cover-accent: #b32c36; }
-  &--signal .book-cover__art { background-position: 0% center; }
-  &--hush { --cover-accent: #c2a575; transform: rotate(0.65deg); }
-  &--hush .book-cover__art { background-position: 25% center; }
-  &--hall { --cover-accent: #c4b59c; transform: rotate(-0.2deg); }
-  &--hall .book-cover__art { background-position: 50% center; }
-  &--void { --cover-accent: #c9b792; transform: rotate(0.4deg); }
-  &--void .book-cover__art { background-position: 75% center; }
-  &--underbed { --cover-accent: #b02c35; transform: rotate(-0.55deg); }
-  &--underbed .book-cover__art { background-position: 100% center; }
 
   &.compact { width: 3.45rem; min-width: 3.45rem; box-shadow: 0.13rem 0.16rem 0 #a89a86, 0.25rem 0.3rem 0.5rem rgba(#241817, 0.24); transform: none; }
   &.compact strong { top: 0.35rem; font-size: 0.6rem; }
@@ -287,8 +276,6 @@
 
   &:hover { z-index: 7; filter: brightness(1.13) saturate(1.05); transform: translateY(-0.45rem) rotate(calc(var(--spine-lean) * 0.3)); }
   &.selected { z-index: 8; filter: brightness(1.13) saturate(1.1); transform: translateY(-0.72rem) rotate(calc(var(--spine-lean) * -0.35)); box-shadow: 0 0 1rem rgba(#8c252e, 0.25), inset 0.18rem 0 rgba(#fff, 0.04); }
-  &--filler { cursor: default; filter: saturate(1.04) contrast(1.04) brightness(0.96); }
-  &--filler:hover { z-index: auto; filter: saturate(1.04) contrast(1.04) brightness(0.96); transform: rotate(var(--spine-lean)); }
 }
 
 .book-spine-slot { display: contents; }
@@ -336,11 +323,15 @@
   }
   .library-shelf::before { display: none; }
   .library-shelf__books { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .library-shelf__wood, .library-shelf__books > .book-spine--filler { display: none; }
+  .library-shelf__wood { display: none; }
 
   .book-spine-slot {
     position: absolute;
     z-index: 6;
+    top: var(--shelf-y);
+    left: var(--shelf-x);
+    width: var(--shelf-width);
+    height: var(--shelf-height);
     display: block;
     overflow: visible;
     background: #070505;
@@ -355,6 +346,7 @@
     overflow: hidden;
     border: 0;
     border-radius: 0;
+    background-image: var(--shelf-image);
     background-position: center;
     background-size: 100% 100%;
     background-repeat: no-repeat;
@@ -366,19 +358,13 @@
   .book-spine-slot .book-spine::before,
   .book-spine-slot .book-spine::after,
   .book-spine-slot .book-spine > * { display: none; }
-  .book-spine-slot .book-spine:hover { filter: brightness(1.08); transform: translateY(-0.42rem); }
-  .book-spine-slot .book-spine.selected { filter: brightness(1.05); transform: translateY(-0.2rem); }
-
-  .book-spine-slot--signal { top: 22.58%; left: 18.08%; width: 5.52%; height: 75.81%; }
-  .book-spine-slot--signal .book-spine { background-image: url('/images/reference-spines/static.webp'); }
-  .book-spine-slot--hush { top: 29.44%; left: 24.41%; width: 5.52%; height: 68.95%; }
-  .book-spine-slot--hush .book-spine { background-image: url('/images/reference-spines/hush.webp'); }
-  .book-spine-slot--hall { top: 23.79%; left: 32.48%; width: 5.52%; height: 74.6%; }
-  .book-spine-slot--hall .book-spine { background-image: url('/images/reference-spines/the-hall.webp'); }
-  .book-spine-slot--void { top: 25%; left: 38.61%; width: 6.23%; height: 73.39%; }
-  .book-spine-slot--void .book-spine { background-image: url('/images/reference-spines/no-signal.webp'); }
-  .book-spine-slot--underbed { top: 24.19%; left: 58.43%; width: 6.74%; height: 74.19%; }
-  .book-spine-slot--underbed .book-spine { background-image: url('/images/reference-spines/underbed.webp'); }
+  .book-spine-slot .book-spine:hover,
+  .book-spine-slot .book-spine:focus-visible { z-index: 12; filter: brightness(1.12) saturate(1.04); transform: translateY(-0.46rem); }
+  .book-spine-slot .book-spine:focus-visible { outline: 1px solid rgba(#e6ceb0, 0.9); outline-offset: 2px; }
+  .book-spine-slot .book-spine.selected { z-index: 11; filter: brightness(1.08) saturate(1.06); transform: translateY(-0.24rem); }
+  .book-spine-slot:has(.book-spine:hover),
+  .book-spine-slot:has(.book-spine:focus-visible),
+  .book-spine-slot:has(.book-spine.selected) { z-index: 12; }
 
   .library-view { top: 0.25rem; right: 0.75rem; }
   .library-view button { min-width: clamp(4.5rem, 5vw, 5.6rem); padding-block: clamp(0.55rem, 0.62vw, 0.72rem); }
