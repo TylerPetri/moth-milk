@@ -1,0 +1,41 @@
+<script>
+  import { addToCart } from '$lib/stores/ui.svelte.js';
+  let { data } = $props();
+  let size = $state('');
+  $effect(() => {
+    if (!size) size = data.product.sizes[0];
+  });
+</script>
+
+<svelte:head><title>{data.product.name} — MOTH MILK</title><meta name="description" content={`${data.product.name}. ${data.product.note}`} /></svelte:head>
+
+<main class="product-page page-shell">
+  <a class="product-page__back" href="/shop">← back to shop</a>
+  <section class="product-detail">
+    <div class="product-detail__gallery">
+      <figure><img src={data.product.image} alt={data.product.imageAlt} /><figcaption>{data.product.shortName} / campaign 01</figcaption></figure>
+      <div class="detail-swatch"><span></span><p>{data.product.color}</p></div>
+    </div>
+
+    <div class="product-detail__info">
+      <p class="eyebrow">{data.product.category}</p>
+      <h1>{data.product.name}</h1>
+      <p class="product-detail__note">{data.product.note}</p>
+      <div class="product-detail__price">${data.product.price} <small>CAD</small></div>
+
+      <div class="size-picker">
+        <div><span class="size-picker__label">Choose a size</span><button type="button">Fit notes ↗</button></div>
+        <div>{#each data.product.sizes as item}<button class:active={size === item} type="button" onclick={() => (size = item)}>{item}</button>{/each}</div>
+      </div>
+
+      <button class="add-button" type="button" onclick={() => addToCart(data.product, size)}><span>add to bag</span><strong>${data.product.price}</strong></button>
+
+      <dl class="product-specs">
+        <div><dt>fit</dt><dd>{data.product.fit}</dd></div>
+        <div><dt>material</dt><dd>{data.product.material}</dd></div>
+        <div><dt>care</dt><dd>Cold wash / gentle cycle</dd></div>
+        <div><dt>production</dt><dd>Small run</dd></div>
+      </dl>
+    </div>
+  </section>
+</main>

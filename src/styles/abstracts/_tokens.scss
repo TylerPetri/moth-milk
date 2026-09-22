@@ -1,0 +1,24 @@
+$font-body: 'Figtree', Arial, sans-serif;
+$font-display: 'Figtree', Arial, sans-serif;
+$font-serif: 'Fraunces', Georgia, serif;
+$font-hand: 'Caveat', cursive;
+
+$cream: #ddd4c7;
+$paper: #cfc4b5;
+$ink: #181514;
+$cherry: #7d2028;
+$cherry-deep: #431014;
+$pink: #8b595d;
+$lavender: #766970;
+$charcoal: #141212;
+$acid: #bcae98;
+$white: #eee6db;
+
+$page-gutter: clamp(1rem, 3vw, 3.5rem);
+$header-height: 5rem;
+$radius-sm: 0.12rem;
+$radius-md: 0.2rem;
+$radius-lg: 0.35rem;
+$line: 1px solid rgba($ink, 0.24);
+$shadow-paper: 0 1.2rem 3rem rgba($ink, 0.14);
+$ease-out: cubic-bezier(0.22, 1, 0.36, 1);

@@ -1,0 +1,33 @@
+@use '../abstracts' as *;
+
+.product-page__back { display: inline-block; margin-bottom: 2rem; font-size: 0.64rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.product-detail { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(23rem, 0.65fr); gap: 7vw; align-items: start; }
+.product-detail__gallery figure { position: relative; aspect-ratio: 0.9; overflow: hidden; border: 1px solid rgba($white, 0.2); border-radius: 0; background: #201a1b; }
+.product-detail__gallery figure img { width: 100%; height: 100%; object-fit: cover; }
+.product-detail__gallery figure figcaption { position: absolute; left: 1rem; bottom: 1rem; padding: 0.5rem 0.7rem; background: $white; color: $ink; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; transform: rotate(-1deg); }
+.detail-swatch { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+.detail-swatch > span { width: 3rem; aspect-ratio: 1; border: 1px solid rgba($white, 0.4); border-radius: 0; background: $cherry-deep; box-shadow: inset 0 0 0 0.5rem rgba($white, 0.08); }
+.detail-swatch p { margin: 0; font-family: $font-hand; font-size: 1rem; line-height: 1; }
+.product-detail__info { position: sticky; top: calc(#{$header-height} + 2rem); padding-top: 2rem; }
+.product-detail__info h1 { @include display-title(clamp(3.7rem, 6vw, 6.8rem)); margin: 1.5rem 0 1.2rem; }
+.product-detail__note { margin: 0 0 1.5rem; font-family: $font-serif; font-size: 1.35rem; font-style: italic; color: var(--accent); }
+.product-detail__price { padding: 1rem 0 1.4rem; border-bottom: $line; font-family: $font-display; font-size: 1.7rem; }
+.product-detail__price small { font-family: $font-body; font-size: 0.55rem; letter-spacing: 0.1em; }
+.size-picker { padding: 1.5rem 0; }
+.size-picker > div:first-child { display: flex; justify-content: space-between; margin-bottom: 0.8rem; }
+.size-picker__label { font-size: 0.62rem; font-weight: 600; letter-spacing: 0.11em; text-transform: uppercase; }
+.size-picker > div:first-child button { padding: 0; border: 0; border-bottom: 1px solid; background: none; cursor: pointer; font-family: $font-serif; font-size: 0.9rem; font-style: italic; }
+.size-picker > div:last-child { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.size-picker > div:last-child button { min-width: 3.2rem; padding: 0.75rem; border: 1px solid rgba($white, 0.4); border-radius: 0; background: none; cursor: pointer; font-size: 0.68rem; }
+.size-picker > div:last-child button.active { background: $cherry-deep; color: $white; transform: none; }
+.add-button { margin-bottom: 1.5rem; }
+.product-specs { border-top: $line; }
+.product-specs > div { display: grid; grid-template-columns: 5rem 1fr; gap: 1rem; padding: 0.9rem 0; border-bottom: $line; }
+.product-specs dt { font-size: 0.57rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+.product-specs dd { font-family: $font-serif; font-size: 0.9rem; }
+
+@include below(800px) {
+  .product-detail { display: block; }
+  .product-detail__gallery figure { aspect-ratio: 0.82; }
+  .product-detail__info { position: static; padding-top: 4rem; }
+}

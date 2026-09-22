@@ -1,0 +1,55 @@
+@use '../abstracts' as *;
+
+:root {
+  font-family: $font-body;
+  color: $ink;
+  background: $charcoal;
+  font-synthesis: none;
+  --accent: #{$pink};
+  --accent-dark: #{$cherry-deep};
+  --page: #{$charcoal};
+  --ink: #{$white};
+  --soft: #{$cherry-deep};
+}
+
+body { background: $charcoal; }
+body:has(.cart-drawer) { overflow: hidden; }
+::selection { color: $white; background: var(--accent-dark); }
+
+.app-shell {
+  position: relative;
+  min-height: 100vh;
+  overflow: clip;
+  color: var(--ink);
+  background: var(--page);
+  transition: color 0.5s ease, background 0.5s ease;
+
+  &.feral {
+    --accent: #a42b35;
+    --accent-dark: #{$cherry};
+    --page: #090808;
+    --ink: #{$white};
+    --soft: #281214;
+  }
+}
+
+main { position: relative; z-index: 1; }
+.eyebrow { @include eyebrow; }
+.page-shell { padding: calc(#{$header-height} + 4rem) $page-gutter 8rem; }
+.page-heading {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
+  column-gap: 5vw;
+  align-items: end;
+
+  .eyebrow { grid-column: 1 / -1; margin-bottom: 1.8rem; }
+  h1 { @include display-title; }
+  > p:last-child { max-width: 30rem; margin: 0 0 0.5rem; font-family: $font-serif; font-size: 1.15rem; line-height: 1.55; }
+}
+
+@include below(760px) {
+  .page-shell { padding-top: calc(#{$header-height} + 2.5rem); padding-bottom: 5rem; }
+  .page-heading { display: block; }
+  .page-heading h1 { font-size: clamp(3.8rem, 18vw, 6rem); }
+  .page-heading > p:last-child { margin: 2rem 0 0 14%; }
+}

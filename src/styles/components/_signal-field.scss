@@ -1,0 +1,37 @@
+@use '../abstracts' as *;
+
+.signal-field {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  --mx: 50%;
+  --my: 50%;
+  --dx: 0px;
+  --dy: 0px;
+
+  &__wash {
+    position: absolute;
+    inset: -10%;
+    opacity: 0.62;
+    background:
+      radial-gradient(circle at var(--mx) var(--my), rgba($cherry, 0.4) 0, rgba($cherry-deep, 0.18) 9%, transparent 27%),
+      repeating-radial-gradient(circle at calc(var(--mx) + var(--dx)) calc(var(--my) + var(--dy)), transparent 0 9px, rgba($white, 0.025) 10px 11px),
+      linear-gradient(118deg, transparent 22%, rgba($cherry-deep, 0.2) 51%, transparent 78%);
+    filter: blur(0.4px) saturate(0.8);
+    transition: background-color 0.5s ease;
+  }
+
+  &__ink {
+    position: absolute;
+    font-family: $font-hand;
+    font-size: clamp(1.2rem, 2vw, 2.2rem);
+    opacity: 0.09;
+    transform: translate(var(--dx), var(--dy)) rotate(-8deg);
+    transition: transform 0.25s ease-out;
+  }
+  &__ink--one { top: 20%; left: 3%; }
+  &__ink--two { right: 4%; top: 42%; transform: translate(var(--dx), var(--dy)) rotate(5deg); }
+  &__ink--three { left: 28%; bottom: 8%; transform: translate(var(--dx), var(--dy)) rotate(-3deg); }
+}

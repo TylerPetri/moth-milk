@@ -1,0 +1,56 @@
+@use '../abstracts' as *;
+
+.lookbook-heading, .broadcasts-heading { padding-bottom: 5rem; }
+.lookbook-board { position: relative; min-height: 100rem; border-top: $line; }
+.lookbook-shot { position: absolute; padding: 0; background: #181414; box-shadow: 0 1.5rem 4rem rgba(#000, 0.35); }
+.lookbook-shot img { width: 100%; height: 100%; object-fit: cover; }
+.lookbook-shot figcaption { padding: 0.8rem; border-top: 1px solid rgba($white, 0.16); color: $white; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.lookbook-shot--one { top: 6rem; left: 5%; width: min(37rem, 45%); height: 49rem; }
+.lookbook-shot--two { top: 17rem; right: 2%; width: min(31rem, 38%); height: 34rem; }
+.lookbook-shot--three { top: 60rem; right: 17%; width: 26rem; height: 29rem; background: #221b1c; }
+.lookbook-shot--three img { object-fit: contain; }
+.lookbook-note { position: absolute; top: 59rem; left: 11%; width: 23rem; padding: 2rem; border: 1px solid rgba($white, 0.35); background: $cherry-deep; color: $white; box-shadow: none; }
+.lookbook-note span { font-size: 2rem; }
+.lookbook-note p { margin: 0.5rem 0 0; font-family: $font-serif; font-size: 1.35rem; font-style: italic; line-height: 1.2; }
+.lookbook-type { position: absolute; right: 2%; bottom: 1rem; font-family: $font-display; font-size: clamp(5rem, 11vw, 11rem); font-weight: 900; line-height: 0.65; letter-spacing: -0.08em; opacity: 0.12; text-align: right; }
+.lookbook-type em { font-family: $font-serif; font-size: 0.22em; letter-spacing: 0; }
+
+.broadcasts-heading .live-dot { margin-right: 0.5rem; }
+.broadcast-index { border-top: $line; }
+.broadcast-index article { display: grid; grid-template-columns: 5rem 1fr auto; gap: 2rem; align-items: center; padding: 2.5rem 0; border-bottom: $line; }
+.broadcast-index__number { font-family: $font-display; font-size: 2.5rem; font-style: italic; color: var(--accent); }
+.broadcast-index p { margin: 0 0 0.6rem; font-size: 0.57rem; letter-spacing: 0.13em; text-transform: uppercase; }
+.broadcast-index h2 { max-width: 32ch; margin: 0; font-family: $font-serif; font-size: clamp(1.8rem, 3vw, 3.4rem); line-height: 1.05; letter-spacing: -0.03em; }
+.broadcast-index article > span { font-size: 1.3rem; }
+.signal-note { width: 21rem; margin: 6rem 8% 0 auto; padding: 1.3rem; border: 1px solid rgba($white, 0.4); background: rgba($cherry-deep, 0.45); }
+.signal-note strong { font-size: 0.65rem; letter-spacing: 0.13em; }
+.signal-note p { margin: 0.8rem 0 0; font-family: $font-serif; font-size: 1.05rem; font-style: italic; line-height: 1.2; }
+
+.about-intro { min-height: 70vh; display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 7vw; align-items: center; }
+.about-intro h1 { @include display-title; margin-top: 1.5rem; }
+.about-intro > p { margin: 0; font-family: $font-serif; font-size: clamp(1.3rem, 2vw, 2rem); line-height: 1.5; }
+.about-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; padding: 7rem 0; border-block: $line; }
+.about-values article { padding-right: 3vw; }
+.about-values span { display: inline-grid; width: 2.5rem; aspect-ratio: 1; place-items: center; border: 1px solid; border-radius: 0; color: var(--accent); font-family: $font-display; }
+.about-values h2 { margin: 3rem 0 1rem; font-family: $font-serif; font-size: 2.2rem; line-height: 0.95; }
+.about-values p { max-width: 25rem; margin: 0; line-height: 1.65; }
+.about-mimi { padding: 8rem 5vw 2rem; display: grid; grid-template-columns: minmax(18rem, 0.8fr) 1fr; gap: 7vw; align-items: center; }
+.about-mimi > img { max-height: 38rem; margin: auto; filter: drop-shadow(0 1.5rem 1.4rem rgba($ink, 0.2)); }
+.about-mimi h2 { @include display-title(clamp(3.4rem, 6vw, 7rem)); margin: 1.5rem 0; }
+.about-mimi p:not(.eyebrow) { max-width: 34rem; font-family: $font-serif; font-size: 1.15rem; line-height: 1.55; }
+.about-mimi a { display: inline-block; margin-top: 1rem; border-bottom: 1px solid; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
+
+@include below(760px) {
+  .lookbook-board { min-height: auto; display: flex; flex-direction: column; gap: 3rem; padding-top: 3rem; }
+  .lookbook-shot, .lookbook-note, .lookbook-type { position: relative; inset: auto; width: 92%; height: auto; min-height: 26rem; }
+  .lookbook-shot--two { margin-left: auto; }
+  .lookbook-shot--three { width: 80%; margin: auto; }
+  .lookbook-note { min-height: 0; }
+  .lookbook-type { display: none; }
+  .broadcast-index article { grid-template-columns: 3rem 1fr auto; gap: 1rem; }
+  .about-intro { min-height: auto; display: block; padding-bottom: 6rem; }
+  .about-intro > p { margin: 3rem 0 0 12%; }
+  .about-values { grid-template-columns: 1fr; }
+  .about-values article { padding: 1rem 0 3rem; border-bottom: $line; }
+  .about-mimi { padding-inline: 0; grid-template-columns: 1fr; }
+}
