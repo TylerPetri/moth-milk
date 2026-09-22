@@ -13,7 +13,8 @@
 }
 
 body { background: $charcoal; }
-body:has(.cart-drawer) { overflow: hidden; }
+body:has(.cart-drawer),
+body:has(.reader-layer) { overflow: hidden; }
 ::selection { color: $white; background: var(--accent-dark); }
 
 .app-shell {
