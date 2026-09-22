@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="96" viewBox="0 0 640 96">
+  <filter id="wood" x="-10%" y="-40%" width="120%" height="180%">
+    <feTurbulence type="fractalNoise" baseFrequency=".012 .16" numOctaves="3" seed="17" result="grain"/>
+    <feDisplacementMap in="SourceGraphic" in2="grain" scale="18" xChannelSelector="R" yChannelSelector="G"/>
+  </filter>
+  <rect width="640" height="96" fill="#3d2118"/>
+  <g filter="url(#wood)" opacity=".44" fill="none" stroke="#9b5f3b">
+    <path d="M-20 19c80 20 137-18 224 2s154-18 232 1 139-13 225 0"/>
+    <path d="M-10 50c67-17 127 19 202 0s141 18 225 0 150 14 236-1"/>
+    <path d="M-14 79c78 18 143-18 222 1s139-15 225 0 147-12 224 2"/>
+  </g>
+  <rect width="640" height="96" filter="url(#wood)" opacity=".18"/>
+</svg>

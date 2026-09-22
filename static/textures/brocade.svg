@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="180" height="92" viewBox="0 0 180 92">
+  <rect width="180" height="92" fill="#260b0e"/>
+  <g fill="none" stroke="#7d2931" stroke-width=".65" opacity=".34">
+    <path d="M0 46C22 44 19 17 45 16c26 1 23 28 45 30-22 2-19 29-45 30C19 75 22 48 0 46Z"/>
+    <path d="M90 46c22-2 19-29 45-30 26 1 23 28 45 30-22 2-19 29-45 30-26-1-23-28-45-30Z"/>
+    <path d="M22 0c1 13 11 22 23 23C33 24 23 33 22 46 21 33 11 24 0 23 11 22 21 13 22 0Zm90 0c1 13 11 22 23 23-12 1-22 10-23 23-1-13-11-22-22-23 11-1 21-10 22-23Z"/>
+  </g>
+  <filter id="cloth"><feTurbulence type="fractalNoise" baseFrequency=".09 .72" numOctaves="2" seed="7"/></filter>
+  <rect width="180" height="92" filter="url(#cloth)" opacity=".12"/>
+</svg>

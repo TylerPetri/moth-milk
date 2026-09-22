@@ -1,9 +1,12 @@
 <script>
-  import '@fontsource/figtree/400.css';
-  import '@fontsource/figtree/600.css';
-  import '@fontsource/fraunces/700.css';
-  import '@fontsource/fraunces/900.css';
-  import '@fontsource/caveat/600.css';
+  import '@fontsource/ibm-plex-sans-condensed/latin-400.css';
+  import '@fontsource/ibm-plex-sans-condensed/latin-500.css';
+  import '@fontsource/ibm-plex-sans-condensed/latin-600.css';
+  import '@fontsource/cormorant-garamond/latin-500.css';
+  import '@fontsource/cormorant-garamond/latin-600.css';
+  import '@fontsource/cormorant-garamond/latin-700.css';
+  import '@fontsource/courier-prime/latin-400.css';
+  import '@fontsource/courier-prime/latin-700.css';
   import '../styles/main.scss';
   import SiteHeader from '$lib/components/SiteHeader.svelte';
   import SiteFooter from '$lib/components/SiteFooter.svelte';

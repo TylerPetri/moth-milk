@@ -1,10 +1,11 @@
-$font-body: 'Figtree', Arial, sans-serif;
-$font-display: 'Figtree', Arial, sans-serif;
-$font-serif: 'Fraunces', Georgia, serif;
-$font-hand: 'Caveat', cursive;
+$font-body: 'IBM Plex Sans Condensed', Arial, sans-serif;
+$font-display: 'Cormorant Garamond', Georgia, serif;
+$font-serif: 'Cormorant Garamond', Georgia, serif;
+$font-mono: 'Courier Prime', 'Courier New', monospace;
+$font-hand: $font-mono;
 
-$cream: #ddd4c7;
-$paper: #cfc4b5;
+$cream: #ded1bd;
+$paper: #cbbba3;
 $ink: #181514;
 $cherry: #7d2028;
 $cherry-deep: #431014;
@@ -12,10 +13,10 @@ $pink: #8b595d;
 $lavender: #766970;
 $charcoal: #141212;
 $acid: #bcae98;
-$white: #eee6db;
+$white: #eadfce;
 
 $page-gutter: clamp(1rem, 3vw, 3.5rem);
-$header-height: 5rem;
+$header-height: 4rem;
 $radius-sm: 0.12rem;
 $radius-md: 0.2rem;
 $radius-lg: 0.35rem;

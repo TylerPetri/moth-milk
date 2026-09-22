@@ -5,6 +5,7 @@ export const libraryBooks = [
     issue: '001',
     minutes: 12,
     theme: 'signal',
+    spine: { width: 3.9, height: 94, lean: -1.1, material: 'leather', accent: '#9b2831' },
     description: 'A dead television begins broadcasting a room that looks almost like Mara’s—five minutes ahead.',
     excerpt: [
       'At 3:17, the television turned itself on. There was no burst of music, no blue menu, only a room filmed from somewhere near the ceiling.',
@@ -18,6 +19,7 @@ export const libraryBooks = [
     issue: '002',
     minutes: 18,
     theme: 'hush',
+    spine: { width: 3.35, height: 88, lean: 0.4, material: 'cloth', accent: '#c0a36e' },
     description: 'Four friends agree not to speak until sunrise. Something in the hallway takes the rule more seriously than they do.',
     excerpt: [
       'The rule was Liv’s idea: no talking until the sun touched the windows. Anyone who slipped had to walk home alone.',
@@ -31,6 +33,7 @@ export const libraryBooks = [
     issue: '003',
     minutes: 9,
     theme: 'hall',
+    spine: { width: 4.15, height: 97, lean: -0.4, material: 'cloth', accent: '#b9aa91' },
     description: 'The corridor outside apartment 6B gets longer every night, but only after the last train stops running.',
     excerpt: [
       'The elevator was six steps from June’s door. She had counted often enough to know.',
@@ -44,6 +47,7 @@ export const libraryBooks = [
     issue: '004',
     minutes: 15,
     theme: 'void',
+    spine: { width: 3.6, height: 91, lean: 1.2, material: 'paper', accent: '#c8b694' },
     description: 'A group call keeps reconnecting after everyone has gone home—and one camera is showing tomorrow.',
     excerpt: [
       'Nia closed the laptop at 2:44. The call continued through the speakers anyway: breathing, a chair leg scraping, the soft pulse of bad reception.',
@@ -57,6 +61,7 @@ export const libraryBooks = [
     issue: '005',
     minutes: 21,
     theme: 'underbed',
+    spine: { width: 4.25, height: 86, lean: -1.5, material: 'leather', accent: '#9c252d' },
     description: 'There is nothing under the bed. The voice beneath it agrees, every night, in exactly her voice.',
     excerpt: [
       'When Elise was seven, her mother taught her to check beneath the bed. At nineteen, she still did it whenever she slept somewhere new.',
@@ -64,4 +69,15 @@ export const libraryBooks = [
       'From the dark beneath the mattress, her voice answered: “Nothing here.”'
     ]
   }
+];
+
+export const shelfFillers = [
+  { width: 2.4, height: 82, lean: -0.4, material: 'cloth', accent: '#76604a' },
+  { width: 3.1, height: 96, lean: 0.8, material: 'leather', accent: '#9b7451' },
+  { width: 2.65, height: 89, lean: -0.7, material: 'paper', accent: '#827460' },
+  { width: 3.45, height: 98, lean: 1.4, material: 'cloth', accent: '#6c4c3e' },
+  { width: 2.25, height: 79, lean: -1.2, material: 'leather', accent: '#85262c' },
+  { width: 3.15, height: 93, lean: 0.3, material: 'cloth', accent: '#806b55' },
+  { width: 2.55, height: 86, lean: -0.8, material: 'paper', accent: '#a19078' },
+  { width: 3.3, height: 95, lean: 0.7, material: 'leather', accent: '#674033' }
 ];

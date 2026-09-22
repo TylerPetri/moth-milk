@@ -4,15 +4,15 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 0.0.0.0",
+    "dev": "vite --host --port 5174",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json"
   },
   "devDependencies": {
-    "@fontsource/caveat": "^5.2.7",
-    "@fontsource/figtree": "^5.2.7",
-    "@fontsource/fraunces": "^5.2.8",
+    "@fontsource/cormorant-garamond": "^5.3.0",
+    "@fontsource/courier-prime": "^5.3.0",
+    "@fontsource/ibm-plex-sans-condensed": "^5.3.0",
     "@sveltejs/adapter-static": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",

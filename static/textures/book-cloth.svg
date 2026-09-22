@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="320" viewBox="0 0 240 320">
+  <filter id="cloth" x="-20%" y="-20%" width="140%" height="140%">
+    <feTurbulence type="fractalNoise" baseFrequency=".035 .58" numOctaves="3" seed="21" result="fibers"/>
+    <feDiffuseLighting in="fibers" surfaceScale="1.2" diffuseConstant=".55" lighting-color="#d5c6b1" result="light"><feDistantLight azimuth="230" elevation="45"/></feDiffuseLighting>
+    <feBlend in="SourceGraphic" in2="light" mode="multiply"/>
+  </filter>
+  <rect width="240" height="320" fill="#211919"/>
+  <rect width="240" height="320" fill="#4b3932" filter="url(#cloth)" opacity=".52"/>
+</svg>

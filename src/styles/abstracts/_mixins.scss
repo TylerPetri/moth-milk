@@ -43,6 +43,55 @@
   }
 }
 
+@mixin paper-surface($base: #d8c9b4) {
+  background-color: $base;
+  background-image:
+    linear-gradient(rgba(#fff, 0.04), rgba(#5d4938, 0.08)),
+    url('/textures/paper-fiber.svg');
+  background-size: auto, 20rem 20rem;
+  background-blend-mode: soft-light, multiply;
+}
+
+@mixin brocade-surface {
+  background-color: #21090c;
+  background-image:
+    linear-gradient(90deg, rgba(#100506, 0.3), transparent 35%, rgba(#100506, 0.22)),
+    url('/textures/brocade.svg');
+  background-size: auto, 11.25rem 5.75rem;
+  background-blend-mode: multiply, normal;
+}
+
+@mixin cloth-surface($base: #211919) {
+  background-color: $base;
+  background-image: linear-gradient(rgba($base, 0.42), rgba(#000, 0.18)), url('/textures/book-cloth.svg');
+  background-size: auto, 15rem 20rem;
+  background-blend-mode: multiply, soft-light;
+}
+
+@mixin leather-surface($base: #35191a) {
+  background-color: $base;
+  background-image: linear-gradient(rgba($base, 0.28), rgba(#000, 0.2)), url('/textures/leather-grain.svg');
+  background-size: auto, 17.5rem 22.5rem;
+  background-blend-mode: multiply, soft-light;
+}
+
+@mixin wood-surface {
+  background-color: #3d2118;
+  background-image: linear-gradient(rgba(#1a0d09, 0.12), rgba(#080403, 0.45)), url('/textures/wood-grain.svg');
+  background-size: auto, 40rem 6rem;
+  background-blend-mode: multiply, normal;
+}
+
+@mixin inked-text($ink: #e5d7c2) {
+  color: transparent;
+  background-image: linear-gradient($ink, $ink), url('/textures/ink-wear.svg');
+  background-size: auto, 16.25rem 8.75rem;
+  background-blend-mode: multiply;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 @mixin below($width) {
   @media (max-width: $width) { @content; }
 }
