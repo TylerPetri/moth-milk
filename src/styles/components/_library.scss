@@ -319,7 +319,7 @@
   .library-collection {
     height: 100%;
     min-height: 0;
-    background: url('/images/reference-library-shelf-v1.webp') center / 100% 100% no-repeat;
+    background: url('/images/empty-library-shelf-v1.webp') center / 100% 100% no-repeat;
   }
 
   .library-shelf {
@@ -343,7 +343,7 @@
     height: var(--shelf-height);
     display: block;
     overflow: visible;
-    background: #070505;
+    background: transparent;
   }
   .book-spine-slot .book-spine {
     position: absolute;
@@ -355,22 +355,23 @@
     overflow: hidden;
     border: 0;
     border-radius: 0;
+    background-color: transparent;
     background-image: var(--shelf-image);
     background-position: center;
     background-size: 100% 100%;
     background-repeat: no-repeat;
     box-shadow: none;
     clip-path: none;
-    filter: none;
+    filter: drop-shadow(0.14rem 0.12rem 0.14rem rgba(#000, 0.72));
     transform: none;
   }
   .book-spine-slot .book-spine::before,
   .book-spine-slot .book-spine::after,
   .book-spine-slot .book-spine > * { display: none; }
   .book-spine-slot .book-spine:hover,
-  .book-spine-slot .book-spine:focus-visible { z-index: 12; filter: brightness(1.12) saturate(1.04); transform: translateY(-0.46rem); }
+  .book-spine-slot .book-spine:focus-visible { z-index: 12; filter: brightness(1.12) saturate(1.04) drop-shadow(0.24rem 0.3rem 0.2rem rgba(#000, 0.78)); transform: translateY(-0.46rem); }
   .book-spine-slot .book-spine:focus-visible { outline: 1px solid rgba(#e6ceb0, 0.9); outline-offset: 2px; }
-  .book-spine-slot .book-spine.selected { z-index: 11; filter: brightness(1.08) saturate(1.06); transform: translateY(-0.24rem); }
+  .book-spine-slot .book-spine.selected { z-index: 11; filter: brightness(1.08) saturate(1.06) drop-shadow(0.2rem 0.24rem 0.18rem rgba(#000, 0.76)); transform: translateY(-0.24rem); }
   .book-spine-slot:has(.book-spine:hover),
   .book-spine-slot:has(.book-spine:focus-visible),
   .book-spine-slot:has(.book-spine.selected) { z-index: 12; }

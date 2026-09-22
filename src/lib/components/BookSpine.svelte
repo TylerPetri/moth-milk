@@ -14,7 +14,7 @@
     `--shelf-y:${(book.shelf.y / 2.48).toFixed(4)}%`,
     `--shelf-width:${(book.shelf.width / 9.79).toFixed(4)}%`,
     `--shelf-height:${(book.shelf.height / 2.48).toFixed(4)}%`,
-    `--shelf-image:url('/images/interactive-spines/${book.shelf.image}')`
+    `--shelf-image:url('/images/transparent-spines-v1/${book.shelf.image}')`
   ].join(';'));
 </script>
 
