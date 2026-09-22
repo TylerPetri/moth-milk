@@ -22,6 +22,7 @@ Physical surfaces are reusable rather than page-specific:
 - compact photographic material and cover-art atlases live in `static/images/book-material-atlas-v1.webp` and `horror-cover-atlas-v1.webp`
 - the desktop shelf crops `static/images/empty-library-shelf-v1.webp` into independent top, side, and bottom wood-frame layers over a translucent cavity, so the bedroom and cursor light continue behind it instead of ending at a rectangular image boundary
 - all 22 independently interactive alpha-masked bindings live in `static/images/transparent-spines-v1/`
+- product photography uses WebP assets to keep the storefront and source archive small
 - book content and spine dimensions live in `src/lib/data/library.js`
 - reusable cover/spine renderers live in `src/lib/components/BookCover.svelte` and `BookSpine.svelte`
 

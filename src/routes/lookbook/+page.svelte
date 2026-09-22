@@ -7,9 +7,9 @@
   </header>
 
   <div class="lookbook-board">
-    <figure class="lookbook-shot lookbook-shot--one"><img src="/images/night-shift-hoodie.png" alt="Night Shift Hoodie lookbook portrait" /><figcaption>frame 03 / Night Shift Hoodie</figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--two"><img src="/images/after-hours-tee.png" alt="After Hours Baby Tee on rumpled bedding" /><figcaption>frame 11 / After Hours Tee</figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--three"><img src="/images/mimi-plush.png" alt="Mimi Moth Plush" /><figcaption>frame 19 / Mimi Plush</figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--one"><img src="/images/night-shift-hoodie.webp" alt="Night Shift Hoodie lookbook portrait" /><figcaption>frame 03 / Night Shift Hoodie</figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--two"><img src="/images/after-hours-tee.webp" alt="After Hours Baby Tee on rumpled bedding" /><figcaption>frame 11 / After Hours Tee</figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--three"><img src="/images/mimi-plush.webp" alt="Mimi Moth Plush" /><figcaption>frame 19 / Mimi Plush</figcaption></figure>
     <div class="lookbook-type" aria-hidden="true">MM<br /><em>01</em></div>
   </div>
 </main>

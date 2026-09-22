@@ -9,13 +9,16 @@
   height: $header-height;
   padding: 0 $page-gutter;
   display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  column-gap: clamp(1.5rem, 3vw, 3.5rem);
   align-items: center;
   border-bottom: 1px solid rgba($white, 0.13);
   color: $white;
   box-shadow: 0 0.4rem 1.8rem rgba(#050303, 0.28);
   backdrop-filter: blur(9px) saturate(0.7);
   @include brocade-surface;
+  background-color: #230c0c;
+  background-image: linear-gradient(rgba(#210909, 0.83), rgba(#210909, 0.83)), url('/textures/brocade.svg');
 
   &::after {
     position: absolute;
@@ -38,7 +41,7 @@
     @include inked-text(#e5d5bd);
   }
 
-  nav { display: flex; gap: clamp(1.2rem, 2.5vw, 3rem); }
+  nav { display: flex; justify-self: end; gap: clamp(1.2rem, 2.5vw, 3rem); }
   nav a {
     position: relative;
     padding: 0.8rem 0;

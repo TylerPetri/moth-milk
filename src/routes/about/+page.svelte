@@ -12,5 +12,5 @@
     <article><span>03</span><h2>The people.</h2><p>Writers, artists, photographers and makers are credited and paid for their work.</p></article>
   </section>
 
-  <section class="about-mimi"><img src="/images/mimi-plush.png" alt="Mimi the Moth Milk mascot" /><div><p class="eyebrow">Mimi</p><h2>Moth Milk<br /><em>plush.</em></h2><p>The recurring character from the library and the bedroom.</p><a href="/product/mimi-plush">View Mimi →</a></div></section>
+  <section class="about-mimi"><img src="/images/mimi-plush.webp" alt="Mimi the Moth Milk mascot" /><div><p class="eyebrow">Mimi</p><h2>Moth Milk<br /><em>plush.</em></h2><p>The recurring character from the library and the bedroom.</p><a href="/product/mimi-plush">View Mimi →</a></div></section>
 </main>

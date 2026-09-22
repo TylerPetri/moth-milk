@@ -35,7 +35,7 @@
     max-width: none;
     object-fit: cover;
     object-position: center;
-    filter: contrast(1.03) saturate(0.82) brightness(0.83);
+    filter: contrast(1.03) saturate(0.91) brightness(0.98);
     transform: scale(1.005);
   }
 
@@ -44,8 +44,8 @@
     z-index: -2;
     inset: 0;
     background:
-      linear-gradient(90deg, rgba(#080606, 0.48) 0%, rgba(#080606, 0.05) 48%, rgba(#080606, 0.2) 100%),
-      linear-gradient(180deg, rgba(#070505, 0.24), transparent 24%, transparent 70%, rgba(#080606, 0.5));
+      linear-gradient(90deg, rgba(#080606, 0.38) 0%, rgba(#080606, 0.12) 48%, rgba(#080606, 0.1) 100%),
+      linear-gradient(180deg, rgba(#070505, 0.15), transparent 24%, transparent 75%, rgba(#080606, 0.3));
   }
 
   &__grain {
@@ -59,11 +59,12 @@
   }
 
   &__copy {
+    --wordmark-scale: 0.72;
     position: absolute;
     z-index: 5;
-    top: 43%;
-    left: clamp(1.25rem, 18vw, 20rem);
-    width: min(47rem, 48vw);
+    top: 53%;
+    left: clamp(1.25rem, 18.5vw, 20rem);
+    width: min(31.5rem, 31vw);
     text-align: center;
     transform: translateY(-50%);
     text-shadow: 0 0.2rem 2rem rgba(#000, 0.75);
@@ -79,21 +80,25 @@
     line-height: 0.78;
     white-space: nowrap;
     text-transform: uppercase;
-    filter: sepia(0.12) saturate(0.72) contrast(1.04);
+    filter: grayscale(1) sepia(0.24) saturate(0.7) brightness(1.06) contrast(1.08);
+    transform: scaleX(var(--wordmark-scale));
+    transform-origin: center;
     @include inked-text(#e5d6bf);
   }
 
   &__copy > p {
-    margin: 0.82rem 0 0;
+    margin: 0.72rem 0 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.7rem;
-    font-size: 0.68rem;
+    gap: 0;
+    color: #e7d9c5;
+    font-size: 0.69rem;
     font-weight: 500;
     letter-spacing: 0.21em;
     line-height: 1.6;
     text-transform: uppercase;
+    white-space: nowrap;
   }
 
   &__copy > p i {
@@ -105,11 +110,11 @@
   }
 
   &__actions {
-    width: min(100%, 23rem);
+    width: min(100%, 25rem);
     margin: 1.05rem auto 0;
     display: flex;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.25rem;
   }
 
   &__scroll {
@@ -136,9 +141,10 @@
 .room-button {
   position: relative;
   isolation: isolate;
-  min-width: 10.8rem;
+  min-width: 0;
   min-height: 2.6rem;
   padding: 0.72rem 1.2rem 0.66rem;
+  flex: 1 1 0;
   overflow: hidden;
   border: 1px solid rgba($white, 0.34);
   font-family: $font-display;
@@ -148,7 +154,7 @@
   text-align: center;
   text-shadow: none;
   text-transform: uppercase;
-  box-shadow: 0 0.65rem 1.8rem rgba(#000, 0.3);
+  box-shadow: 0 0.5rem 1.45rem rgba(#000, 0.28);
   transition: transform 0.25s $ease-out, filter 0.25s ease;
 
   &::before {
@@ -330,7 +336,8 @@
 
 @include below(1080px) {
   .after-hours-hero__copy { left: 4vw; width: min(58vw, 44rem); }
-  .after-hours-hero__copy h1 { font-size: clamp(4.2rem, 9.2vw, 7rem); }
+  .after-hours-hero__copy h1 { font-size: clamp(4.2rem, 9.2vw, 7rem); transform: none; }
+  .after-hours-hero__copy > p { justify-content: center; gap: 0.7rem; }
 }
 
 @include below(760px) {
