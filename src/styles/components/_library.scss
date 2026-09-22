@@ -23,8 +23,17 @@
   padding: clamp(1.2rem, 1.8vw, 1.8rem) clamp(1.3rem, 2.2vw, 2.2rem);
   overflow: hidden;
   filter: drop-shadow(0.65rem 0 1.2rem rgba(#060303, 0.34));
-  clip-path: polygon(0 1%, 6% 0.2%, 13% 0.8%, 21% 0.1%, 31% 0.9%, 40% 0.2%, 51% 0.8%, 62% 0.1%, 73% 0.8%, 84% 0.2%, 95% 0.9%, 99.2% 0.3%, 99.7% 12%, 99.1% 24%, 99.8% 37%, 99.2% 49%, 99.7% 63%, 99.1% 76%, 99.8% 89%, 99.2% 99%, 91% 99.6%, 80% 99%, 68% 99.8%, 56% 99.1%, 44% 99.8%, 32% 99.1%, 20% 99.7%, 9% 99.1%, 0 99.7%);
-  @include paper-surface(#d6c8b2);
+  clip-path: polygon(0 2.4%, 4% 0.8%, 9% 1.9%, 15% 0.4%, 22% 1.6%, 29% 0.2%, 36% 1.8%, 44% 0.5%, 52% 1.6%, 60% 0.2%, 68% 1.7%, 76% 0.4%, 84% 1.5%, 92% 0.3%, 99.1% 1.4%, 99.7% 10%, 99.1% 20%, 99.8% 31%, 99.2% 42%, 99.7% 53%, 99% 64%, 99.8% 76%, 99.1% 87%, 99.5% 98.6%, 92% 99.2%, 84% 98.7%, 75% 99.4%, 66% 98.9%, 57% 99.6%, 48% 98.8%, 39% 99.5%, 30% 98.9%, 21% 99.6%, 12% 98.8%, 4% 99.5%, 0 98.8%);
+  background-color: #ddd2bf;
+  background-image:
+    radial-gradient(ellipse at 96% 45%, rgba(#684936, 0.24), transparent 15%),
+    radial-gradient(ellipse at 3% 5%, rgba(#876a4d, 0.1), transparent 18%),
+    radial-gradient(ellipse at 57% 111%, rgba(#795a42, 0.15), transparent 29%),
+    linear-gradient(90deg, rgba(#4d3022, 0.07), transparent 8%, transparent 91%, rgba(#4d3022, 0.17)),
+    url('/textures/archive-paper.svg');
+  background-position: center;
+  background-size: auto, auto, auto, auto, 32rem 24rem;
+  background-blend-mode: multiply, multiply, multiply, multiply, normal;
 
   &::before,
   &::after {
@@ -36,18 +45,18 @@
   }
 
   &::before {
-    opacity: 0.62;
+    opacity: 0.72;
     background:
-      radial-gradient(ellipse at 8% 7%, rgba(#65422e, 0.16), transparent 19%),
-      radial-gradient(ellipse at 94% 84%, rgba(#76523a, 0.13), transparent 22%),
-      radial-gradient(circle at 51% 112%, rgba(#5a3929, 0.2), transparent 32%),
-      linear-gradient(90deg, rgba(#573824, 0.08), transparent 7%, transparent 90%, rgba(#4d3022, 0.13));
+      radial-gradient(ellipse at 9% 6%, rgba(#65422e, 0.1), transparent 18%),
+      radial-gradient(ellipse at 97% 82%, rgba(#76523a, 0.18), transparent 19%),
+      radial-gradient(circle at 53% 116%, rgba(#5a3929, 0.14), transparent 30%),
+      linear-gradient(90deg, rgba(#573824, 0.08), transparent 7%, transparent 88%, rgba(#4d3022, 0.2));
     mix-blend-mode: multiply;
   }
 
   &::after {
-    opacity: 0.13;
-    background: url('/textures/ink-wear.svg') center / 18rem 9rem;
+    opacity: 0.075;
+    background: url('/textures/ink-wear.svg') center / 22rem 11rem;
     mix-blend-mode: multiply;
   }
 
@@ -93,17 +102,18 @@
     border: 1px solid rgba(#25090c, 0.66);
     color: #eee0cb;
     cursor: pointer;
-    font-family: $font-mono;
-    font-size: 0.59rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
+    font-family: $font-display;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.085em;
     text-transform: uppercase;
     box-shadow: 0.18rem 0.24rem 0 rgba(#2d1714, 0.17), inset 0 0 0 1px rgba(#d6b49f, 0.08);
-    clip-path: polygon(1% 4%, 98% 1%, 100% 92%, 97% 99%, 2% 97%, 0 10%);
+    clip-path: polygon(0.7% 4%, 4% 2%, 18% 3%, 32% 1%, 49% 2.5%, 63% 1%, 79% 2.5%, 94% 1%, 99.4% 3%, 100% 93%, 97% 98.5%, 82% 97.5%, 66% 99%, 51% 97.5%, 35% 99%, 19% 97.5%, 3% 99%, 0 94%);
     transition: transform 0.22s $ease-out, filter 0.22s ease;
     @include leather-surface(#681921);
   }
-  &__copy button::after { position: absolute; inset: 0; content: ''; pointer-events: none; opacity: 0.24; background: url('/textures/ink-wear.svg') center / 14rem 7rem; mix-blend-mode: multiply; }
+  &__copy button::before { position: absolute; inset: 0.18rem; content: ''; pointer-events: none; border: 1px solid rgba(#e4c7af, 0.1); }
+  &__copy button::after { position: absolute; inset: 0; content: ''; pointer-events: none; opacity: 0.2; background: url('/textures/ink-wear.svg') center / 14rem 7rem; mix-blend-mode: multiply; }
   &__copy button:hover { filter: brightness(1.12); transform: translate(-0.08rem, -0.12rem) rotate(-0.35deg); }
 }
 
@@ -314,30 +324,38 @@
 
 @media (min-width: 1200px) {
   .library-browser {
-    height: clamp(13rem, 17.27vw, 20.5rem);
+    height: clamp(13rem, 16.96vw, 20.25rem);
     min-height: 0;
-    grid-template-columns: 31.82% 68.18%;
+    grid-template-columns: 33.8% 66.2%;
   }
 
   .library-feature {
     height: 100%;
-    padding: clamp(1rem, 1.4vw, 1.35rem) clamp(1.3rem, 2.1vw, 2rem);
-    @include paper-surface(#d9cdb9);
+    padding: clamp(1rem, 1.32vw, 1.35rem) clamp(1.65rem, 2.4vw, 2.75rem);
   }
 
   .library-feature__header { gap: clamp(0.8rem, 1.1vw, 1.1rem); }
-  .library-feature__header h2 { font-size: clamp(1.55rem, 1.9vw, 2rem); }
+  .library-feature__header h2 { font-size: clamp(1.55rem, 1.76vw, 1.9rem); }
   .library-feature__body {
-    margin-top: clamp(0.5rem, 0.7vw, 0.75rem);
+    margin-top: clamp(0.52rem, 0.72vw, 0.75rem);
     grid-template-columns: clamp(6.5rem, 8vw, 9.5rem) minmax(10rem, 1fr);
-    gap: clamp(1rem, 1.5vw, 1.75rem);
+    gap: clamp(1.1rem, 1.7vw, 2rem);
     align-items: start;
   }
   .library-feature__copy { padding-top: 0.15rem; }
-  .library-feature__copy h3 { font-size: clamp(1.55rem, 1.75vw, 2.05rem); }
-  .library-feature__copy > span { font-size: clamp(0.48rem, 0.45vw, 0.56rem); }
-  .library-feature__copy p { max-width: 25ch; margin-block: clamp(0.45rem, 0.55vw, 0.65rem) clamp(0.55rem, 0.65vw, 0.8rem); font-size: clamp(0.76rem, 0.82vw, 0.98rem); line-height: 1.35; }
-  .library-feature__copy button { min-width: clamp(9.2rem, 11.4vw, 13.5rem); padding: clamp(0.58rem, 0.65vw, 0.78rem) 1rem; font-size: clamp(0.54rem, 0.52vw, 0.62rem); }
+  .library-feature__copy h3 { font-size: clamp(1.55rem, 1.68vw, 1.95rem); letter-spacing: -0.012em; }
+  .library-feature__copy > span { font-size: clamp(0.48rem, 0.46vw, 0.56rem); letter-spacing: 0.13em; }
+  .library-feature__copy p { max-width: 25ch; margin-block: clamp(0.45rem, 0.53vw, 0.62rem) clamp(0.55rem, 0.62vw, 0.72rem); font-size: clamp(0.76rem, 0.79vw, 0.94rem); letter-spacing: 0.035em; line-height: 1.34; }
+  .library-feature__copy button { min-width: clamp(9.2rem, 11.4vw, 13.5rem); min-height: 2.48rem; padding: 0.52rem 1rem 0.44rem; font-size: clamp(0.75rem, 0.72vw, 0.84rem); }
+
+  .library-feature .book-cover {
+    filter: drop-shadow(0.13rem 0.26rem 0.08rem rgba(#2b1a14, 0.38));
+    box-shadow: 0.2rem 0.24rem 0 #9f907d, 0.42rem 0.55rem 0.8rem rgba(#241817, 0.27);
+    transform: rotate(-0.38deg);
+  }
+  .library-feature .book-cover__art { filter: contrast(1.02) saturate(0.72) brightness(0.71); }
+  .library-feature .book-cover__wear { opacity: 0.1; }
+  .library-feature .book-cover__edge { border-color: rgba(#d8c6ad, 0.14); box-shadow: inset 0 0 0 0.1rem rgba(#050303, 0.18); }
 
   .library-collection {
     height: 100%;

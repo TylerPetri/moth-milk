@@ -18,7 +18,7 @@ All styling is raw SCSS under `src/styles/`:
 Physical surfaces are reusable rather than page-specific:
 
 - SCSS material mixins live in `src/styles/abstracts/_mixins.scss`
-- procedural SVG paper, cloth, leather, brocade, ink, and wood textures live in `static/textures/`
+- procedural SVG archive paper, general paper, cloth, leather, brocade, ink, and wood textures live in `static/textures/`
 - compact photographic material and cover-art atlases live in `static/images/book-material-atlas-v1.webp` and `horror-cover-atlas-v1.webp`
 - the desktop shelf crops `static/images/empty-library-shelf-v1.webp` into independent top, side, and bottom wood-frame layers over a translucent cavity, so the bedroom and cursor light continue behind it instead of ending at a rectangular image boundary
 - all 22 independently interactive alpha-masked bindings live in `static/images/transparent-spines-v1/`
