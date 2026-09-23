@@ -71,7 +71,6 @@
       <div><h2>On the rack</h2><a href="/product/night-shift-hoodie">Night Shift Hoodie <span>view ↗</span></a><a href="/product/after-hours-baby-tee">After Hours Tee <span>view ↗</span></a><a href="/product/mimi-plush">Mimi Moth Plush <span>meet Mimi ↗</span></a></div>
     </section>
   {/if}
-  <p class="corner-footnote">A preview of the space. Your own books and purchases will appear here when accounts are connected.</p>
 </main>
 
 <dialog class="registry-dialog" bind:this={registryDialog} aria-label="Moth Milk book" onclick={handleRegistryClick} onclose={handleRegistryClose}>

@@ -33,7 +33,6 @@
 .corner-list h2 { font: italic 600 2rem $font-display; margin-bottom: 1rem; }
 .corner-list button, .corner-list a { display: flex; justify-content: space-between; width: 100%; padding: 1rem 0; border: 0; border-bottom: 1px solid rgba(#e0c4a7,.28); color: #eadccd; background: none; cursor: pointer; text-decoration: none; font: 500 1.15rem $font-display; text-align: left; }
 .corner-list span { font: 700 .6rem $font-mono; text-transform: uppercase; }
-.corner-footnote { padding: 1rem 1.5rem 2rem; margin: 0; color: #bba99b; font: .66rem $font-mono; text-align: center; }
 
 /* The viewer is close to an intact book; the room remains behind it. */
 .registry-dialog { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; overflow: hidden; border: 0; background: transparent; color: #39271f; }
@@ -62,9 +61,9 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 @media (max-width: 900px) {
   .corner-scene { min-height: 0; aspect-ratio: 2 / 3; }
   .corner-scene__image { object-position: center; }
-  .corner-group-label { position: absolute; z-index: 2; display: block; pointer-events: none; white-space: nowrap; color: #d9bea0; font: 700 clamp(.58rem, 2.2vw, .78rem)/1 $font-mono; letter-spacing: .08em; text-transform: lowercase; text-shadow: 0 1px 4px #170b09; }
-  .corner-group-label--stories { left: 43%; top: 55%; transform: rotate(-5deg); padding: .35em .6em; background: linear-gradient(135deg, rgba(#593c30,.86), rgba(#30201d,.79)), url('/textures/paper-fiber.svg'); border: 1px solid rgba(#b58b70,.38); box-shadow: 1px 3px 8px rgba(#090505,.35); }
-  .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); padding: .3em .5em; background: rgba(#211613,.72); border-bottom: 1px solid rgba(#b58b70,.5); }
+  .corner-group-label { position: absolute; z-index: 2; display: block; pointer-events: none; white-space: nowrap; padding: .48em .64em; color: #f2e8da; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); font: 700 clamp(.58rem, 2.2vw, .78rem)/1 $font-mono; letter-spacing: .04em; text-transform: lowercase; }
+  .corner-group-label--stories { left: 43%; top: 55%; transform: rotate(-5deg); }
+  .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); }
   .corner-group-label--mimi { left: 23%; top: 51%; transform: rotate(13deg); padding: .4em .55em; background: linear-gradient(145deg, #a88969, #80634e); border: 1px dashed rgba(#493327,.78); box-shadow: 1px 2px 5px rgba(#100807,.5); color: #35221e; font: italic 600 clamp(.65rem, 2.5vw, .88rem)/1 $font-display; letter-spacing: 0; text-shadow: none; }
   .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
   .corner-hotspot__label { display: none; }
