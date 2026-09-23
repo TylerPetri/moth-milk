@@ -50,6 +50,13 @@
   let selectedBook = $state(null);
 
   function closeReader() { selectedBook = null; }
+  /** @param {PointerEvent & { currentTarget: HTMLElement }} event */
+  function trackCornerCursor(event) {
+    if (event.pointerType === 'touch') return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    event.currentTarget.style.setProperty('--cursor-x', `${event.clientX - rect.left}px`);
+    event.currentTarget.style.setProperty('--cursor-y', `${event.clientY - rect.top}px`);
+  }
   /** @param {KeyboardEvent} event */
   function handleKeydown(event) { if (event.key === 'Escape') closeReader(); }
 
@@ -85,7 +92,7 @@
 <svelte:window onkeydown={handleKeydown} onfocus={checkVerification} />
 
 <main class="corner-page">
-  <section class="corner-scene" aria-labelledby="corner-title">
+  <section class="corner-scene" aria-labelledby="corner-title" onpointermove={trackCornerCursor}>
     <picture class="corner-scene__picture">
       <source media="(max-width: 900px)" srcset={auth.userId ? '/images/your-corner-empty-mobile.png' : '/images/your-corner-mobile.webp'} />
       <img class="corner-scene__image" src={auth.userId ? '/images/your-corner-empty-desktop.png' : '/images/your-corner-room.webp'} srcset={auth.userId ? undefined : '/images/your-corner-room.webp 1670w, /images/your-corner-room-4k.webp 3840w'} sizes="100vw" width="1670" height="942" alt="A shared candlelit loft with an inviting burgundy sofa and a clothing rack" />
@@ -101,8 +108,10 @@
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
     {#if !auth.userId || couchBooks.length}<span class="corner-group-label corner-group-label--stories" aria-hidden="true">stories</span>{/if}
-    {#if !auth.userId || owned.some((item) => item === 'night-shift-hoodie' || item === 'after-hours-baby-tee')}<span class="corner-group-label corner-group-label--rack" aria-hidden="true">on the rack</span>{/if}
     {#if !auth.userId || owned.includes('mimi-plush')}<span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>{/if}
+
+    <a class="corner-room-link corner-room-link--library" href="/#library" aria-label="Browse the library and choose books"><span>library <span aria-hidden="true">↗</span></span></a>
+    <a class="corner-room-link corner-room-link--shop" href="/shop" aria-label="Browse the Moth Milk shop"><span>shop <span aria-hidden="true">↗</span></span></a>
 
     <button class="registry-prop" type="button" aria-label="Open the dark Moth Milk book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
 

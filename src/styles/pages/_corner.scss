@@ -2,7 +2,9 @@
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .corner-page { padding-top: $header-height; background: #110b0b; color: #eadccd; }
-.corner-scene { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1670 / 942; overflow: hidden; background: #160d0c; }
+.corner-scene { --cursor-x: 50%; --cursor-y: 50%; position: relative; isolation: isolate; width: 100%; aspect-ratio: 1670 / 942; overflow: hidden; background: #160d0c; }
+.corner-scene::after { position: absolute; z-index: 1; inset: 0; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(15rem circle at var(--cursor-x) var(--cursor-y), rgba(126,31,38,.24), transparent 72%); mix-blend-mode: screen; transition: opacity .3s ease; }
+@media (hover: hover) and (pointer: fine) { .corner-scene:hover::after { opacity: .38; } }
 .corner-scene__picture { position: absolute; inset: 0; display: block; }
 .corner-scene__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .corner-belonging { position: absolute; inset: 0; display: block; pointer-events: none; }
@@ -16,6 +18,15 @@
 .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 10% 14% at 17% 67%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 10% 14% at 17% 67%, #000 55%, transparent 100%); }
 .corner-scene__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(#100908,.48), transparent 27%); }
 .corner-group-label { display: none; }
+.corner-room-link { position: absolute; z-index: 2; display: block; border: 1px solid transparent; background: transparent; text-decoration: none; color: #f2e8da; cursor: pointer; transition: border-color .3s ease, background .3s ease, box-shadow .3s ease; }
+.corner-room-link::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
+.corner-room-link:hover, .corner-room-link:focus-visible { border-color: rgba(#f2e8da,.26); box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
+.corner-room-link:hover::after, .corner-room-link:focus-visible::after { opacity: 1; }
+.corner-room-link--library { left: 20%; top: 29%; width: 22%; height: 17%; }
+.corner-room-link--shop { right: 1%; top: 8%; width: 19%; height: 61%; }
+.corner-room-link > span { position: absolute; z-index: 2; left: 50%; bottom: -.9rem; transform: translate(-50%, .35rem); padding: .45rem .6rem; white-space: nowrap; background: rgba(#0b0808,.78); border: 1px solid rgba(#f2e8da,.35); box-shadow: 0 .25rem .8rem rgba(#000,.5); font: 600 .52rem $font-mono; letter-spacing: .13em; text-transform: uppercase; opacity: 0; transition: opacity .25s ease, transform .25s ease; }
+.corner-room-link:hover > span, .corner-room-link:focus-visible > span { opacity: 1; transform: translate(-50%, 0); }
+.corner-room-link:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
 
 /* The book is already in the photograph; this is its invisible, keyboard-accessible hit area. */
 .registry-prop { position: absolute; z-index: 3; left: 0; top: 75%; width: 13%; height: 13%; padding: 0; border: 0; background: transparent; cursor: pointer; transition: box-shadow .35s ease; }
@@ -23,6 +34,7 @@
 .registry-prop:hover { box-shadow: inset 0 0 2rem rgba(#c6a07d,.13); }
 .registry-prop:focus-visible { outline: 2px solid #ead3a8; outline-offset: 3px; }
 .corner-hotspot { position: absolute; display: block; color: #f2e8da; text-decoration: none; cursor: pointer; background: transparent; border: 0; padding: 0; font: 700 .68rem $font-mono; text-align: left; }
+.corner-rack .corner-hotspot { z-index: 4; }
 .corner-hotspot__target { display: block; width: 100%; height: 100%; border: 1px solid transparent; transition: background .2s, border-color .2s; }
 .corner-hotspot:hover .corner-hotspot__target, .corner-hotspot:focus-visible .corner-hotspot__target { border-color: rgba(#e8d4b9,.6); background: rgba(#e8d4b9,.08); }
 .corner-hotspot:focus-visible, .corner-list-toggle:focus-visible, .corner-plush:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
@@ -80,6 +92,10 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-group-label--stories { left: 43%; top: 55%; transform: rotate(-5deg); }
   .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); }
   .corner-group-label--mimi { left: 23%; top: 51%; transform: rotate(13deg); padding: .4em .55em; background: linear-gradient(145deg, #a88969, #80634e); border: 1px dashed rgba(#493327,.78); box-shadow: 1px 2px 5px rgba(#100807,.5); color: #35221e; font: italic 600 clamp(.65rem, 2.5vw, .88rem)/1 $font-display; letter-spacing: 0; text-shadow: none; }
+  .corner-room-link--library { left: 19%; top: 26%; width: 34%; height: 12%; }
+  .corner-room-link--shop { right: 1%; top: 12%; width: 19%; height: 42%; }
+  .corner-room-link > span { bottom: auto; top: 0; transform: translate(-50%, -30%); opacity: 1; font-size: clamp(.58rem, 2.2vw, .78rem); }
+  .corner-room-link:hover > span, .corner-room-link:focus-visible > span { transform: translate(-50%, -30%); }
   .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
   .corner-hotspot__label { display: none; }
   .corner-hotspot--book { height: 11%; }
