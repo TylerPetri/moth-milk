@@ -55,6 +55,12 @@ export async function refreshSession() {
   })().finally(() => { refreshPending = null; });
   return refreshPending;
 }
+// Verification can finish in another tab while this tab still holds an older access token.
+export async function syncVerification() {
+  if (!auth.refresh || auth.verified) return false;
+  await refreshSession();
+  return auth.verified;
+}
 export async function signIn(email, password, proof = '') {
   const tokens = await api('/v1/auth/login', { method: 'POST', body: JSON.stringify({ email, password, email_proof_token: proof }) });
   const target = await shopId();

@@ -2,7 +2,7 @@
   // @ts-nocheck
   import { libraryBooks } from '$lib/data/library.js';
   import { onMount } from 'svelte';
-  import { auth, initAuth, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.js';
+  import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.js';
   import { corner, loadCorner } from '$lib/stores/corner.svelte.js';
   import { catalog } from '$lib/catalog.js';
 
@@ -18,6 +18,7 @@
   let emailProof = $state('');
   let registryPassword = $state('');
   async function loadScene() {
+    sceneNotice = '';
     await loadCorner();
     owned = [];
     if (!auth.userId || !auth.verified) return;
@@ -28,13 +29,19 @@
     } catch (error) { sceneNotice = error.message; }
   }
   onMount(() => { void (async () => {
-    await initAuth(); await loadScene();
+    await initAuth();
+    try { await syncVerification(); } catch (error) { sceneNotice = error.message; }
+    await loadScene();
     const pending = JSON.parse(sessionStorage.getItem('moth-milk-proof') || 'null');
     if (pending?.proof && pending?.email && pending?.mode) {
       emailProof = pending.proof; registryEmail = pending.email; registryMode = pending.mode;
       sessionStorage.removeItem('moth-milk-proof'); openRegistry();
     }
   })(); });
+  async function checkVerification() {
+    if (!auth.refresh || auth.verified) return;
+    try { if (await syncVerification()) await loadScene(); } catch (error) { sceneNotice = error.message; }
+  }
   async function leaveRoom() { try { await signOut(); owned = []; await loadCorner(); } catch (error) { sceneNotice = error.message; } }
   let listOpen = $state(false);
   /** @type {HTMLDialogElement} */
@@ -75,19 +82,27 @@
   <title>Your Corner — Moth Milk</title>
   <meta name="description" content="Find a place for your books in the Moth Milk room." />
 </svelte:head>
-<svelte:window onkeydown={handleKeydown} />
+<svelte:window onkeydown={handleKeydown} onfocus={checkVerification} />
 
 <main class="corner-page">
   <section class="corner-scene" aria-labelledby="corner-title">
     <picture class="corner-scene__picture">
-      <source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" />
-      <img class="corner-scene__image" src="/images/your-corner-room.webp" srcset="/images/your-corner-room.webp 1670w, /images/your-corner-room-4k.webp 3840w" sizes="100vw" width="1670" height="942" alt="A shared candlelit loft with readers in the distance, books on a burgundy sofa, a moth plush and a clothing rack" />
+      <source media="(max-width: 900px)" srcset={auth.userId ? '/images/your-corner-empty-mobile.png' : '/images/your-corner-mobile.webp'} />
+      <img class="corner-scene__image" src={auth.userId ? '/images/your-corner-empty-desktop.png' : '/images/your-corner-room.webp'} srcset={auth.userId ? undefined : '/images/your-corner-room.webp 1670w, /images/your-corner-room-4k.webp 3840w'} sizes="100vw" width="1670" height="942" alt="A shared candlelit loft with an inviting burgundy sofa and a clothing rack" />
     </picture>
+    {#if auth.userId}
+      {#each couchBooks as book, index (book.slug)}
+        <picture class={`corner-belonging corner-belonging--book-${index + 1}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>
+      {/each}
+      {#each ['night-shift-hoodie', 'after-hours-baby-tee', 'mimi-plush'] as item}
+        {#if owned.includes(item)}<picture class={`corner-belonging corner-belonging--${item}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>{/if}
+      {/each}
+    {/if}
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
-    <span class="corner-group-label corner-group-label--stories" aria-hidden="true">stories</span>
-    <span class="corner-group-label corner-group-label--rack" aria-hidden="true">on the rack</span>
-    <span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>
+    {#if !auth.userId || couchBooks.length}<span class="corner-group-label corner-group-label--stories" aria-hidden="true">stories</span>{/if}
+    {#if !auth.userId || owned.some((item) => item === 'night-shift-hoodie' || item === 'after-hours-baby-tee')}<span class="corner-group-label corner-group-label--rack" aria-hidden="true">on the rack</span>{/if}
+    {#if !auth.userId || owned.includes('mimi-plush')}<span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>{/if}
 
     <button class="registry-prop" type="button" aria-label="Open the dark Moth Milk book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
 
@@ -102,10 +117,10 @@
     </div>
 
     <div class="corner-rack" aria-label="Clothes on the rack">
-      <a class="corner-hotspot corner-hotspot--hoodie" href="/product/night-shift-hoodie" aria-label="View Night Shift Hoodie"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">Night Shift Hoodie {owned.includes('night-shift-hoodie') ? '· yours' : '↗'}</span></a>
-      <a class="corner-hotspot corner-hotspot--tee" href="/product/after-hours-baby-tee" aria-label="View After Hours Baby Tee"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">After Hours Tee {owned.includes('after-hours-baby-tee') ? '· yours' : '↗'}</span></a>
+      {#if !auth.userId || owned.includes('night-shift-hoodie')}<a class="corner-hotspot corner-hotspot--hoodie" href="/product/night-shift-hoodie" aria-label="View Night Shift Hoodie"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">Night Shift Hoodie {owned.includes('night-shift-hoodie') ? '· yours' : '↗'}</span></a>{/if}
+      {#if !auth.userId || owned.includes('after-hours-baby-tee')}<a class="corner-hotspot corner-hotspot--tee" href="/product/after-hours-baby-tee" aria-label="View After Hours Baby Tee"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">After Hours Tee {owned.includes('after-hours-baby-tee') ? '· yours' : '↗'}</span></a>{/if}
     </div>
-    <a class="corner-plush" href="/product/mimi-plush" aria-label="Meet Mimi Moth Plush">{owned.includes('mimi-plush') ? 'Mimi · yours' : 'meet Mimi ↗'}</a>
+    {#if !auth.userId || owned.includes('mimi-plush')}<a class="corner-plush" href="/product/mimi-plush" aria-label="Meet Mimi Moth Plush">{owned.includes('mimi-plush') ? 'Mimi · yours' : 'meet Mimi ↗'}</a>{/if}
     <button class="corner-list-toggle" type="button" aria-expanded={listOpen} aria-controls="corner-list" onclick={() => (listOpen = !listOpen)}>{listOpen ? 'hide list' : 'view as list'} <span aria-hidden="true">{listOpen ? '×' : '☰'}</span></button>
   </section>
 
@@ -116,7 +131,7 @@
       <div><h2>On the sofa</h2>{#each selectedBooks as book}<button type="button" onclick={() => (selectedBook = book)}>{book.title}<span>{book.minutes} min read ↗</span></button>{/each}
       {#if auth.userId && selectedBooks.length === 0}<p>Choose a story from the library and it will find its place here.</p>{/if}
       {#if selectedBooks.length > 3}<p>{selectedBooks.length - 3} more stories are here in the list.</p>{/if}</div>
-      <div><h2>On the rack</h2><a href="/product/night-shift-hoodie">Night Shift Hoodie <span>{owned.includes('night-shift-hoodie') ? 'yours ↗' : 'view ↗'}</span></a><a href="/product/after-hours-baby-tee">After Hours Tee <span>{owned.includes('after-hours-baby-tee') ? 'yours ↗' : 'view ↗'}</span></a><a href="/product/mimi-plush">Mimi Moth Plush <span>{owned.includes('mimi-plush') ? 'yours ↗' : 'meet Mimi ↗'}</span></a></div>
+      <div><h2>On the rack</h2>{#if !auth.userId || owned.includes('night-shift-hoodie')}<a href="/product/night-shift-hoodie">Night Shift Hoodie <span>{owned.includes('night-shift-hoodie') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('after-hours-baby-tee')}<a href="/product/after-hours-baby-tee">After Hours Tee <span>{owned.includes('after-hours-baby-tee') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('mimi-plush')}<a href="/product/mimi-plush">Mimi Moth Plush <span>{owned.includes('mimi-plush') ? 'yours ↗' : 'meet Mimi ↗'}</span></a>{/if}</div>
     </section>
   {/if}
 </main>

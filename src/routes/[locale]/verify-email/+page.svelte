@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
   import { api } from '$lib/api.js';
   import { auth, refreshSession, initAuth } from '$lib/stores/auth.svelte.js';
   let message = $state('Opening the note…');
@@ -12,7 +13,7 @@
       await api('/v1/auth/email/verify/confirm', { method: 'POST', noShop: true, body: JSON.stringify({ token }) });
       await initAuth();
       if (auth.refresh) await refreshSession();
-      message = 'Your email is yours. The room remembers you.';
+      await goto('/your-corner', { replaceState: true });
     } catch (error) { message = error.message; }
   })(); });
 </script>
