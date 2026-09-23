@@ -142,7 +142,10 @@
   {#if auth.userId}<div class="corner-personal-note"><span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = error.message; } }}>resend note ↗</button>{/if}<button type="button" onclick={leaveRoom}>leave the room ↗</button></div>{/if}
   {#if listOpen}
     <section class="corner-list" id="corner-list" aria-label="Books and clothing in this corner">
-      <div><h2>On the sofa</h2>{#each selectedBooks as book}<button type="button" onclick={() => (selectedBook = book)}>{book.title}<span>{book.minutes} min read ↗</span></button>{/each}
+      <div><h2>On the sofa</h2>{#each selectedBooks as book}<button class="corner-list-book" type="button" onclick={() => (selectedBook = book)}>
+        <span class="corner-list-cover" aria-hidden="true" style={`--cover-art:url('/images/sofa-cover-atlas-${coverArt[book.slug].sheet}.png');--cover-x:${coverArt[book.slug].x}%;--cover-y:${coverArt[book.slug].y}%`}><span class="corner-list-cover__imprint"><small>MOTH MILK</small><strong>{book.title}</strong><small>AFTER HOURS</small></span></span>
+        <span class="corner-list-book__title">{book.title}</span><span class="corner-list-book__time">{book.minutes} min read ↗</span>
+      </button>{/each}
       {#if auth.userId && selectedBooks.length === 0}<p>Choose a story from the library and it will find its place here.</p>{/if}
       {#if selectedBooks.length > 3}<p>{selectedBooks.length - 3} more stories are here in the list.</p>{/if}</div>
       <div><h2>On the rack</h2>{#if !auth.userId || owned.includes('night-shift-hoodie')}<a href="/product/night-shift-hoodie">Night Shift Hoodie <span>{owned.includes('night-shift-hoodie') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('after-hours-baby-tee')}<a href="/product/after-hours-baby-tee">After Hours Tee <span>{owned.includes('after-hours-baby-tee') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('mimi-plush')}<a href="/product/mimi-plush">Mimi Moth Plush <span>{owned.includes('mimi-plush') ? 'yours ↗' : 'meet Mimi ↗'}</span></a>{/if}</div>
