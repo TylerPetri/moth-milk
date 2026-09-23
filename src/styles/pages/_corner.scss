@@ -1,0 +1,75 @@
+@use '../abstracts' as *;
+
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+.corner-page { padding-top: $header-height; min-height: 100vh; background: #110b0b; color: #eadccd; }
+.corner-scene { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1669 / 942; min-height: 42rem; overflow: hidden; background: #160d0c; }
+.corner-scene__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.corner-scene__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(#100908,.48), transparent 27%); }
+
+/* The book is already in the photograph; this is its invisible, keyboard-accessible hit area. */
+.registry-prop { position: absolute; z-index: 3; left: 0; top: 75%; width: 13%; height: 13%; padding: 0; border: 0; background: transparent; cursor: pointer; transition: box-shadow .35s ease; }
+.registry-prop img { display: none; }
+.registry-prop:hover { box-shadow: inset 0 0 2rem rgba(#c6a07d,.13); }
+.registry-prop:focus-visible { outline: 2px solid #ead3a8; outline-offset: 3px; }
+.corner-hotspot { position: absolute; display: block; color: #f2e8da; text-decoration: none; cursor: pointer; background: transparent; border: 0; padding: 0; font: 700 .68rem $font-mono; text-align: left; }
+.corner-hotspot__target { display: block; width: 100%; height: 100%; border: 1px solid transparent; transition: background .2s, border-color .2s; }
+.corner-hotspot:hover .corner-hotspot__target, .corner-hotspot:focus-visible .corner-hotspot__target { border-color: rgba(#e8d4b9,.6); background: rgba(#e8d4b9,.08); }
+.corner-hotspot:focus-visible, .corner-list-toggle:focus-visible, .corner-plush:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
+.corner-hotspot__label { position: absolute; top: 100%; left: 50%; white-space: nowrap; transform: translateX(-50%); padding: .48rem .64rem; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); }
+.corner-hotspot__label span { margin-left: .35rem; }
+.corner-hotspot--book { top: 61.5%; height: 17%; }
+.corner-hotspot--1 { left: 29%; width: 14.5%; transform: rotate(-8deg); }
+.corner-hotspot--2 { left: 44%; width: 14%; transform: rotate(-6deg); }
+.corner-hotspot--3 { left: 55.5%; width: 17%; transform: rotate(-10deg); }
+.corner-hotspot--hoodie { left: 81%; top: 18%; width: 10%; height: 46%; }
+.corner-hotspot--tee { left: 91%; top: 17%; width: 8%; height: 49%; }
+.corner-hotspot--hoodie .corner-hotspot__label, .corner-hotspot--tee .corner-hotspot__label { left: auto; right: 0; transform: none; }
+.corner-plush { position: absolute; left: 10%; top: 73%; padding: .5rem .65rem; background: rgba(#1b1110,.85); color: #eee1d1; font: 700 .64rem $font-mono; text-decoration: none; border: 1px solid rgba(#e0b998,.48); }
+.corner-list-toggle { position: absolute; right: 3%; bottom: 3%; padding: .65rem .85rem; border: 1px solid rgba(#ead4bc,.48); color: #f1e3d1; background: rgba(#160d0c,.85); cursor: pointer; font: 700 .66rem $font-mono; letter-spacing: .08em; text-transform: uppercase; }
+.corner-list-toggle span { margin-left: .8rem; }
+.corner-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(2rem, 7vw, 8rem); padding: 3rem clamp(1.5rem, 7vw, 8rem); background: #211411; }
+.corner-list h2 { font: italic 600 2rem $font-display; margin-bottom: 1rem; }
+.corner-list button, .corner-list a { display: flex; justify-content: space-between; width: 100%; padding: 1rem 0; border: 0; border-bottom: 1px solid rgba(#e0c4a7,.28); color: #eadccd; background: none; cursor: pointer; text-decoration: none; font: 500 1.15rem $font-display; text-align: left; }
+.corner-list span { font: 700 .6rem $font-mono; text-transform: uppercase; }
+.corner-footnote { padding: 1rem 1.5rem 2rem; margin: 0; color: #bba99b; font: .66rem $font-mono; text-align: center; }
+
+/* The viewer is close to an intact book; the room remains behind it. */
+.registry-dialog { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; overflow: hidden; border: 0; background: transparent; color: #39271f; }
+.registry-dialog::backdrop { background: rgba(#0c0708,.78); backdrop-filter: blur(2px); }
+.registry-ambient { position: absolute; z-index: 0; inset: 0; pointer-events: none; opacity: .8; background: radial-gradient(ellipse 100% 100% at 110% -18%, rgba(#d58b4a,.27), rgba(#a75a2d,.09) 42%, transparent 78%); mix-blend-mode: screen; transition: opacity .4s ease; }
+.registry-spread { position: absolute; z-index: 1; left: 50%; top: 50%; width: min(84vw, 60rem, 126vh); aspect-ratio: 3 / 2; transform: translate(-50%, -50%); background: url('/images/registry-open.webp') center / 100% 100% no-repeat; filter: drop-shadow(.8rem 1.2rem 2rem rgba(#000,.72)); }
+.registry-shadow { position: absolute; z-index: 1; inset: 0; pointer-events: none; background: linear-gradient(112deg, rgba(#100b0a,.48) 0%, rgba(#211711,.31) 33%, rgba(#2c1a13,.08) 67%, transparent 88%), linear-gradient(180deg, rgba(#130d0b,.14), transparent 40%, rgba(#120b0a,.14)); -webkit-mask: url('/images/registry-open.webp') center / 100% 100%; mask: url('/images/registry-open.webp') center / 100% 100%; }
+.registry-light { position: absolute; z-index: 2; inset: 0; pointer-events: none; opacity: .72; background: radial-gradient(ellipse 96% 115% at 112% -12%, rgba(#fff1ce,.2), rgba(#eab77e,.09) 47%, transparent 81%), linear-gradient(116deg, transparent 28%, rgba(#f5cc9c,.08) 75%, transparent); mix-blend-mode: screen; transition: opacity .4s ease; }
+.registry-light-blocked { position: absolute; z-index: 4; inset: 0; pointer-events: none; opacity: 0; background: linear-gradient(112deg, transparent 8%, rgba(#100a0a,.16) 40%, rgba(#100a0a,.38) 84%, rgba(#100a0a,.35)); -webkit-mask: url('/images/registry-open.webp') center / 100% 100%; mask: url('/images/registry-open.webp') center / 100% 100%; transition: opacity .4s ease; }
+.registry-dialog:has(.registry-light-close:hover) .registry-ambient, .registry-dialog:has(.registry-light-close:focus-visible) .registry-ambient { opacity: .12; }
+.registry-dialog:has(.registry-light-close:hover) .registry-light, .registry-dialog:has(.registry-light-close:focus-visible) .registry-light { opacity: .12; }
+.registry-dialog:has(.registry-light-close:hover) .registry-light-blocked, .registry-dialog:has(.registry-light-close:focus-visible) .registry-light-blocked { opacity: .7; }
+.registry-light-close { position: fixed; z-index: 6; top: 0; right: 0; width: min(29vw, 26rem); height: min(32vh, 18rem); padding: 0; border: 0; background: transparent; cursor: pointer; }
+.registry-light-close:focus-visible { outline: 2px solid rgba(#ecc396,.75); outline-offset: -6px; }
+.registry-right { position: absolute; z-index: 3; left: 59%; top: 32%; width: 22%; display: grid; gap: clamp(.35rem, .8vw, .75rem); }
+.registry-modes { display: flex; align-items: center; gap: .5rem; margin-bottom: .5rem; font: italic 600 clamp(.7rem, 1.05vw, .9rem) $font-display; color: #694b3b; }
+.registry-modes button { padding: 0; border: 0; border-bottom: 1px solid transparent; background: none; color: inherit; cursor: pointer; font: inherit; }
+.registry-modes button.active { border-color: #54382d; color: #3c261f; }
+.registry-right label { font: italic 600 clamp(.72rem, 1.1vw, .95rem) $font-display; color: #442e25; }
+.registry-right input { width: 100%; min-width: 0; padding: .1rem 0 .28rem; border: 0; border-bottom: 1px solid rgba(#654437,.56); border-radius: 0; outline: 0; background: transparent; color: #3b2922; font: 500 clamp(.9rem, 1.2vw, 1.15rem) $font-display; }
+.registry-right input:focus { border-bottom: 2px solid #702b32; }
+.registry-continue { justify-self: end; margin-top: .45rem; padding: .15rem .1rem; border: 0; border-bottom: 1px solid rgba(#53362d,.4); background: transparent; color: #402a23; cursor: pointer; font: italic 600 clamp(.7rem, 1vw, .9rem) $font-display; }
+.registry-continue:hover, .registry-continue:focus-visible { border-color: #6b2930; color: #6b2930; }
+.registry-notice { margin: .25rem 0 0; color: #693037; font: 700 clamp(.53rem, .7vw, .66rem)/1.3 $font-mono; }
+body:has(.registry-dialog[open]) { overflow: hidden; }
+@media (max-width: 900px) {
+  .corner-scene { min-height: 48rem; aspect-ratio: 4 / 5; }
+  .corner-scene__image { object-position: 53% center; }
+  .corner-books, .corner-rack, .corner-plush { display: none; }
+  .registry-prop { left: 5%; top: 69%; width: min(40vw, 16rem); height: auto; }
+  .registry-prop img { display: block; width: 100%; height: auto; filter: drop-shadow(.25rem .45rem .45rem rgba(#000,.7)); }
+  .corner-list-toggle { right: 4%; bottom: 3%; }
+  .corner-list { display: block; }
+  .corner-list > div + div { margin-top: 2.5rem; }
+  .registry-spread { left: calc(88vw - min(168vw, 112vh)); width: min(168vw, 112vh); transform: translateY(-50%); }
+  .registry-right { left: 62%; top: 28%; width: 25%; gap: .7rem; }
+  .registry-right label, .registry-modes, .registry-continue { font-size: 1rem; }
+  .registry-right input { font-size: 1.1rem; }
+  .registry-notice { font-size: .7rem; }
+  .registry-light-close { width: 34vw; height: 30vh; }
+}

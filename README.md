@@ -4,6 +4,8 @@ A multi-route SvelteKit 5 storefront and free horror-fiction library for the fic
 
 The homepage combines a late-night bedroom editorial with a transparent torn lower edge, interactive room hotspots, an overlapping selectable list/shelf library, an in-browser story reader, and the existing apparel/plush shop.
 
+`/your-corner` is a visual account-space prototype in the same shared room. The dark book on the side table opens a small sign-in/register interface with email and password fields. On narrow screens the intact book shifts left beyond the viewport, keeping the right page and spine in their natural proportions. Warm ambient light falls from outside the upper-right screen edge. Hovering that light area dims the book; clicking it, clicking outside the book, or pressing Escape closes it. Authentication requests are not wired to an API; submitting clearly reports that details were not sent or saved. Connect the form to the real shop auth contract before presenting it as live sign-in.
+
 ## Style architecture
 
 All styling is raw SCSS under `src/styles/`:
