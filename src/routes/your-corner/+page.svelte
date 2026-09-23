@@ -107,7 +107,6 @@
     {/if}
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
-    {#if !auth.userId || couchBooks.length}<span class="corner-group-label corner-group-label--stories" aria-hidden="true">stories</span>{/if}
     {#if !auth.userId || owned.includes('mimi-plush')}<span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>{/if}
 
     <a class="corner-room-link corner-room-link--library" href="/#library" aria-label="Browse the library and choose books"><span>library <span aria-hidden="true">↗</span></span></a>
@@ -119,8 +118,7 @@
       {#each couchBooks as book, index (book.slug)}
         <button class={`corner-hotspot corner-hotspot--book corner-hotspot--${index + 1}`} type="button" onclick={() => (selectedBook = book)} aria-label={`Read ${book.title}`}>
           <span class="corner-hotspot__target" aria-hidden="true"></span>
-          {#if auth.userId}<span class="corner-placed-cover" style={`--cover-pos:${book.cover.position}%;--cover-ink:${book.cover.accent}`} aria-hidden="true"><span>{book.title}</span></span>{/if}
-          <span class="corner-hotspot__label">{book.title} <span aria-hidden="true">↗</span></span>
+          {#if auth.userId}<span class="corner-book-title" aria-hidden="true">{book.title}</span>{/if}
         </button>
       {/each}
     </div>

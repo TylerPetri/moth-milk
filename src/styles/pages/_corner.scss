@@ -41,6 +41,11 @@
 .corner-hotspot__label { position: absolute; top: 100%; left: 50%; white-space: nowrap; transform: translateX(-50%); padding: .48rem .64rem; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); }
 .corner-hotspot__label span { margin-left: .35rem; }
 .corner-hotspot--book { top: 61.5%; height: 17%; }
+.corner-hotspot--book .corner-hotspot__target { border-color: transparent; transition: border-color .3s ease, background .3s ease, box-shadow .3s ease; }
+.corner-hotspot--book:hover .corner-hotspot__target, .corner-hotspot--book:focus-visible .corner-hotspot__target { border-color: rgba(#f2e8da,.26); background: transparent; box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
+.corner-hotspot--book::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
+.corner-hotspot--book:hover::after, .corner-hotspot--book:focus-visible::after { opacity: 1; }
+.corner-book-title { position: absolute; left: 13%; top: 30%; width: 74%; pointer-events: none; color: rgba(#e4d5bc,.83); text-shadow: 0 1px 3px #100b0a; font: 600 clamp(.4rem,.8vw,.84rem)/1.05 'Cormorant Garamond',Georgia,serif; text-align: center; text-transform: uppercase; letter-spacing: .04em; transform: perspective(25rem) rotateX(22deg); }
 .corner-hotspot--1 { left: 29%; width: 14.5%; transform: rotate(-8deg); }
 .corner-hotspot--2 { left: 44%; width: 14%; transform: rotate(-6deg); }
 .corner-hotspot--3 { left: 55.5%; width: 17%; transform: rotate(-10deg); }
@@ -89,7 +94,6 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-belonging--after-hours-baby-tee { -webkit-mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); }
   .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 16% 11% at 19% 58%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 16% 11% at 19% 58%, #000 52%, transparent 100%); }
   .corner-group-label { position: absolute; z-index: 2; display: block; pointer-events: none; white-space: nowrap; padding: .48em .64em; color: #f2e8da; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); font: 700 clamp(.58rem, 2.2vw, .78rem)/1 $font-mono; letter-spacing: .04em; text-transform: lowercase; }
-  .corner-group-label--stories { left: 43%; top: 55%; transform: rotate(-5deg); }
   .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); }
   .corner-group-label--mimi { left: 23%; top: 51%; transform: rotate(13deg); padding: .4em .55em; background: linear-gradient(145deg, #a88969, #80634e); border: 1px dashed rgba(#493327,.78); box-shadow: 1px 2px 5px rgba(#100807,.5); color: #35221e; font: italic 600 clamp(.65rem, 2.5vw, .88rem)/1 $font-display; letter-spacing: 0; text-shadow: none; }
   .corner-room-link--library { left: 19%; top: 26%; width: 34%; height: 12%; }
@@ -99,6 +103,7 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
   .corner-hotspot__label { display: none; }
   .corner-hotspot--book { height: 11%; }
+  .corner-book-title { top: 27%; font-size: clamp(.45rem,1.5vw,.7rem); }
   .corner-hotspot--1 { left: 34%; top: 60%; width: 21%; transform: none; }
   .corner-hotspot--2 { left: 53%; top: 59%; width: 22%; transform: none; }
   .corner-hotspot--3 { left: 73%; top: 57%; width: 25%; height: 12%; transform: none; }
@@ -128,10 +133,3 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 .account-note label { display: grid; gap: .6rem; }
 .account-note input { padding: .8rem; border: 1px solid #80604e; background: #261715; color: #fff4e8; }
 .account-note button, .account-note a { width: fit-content; padding: .4rem 0; border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: #eadccd; cursor: pointer; font: .9rem 'Courier Prime', monospace; }
-
-/* Selected titles lie over the photographed sofa books; multiply blend keeps the
-   velvet folds, cover highlights, and room light visible through the ink. */
-.corner-placed-cover { position: absolute; z-index: 1; left: 6%; top: 3%; width: 88%; height: 84%; pointer-events: none; overflow: hidden; border-radius: .15rem .38rem .26rem .18rem; background: linear-gradient(118deg, rgba(#1c1010,.52), transparent 34%, rgba(#140d0d,.2) 70%, rgba(#090709,.58)), url('/images/horror-cover-atlas-v1.webp') var(--cover-pos) center / 500% 100%; box-shadow: inset .45rem .32rem .9rem rgba(#050304,.75), inset -.2rem -.25rem .38rem rgba(#dfb894,.24), 0 .22rem .4rem rgba(#000,.32); mix-blend-mode: multiply; filter: sepia(.32) saturate(.55) brightness(.77); opacity: .86; transform: perspective(28rem) rotateX(19deg) skewX(-3deg); transition: filter .25s ease, opacity .25s ease; }
-.corner-placed-cover span { position: absolute; left: 6%; right: 6%; top: 24%; color: #dec9a6; text-align: center; text-shadow: 0 1px 3px #060406; font: 700 clamp(.35rem,.72vw,.78rem)/1.05 'Cormorant Garamond', Georgia, serif; text-transform: uppercase; }
-.corner-hotspot:hover .corner-placed-cover, .corner-hotspot:focus-visible .corner-placed-cover { filter: sepia(.17) saturate(.8) brightness(.97); opacity: .95; }
-@media (max-width: 900px) { .corner-placed-cover { top: 5%; height: 83%; } .corner-placed-cover span { font-size: clamp(.25rem,1.4vw,.52rem); } }
