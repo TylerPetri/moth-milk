@@ -14,7 +14,11 @@
   import SiteFooter from '$lib/components/SiteFooter.svelte';
   import ReactiveBackdrop from '$lib/components/ReactiveBackdrop.svelte';
   import CartDrawer from '$lib/components/CartDrawer.svelte';
-  import { ui } from '$lib/stores/ui.svelte.js';
+  import { ui, initCart } from '$lib/stores/ui.svelte.js';
+  import { auth, initAuth } from '$lib/stores/auth.svelte.js';
+  import { loadCorner } from '$lib/stores/corner.svelte.js';
+  import { onMount } from 'svelte';
+  onMount(async () => { initCart(); await initAuth(); if (auth.userId) await loadCorner(); });
   import { page } from '$app/state';
 
   let { children } = $props();

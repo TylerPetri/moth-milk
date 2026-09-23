@@ -75,3 +75,8 @@
   .checkout-form__full { grid-column: auto; }
   .checkout-summary { transform: none; }
 }
+.checkout-form__card--stripe { display: block; min-height: 14rem; border-style: solid; }
+.checkout-form > button:not(:disabled) { cursor: pointer; opacity: 1; }
+.checkout-form > button:disabled { cursor: wait; opacity: .6; }
+.checkout-form > .checkout-form__secondary { margin-top: 1rem; border: 0; background: transparent; color: #dac2b5; font: .8rem 'Courier Prime', monospace; text-transform: none; }
+.checkout-tv__empty button { border: 0; border-bottom: 1px solid #b98a7d; background: transparent; color: #ebd3c3; cursor: pointer; }

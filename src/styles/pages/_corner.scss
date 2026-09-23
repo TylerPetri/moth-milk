@@ -84,3 +84,23 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .registry-notice { font-size: .7rem; }
   .registry-light-close { width: 34vw; height: 30vh; }
 }
+.registry-recover { padding: .25rem 0; border: 0; background: transparent; color: #685247; text-align: right; cursor: pointer; font: italic 600 .78rem/1.2 'Cormorant Garamond', Georgia, serif; }
+.registry-recover:hover { text-decoration: underline; }
+.corner-personal-note { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1.2rem 5vw; background: #201310; color: #dfc6a8; font: .75rem 'Courier Prime', monospace; }
+.corner-personal-note button { border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.corner-scene-notice { margin: 0; padding: 1rem 5vw; color: #edc1ab; font: .8rem 'Courier Prime', monospace; }
+.library-keep { margin-left: .65rem; }
+.account-note { min-height: 75vh; padding: 10rem max(6vw, 1.5rem) 5rem; color: #eadccd; background: #160d0c url('/textures/archive-paper.svg') center / 24rem; }
+.account-note__eyebrow { color: #b89382; font: .8rem 'Courier Prime', monospace; }
+.account-note h1 { max-width: 30ch; font: italic 600 clamp(2.4rem, 6vw, 5rem)/1.1 'Cormorant Garamond', Georgia, serif; }
+.account-note form { display: grid; gap: 1.5rem; max-width: 24rem; margin: 2rem 0; }
+.account-note label { display: grid; gap: .6rem; }
+.account-note input { padding: .8rem; border: 1px solid #80604e; background: #261715; color: #fff4e8; }
+.account-note button, .account-note a { width: fit-content; padding: .4rem 0; border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: #eadccd; cursor: pointer; font: .9rem 'Courier Prime', monospace; }
+
+/* Selected titles lie over the photographed sofa books; multiply blend keeps the
+   velvet folds, cover highlights, and room light visible through the ink. */
+.corner-placed-cover { position: absolute; z-index: 1; left: 6%; top: 3%; width: 88%; height: 84%; pointer-events: none; overflow: hidden; border-radius: .15rem .38rem .26rem .18rem; background: linear-gradient(118deg, rgba(#1c1010,.52), transparent 34%, rgba(#140d0d,.2) 70%, rgba(#090709,.58)), url('/images/horror-cover-atlas-v1.webp') var(--cover-pos) center / 500% 100%; box-shadow: inset .45rem .32rem .9rem rgba(#050304,.75), inset -.2rem -.25rem .38rem rgba(#dfb894,.24), 0 .22rem .4rem rgba(#000,.32); mix-blend-mode: multiply; filter: sepia(.32) saturate(.55) brightness(.77); opacity: .86; transform: perspective(28rem) rotateX(19deg) skewX(-3deg); transition: filter .25s ease, opacity .25s ease; }
+.corner-placed-cover span { position: absolute; left: 6%; right: 6%; top: 24%; color: #dec9a6; text-align: center; text-shadow: 0 1px 3px #060406; font: 700 clamp(.35rem,.72vw,.78rem)/1.05 'Cormorant Garamond', Georgia, serif; text-transform: uppercase; }
+.corner-hotspot:hover .corner-placed-cover, .corner-hotspot:focus-visible .corner-placed-cover { filter: sepia(.17) saturate(.8) brightness(.97); opacity: .95; }
+@media (max-width: 900px) { .corner-placed-cover { top: 5%; height: 83%; } .corner-placed-cover span { font-size: clamp(.25rem,1.4vw,.52rem); } }

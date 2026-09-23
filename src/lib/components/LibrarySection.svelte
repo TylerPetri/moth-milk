@@ -1,7 +1,11 @@
 <script>
+  // @ts-nocheck
   import BookCover from './BookCover.svelte';
   import BookSpine from './BookSpine.svelte';
   import { libraryBooks } from '$lib/data/library.js';
+  import { corner, toggleCornerBook } from '$lib/stores/corner.svelte.js';
+  let keepNotice = $state('');
+  async function keepBook() { try { await toggleCornerBook(selectedBook.slug); keepNotice = corner.slugs.includes(selectedBook.slug) ? 'Waiting in your corner.' : 'Taken from your corner.'; } catch (error) { keepNotice = error.message; } }
 
   let view = $state('shelf');
   let selectedIndex = $state(3);
@@ -36,6 +40,8 @@
           <span>{selectedBook.minutes} min read</span>
           <p>{selectedBook.description}</p>
           <button type="button" onclick={() => (readerOpen = true)}>Read free</button>
+          <button type="button" class="library-keep" disabled={corner.busy} onclick={keepBook}>{corner.slugs.includes(selectedBook.slug) ? "Leave out of your corner" : "Keep in your corner"}</button>
+          {#if keepNotice}<span role="status">{keepNotice}</span>{/if}
         </div>
       </div>
     </article>
