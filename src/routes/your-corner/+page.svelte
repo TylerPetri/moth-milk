@@ -9,6 +9,11 @@
   const previewBooks = libraryBooks.filter((book) => ['static', 'hush', 'underbed'].includes(book.slug)).sort((a, b) => ['static', 'hush', 'underbed'].indexOf(a.slug) - ['static', 'hush', 'underbed'].indexOf(b.slug));
   const selectedBooks = $derived(auth.userId ? corner.slugs.map((slug) => libraryBooks.find((book) => book.slug === slug)).filter(Boolean) : previewBooks);
   const couchBooks = $derived(selectedBooks.slice(0, 3));
+  const coverArt = Object.fromEntries(libraryBooks.map((book, index) => [book.slug, {
+    sheet: Math.floor(index / 6) + 1,
+    x: (index % 3) * 50,
+    y: Math.floor((index % 6) / 3) * 100
+  }]));
   let owned = $state([]);
   let sceneNotice = $state('');
   let busy = $state(false);
@@ -118,7 +123,9 @@
       {#each couchBooks as book, index (book.slug)}
         <button class={`corner-hotspot corner-hotspot--book corner-hotspot--${index + 1}`} type="button" onclick={() => (selectedBook = book)} aria-label={`Read ${book.title}`}>
           <span class="corner-hotspot__target" aria-hidden="true"></span>
-          {#if auth.userId}<span class="corner-book-title" aria-hidden="true">{book.title}</span>{/if}
+          <span class="sofa-book" aria-hidden="true" style={`--cover-art:url('/images/sofa-cover-atlas-${coverArt[book.slug].sheet}.png');--cover-x:${coverArt[book.slug].x}%;--cover-y:${coverArt[book.slug].y}%`}>
+            <span class="sofa-book__face"><span class="sofa-book__imprint"><small>MOTH MILK / AFTER HOURS</small><strong>{book.title}</strong><small>AN ORIGINAL STORY</small></span></span>
+          </span>
         </button>
       {/each}
     </div>

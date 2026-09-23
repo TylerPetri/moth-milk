@@ -45,7 +45,14 @@
 .corner-hotspot--book:hover .corner-hotspot__target, .corner-hotspot--book:focus-visible .corner-hotspot__target { border-color: rgba(#f2e8da,.26); background: transparent; box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
 .corner-hotspot--book::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
 .corner-hotspot--book:hover::after, .corner-hotspot--book:focus-visible::after { opacity: 1; }
-.corner-book-title { position: absolute; left: 13%; top: 30%; width: 74%; pointer-events: none; color: rgba(#e4d5bc,.83); text-shadow: 0 1px 3px #100b0a; font: 600 clamp(.4rem,.8vw,.84rem)/1.05 'Cormorant Garamond',Georgia,serif; text-align: center; text-transform: uppercase; letter-spacing: .04em; transform: perspective(25rem) rotateX(22deg); }
+.sofa-book { position: absolute; inset: 0; pointer-events: none; }
+.sofa-book__face { position: absolute; left: 9%; top: 16%; width: 82%; height: 72%; overflow: hidden; border-radius: 2% 3% 3% 2%; background-image: linear-gradient(125deg, rgba(#e3ad72,.18), transparent 35%, rgba(#070508,.2) 85%), var(--cover-art); background-size: 100% 100%, 300% 200%; background-position: center, var(--cover-x) var(--cover-y); box-shadow: inset .25rem .2rem .5rem rgba(#e3b68b,.24), inset -.5rem -.45rem .55rem rgba(#050305,.55), 0 .22rem .38rem rgba(#000,.55); filter: saturate(.69) sepia(.19) brightness(.86); transform: perspective(28rem) rotateX(16deg) skewX(-3deg); }
+.sofa-book__face::after { position: absolute; inset: 0; content: ''; pointer-events: none; border: .14rem solid rgba(#d1ab82,.13); background: linear-gradient(105deg, rgba(#eed4a0,.12), transparent 26%, rgba(#030304,.2) 100%); mix-blend-mode: screen; }
+.sofa-book__imprint { position: absolute; inset: 7% 6% 9%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4% 2%; color: #d3bc9b; text-align: center; text-shadow: 0 1px 3px #090507, 0 0 8px #0e0807; border: 1px solid rgba(#cfaf84,.35); box-shadow: inset 0 0 0 2px rgba(#130c0b,.48); }
+.sofa-book__imprint small { font: 700 clamp(.27rem,.44vw,.5rem)/1 'Courier Prime',monospace; letter-spacing: .04em; }
+.sofa-book__imprint strong { max-width: 100%; font: 600 clamp(.65rem,1.15vw,1.45rem)/.9 'Cormorant Garamond',Georgia,serif; text-transform: uppercase; text-wrap: balance; overflow-wrap: anywhere; }
+.corner-hotspot--2 .sofa-book__face { top: 19%; height: 66%; }
+.corner-hotspot--3 .sofa-book__face { left: 11%; top: 10%; width: 80%; height: 70%; }
 .corner-hotspot--1 { left: 29%; width: 14.5%; transform: rotate(-8deg); }
 .corner-hotspot--2 { left: 44%; width: 14%; transform: rotate(-6deg); }
 .corner-hotspot--3 { left: 55.5%; width: 17%; transform: rotate(-10deg); }
@@ -103,7 +110,10 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
   .corner-hotspot__label { display: none; }
   .corner-hotspot--book { height: 11%; }
-  .corner-book-title { top: 27%; font-size: clamp(.45rem,1.5vw,.7rem); }
+  .sofa-book__face { top: 13%; height: 73%; }
+  .sofa-book__imprint { inset: 7% 7% 10%; }
+  .sofa-book__imprint small { font-size: clamp(.2rem,.67vw,.35rem); }
+  .sofa-book__imprint strong { font-size: clamp(.46rem,1.8vw,.75rem); }
   .corner-hotspot--1 { left: 34%; top: 60%; width: 21%; transform: none; }
   .corner-hotspot--2 { left: 53%; top: 59%; width: 22%; transform: none; }
   .corner-hotspot--3 { left: 73%; top: 57%; width: 25%; height: 12%; transform: none; }
