@@ -33,7 +33,7 @@
     box-shadow: 0.25rem 0.35rem 0 rgba(#050303, 0.2);
     clip-path: polygon(0.5% 2%, 99% 0, 100% 95%, 97% 100%, 1% 98%, 0 6%);
     transform: rotate(-0.25deg);
-    background: #d6c6b0 url('/textures/archive-paper.svg') center / 25rem 18rem;
+    background: #d6c6b0 url('/images/cart-note-paper.webp') center / cover;
   }
   &__header > div { display: flex; flex-direction: column; gap: 0.25rem; }
   &__header span { width: fit-content; font-family: $font-mono; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: #542c29; background: linear-gradient(#542c29, #542c29), url('/textures/ink-wear.svg') center / 12rem 6rem; background-blend-mode: multiply; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
@@ -56,10 +56,11 @@
 .cart-total { position: relative; z-index: 1; display: flex; justify-content: space-between; padding: 1.4rem 0; font-family: $font-mono; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .cart-total strong { font-family: $font-display; font-size: 1.7rem; letter-spacing: 0; }
 .checkout-button, .add-button { position: relative; z-index: 1; display: flex; justify-content: space-between; width: 100%; padding: 1.25rem 1.5rem; border: 1px solid rgba($white, 0.7); border-radius: 0; background: $cherry-deep; color: $white; cursor: pointer; font-family: $font-mono; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-.checkout-button { isolation: isolate; border-color: rgba(#e9d7bd, 0.26); box-shadow: 0.22rem 0.3rem 0 rgba(#050303, 0.3); clip-path: polygon(0.5% 3%, 99% 0, 100% 94%, 97% 100%, 1% 97%, 0 8%); @include leather-surface(#611820); }
-.checkout-button::before { position: absolute; z-index: -1; inset: 0; content: ''; pointer-events: none; opacity: 0.2; background: url('/textures/ink-wear.svg') center / 16rem 9rem; mix-blend-mode: screen; }
+.checkout-button { isolation: isolate; align-items: center; padding: 1.1rem 1.35rem; border-color: rgba(#e9d7bd, 0.55); box-shadow: 0.18rem 0.24rem 0 rgba(#050303, 0.44); background: linear-gradient(rgba(#3e0c12, 0.09), rgba(#24090d, 0.22)), url('/images/checkout-oxblood.webp') center / cover; font-family: 'Bodoni Moda', Georgia, serif; font-size: 0.96rem; letter-spacing: 0.075em; transition: filter 0.2s ease, transform 0.2s ease; }
+.checkout-button::before { position: absolute; z-index: -1; inset: 0.28rem; content: ''; pointer-events: none; border: 1px solid rgba(#dfb79b, 0.32); }
 .checkout-button__label, .checkout-button__arrow { color: #f0ddc8; background: url('/images/shop-type/subtitle-ink.webp') center / 12rem 4rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
-.checkout-button__arrow { font-size: 1.4rem; line-height: 0.55; }
-.checkout-button:hover { background-color: #7b2930; }
+.checkout-button__arrow { font-family: $font-serif; font-size: 1.6rem; line-height: 0.8; }
+.checkout-button:hover { filter: brightness(1.12); transform: translateY(-0.09rem); }
+.checkout-button:focus-visible { outline: 2px solid #e7c4aa; outline-offset: 3px; }
 
 @keyframes drawer-in { from { transform: translateX(100%); } }

@@ -34,7 +34,7 @@
     box-shadow: 0.25rem 0.35rem 0 rgba(#080404, 0.22);
     clip-path: polygon(1% 3%, 98% 0, 100% 94%, 96% 100%, 2% 97%, 0 9%);
     transform: rotate(0.45deg);
-    background: #d7c8b1 url('/textures/archive-paper.svg') center / 25rem 18rem;
+    background: #d7c8b1 url('/images/shop-note-paper.webp') center / cover;
   }
   > p:last-child span { color: #36221d; background: linear-gradient(110deg, #2d1c1a, #5b302b 53%, #30201d), url('/textures/ink-wear.svg') center / 13rem 7rem; background-blend-mode: multiply; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 }
@@ -48,15 +48,15 @@
   align-items: center;
   border: 1px solid rgba(#e5d4ba, 0.18);
   box-shadow: 0.35rem 0.45rem 1rem rgba(#000, 0.24);
-  @include wood-surface;
+  background: linear-gradient(rgba(#160d0c, 0.18), rgba(#160d0c, 0.28)), url('/images/shop-filter-walnut.webp') center / cover;
 }
 
 .shop-toolbar > div { display: flex; gap: 0.35rem; }
 .shop-toolbar button {
   padding: 0.65rem 1rem 0.58rem;
   border: 1px solid transparent;
-  background: rgba(#0e0808, 0.4);
-  color: rgba($white, 0.72);
+  background: transparent;
+  color: #decbb7;
   cursor: pointer;
   font-family: $font-mono;
   font-size: 0.59rem;
@@ -66,7 +66,8 @@
   transition: color 0.2s ease, background 0.2s ease, transform 0.2s $ease-out;
 }
 .shop-toolbar button:hover { color: $white; transform: translateY(-0.08rem); }
-.shop-toolbar button.active { border-color: rgba(#eddbc1, 0.3); color: $white; transform: none; @include leather-surface(#611820); }
+.shop-toolbar button.active { border-color: rgba(#3d231a, 0.28); color: #30201c; transform: none; background: #cbb9a2 url('/textures/archive-paper.svg') center / 17rem 12rem; box-shadow: 0.14rem 0.19rem 0 rgba(#090505, 0.3); }
+.shop-toolbar button:focus-visible { outline: 2px solid #e4c9af; outline-offset: 2px; }
 .shop-toolbar > span { padding-right: 0.45rem; font-family: $font-mono; font-size: 0.55rem; letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.72; }
 .shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5rem 2.5vw; padding: 4.5rem 0 8rem; }
 
