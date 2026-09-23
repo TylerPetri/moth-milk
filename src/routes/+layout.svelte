@@ -24,7 +24,7 @@
   <link rel="icon" href="/favicon.svg" />
 </svelte:head>
 
-<div class:feral={ui.mood === 'feral'} class:quiet-backdrop={page.url.pathname === '/lookbook' || page.url.pathname.startsWith('/product/')} class="app-shell">
+<div class:feral={ui.mood === 'feral'} class:quiet-backdrop={page.url.pathname === '/lookbook' || page.url.pathname === '/checkout' || page.url.pathname.startsWith('/product/')} class="app-shell">
   <ReactiveBackdrop />
   <SiteHeader />
   {@render children()}

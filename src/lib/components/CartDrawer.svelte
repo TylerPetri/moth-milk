@@ -27,7 +27,7 @@
         {/each}
       </div>
       <div class="cart-total"><span>total / CAD</span><strong>${total}</strong></div>
-      <button class="checkout-button" type="button"><span class="checkout-button__label">check out</span><span class="checkout-button__arrow" aria-hidden="true">→</span></button>
+      <a class="checkout-button" href="/checkout" onclick={() => (ui.cartOpen = false)}><span class="checkout-button__label">check out</span><span class="checkout-button__arrow" aria-hidden="true">→</span></a>
     {/if}
   </aside>
 {/if}
