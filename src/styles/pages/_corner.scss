@@ -3,8 +3,10 @@
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 .corner-page { padding-top: $header-height; min-height: 100vh; background: #110b0b; color: #eadccd; }
 .corner-scene { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1669 / 942; min-height: 42rem; overflow: hidden; background: #160d0c; }
+.corner-scene__picture { position: absolute; inset: 0; display: block; }
 .corner-scene__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .corner-scene__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(#100908,.48), transparent 27%); }
+.corner-group-label { display: none; }
 
 /* The book is already in the photograph; this is its invisible, keyboard-accessible hit area. */
 .registry-prop { position: absolute; z-index: 3; left: 0; top: 75%; width: 13%; height: 13%; padding: 0; border: 0; background: transparent; cursor: pointer; transition: box-shadow .35s ease; }
@@ -58,11 +60,21 @@
 .registry-notice { margin: .25rem 0 0; color: #693037; font: 700 clamp(.53rem, .7vw, .66rem)/1.3 $font-mono; }
 body:has(.registry-dialog[open]) { overflow: hidden; }
 @media (max-width: 900px) {
-  .corner-scene { min-height: 48rem; aspect-ratio: 4 / 5; }
-  .corner-scene__image { object-position: 53% center; }
-  .corner-books, .corner-rack, .corner-plush { display: none; }
-  .registry-prop { left: 5%; top: 69%; width: min(40vw, 16rem); height: auto; }
-  .registry-prop img { display: block; width: 100%; height: auto; filter: drop-shadow(.25rem .45rem .45rem rgba(#000,.7)); }
+  .corner-scene { min-height: 0; aspect-ratio: 2 / 3; }
+  .corner-scene__image { object-position: center; }
+  .corner-group-label { position: absolute; z-index: 2; display: block; pointer-events: none; white-space: nowrap; color: #d9bea0; font: 700 clamp(.58rem, 2.2vw, .78rem)/1 $font-mono; letter-spacing: .08em; text-transform: lowercase; text-shadow: 0 1px 4px #170b09; }
+  .corner-group-label--stories { left: 43%; top: 55%; transform: rotate(-5deg); padding: .35em .6em; background: linear-gradient(135deg, rgba(#593c30,.86), rgba(#30201d,.79)), url('/textures/paper-fiber.svg'); border: 1px solid rgba(#b58b70,.38); box-shadow: 1px 3px 8px rgba(#090505,.35); }
+  .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); padding: .3em .5em; background: rgba(#211613,.72); border-bottom: 1px solid rgba(#b58b70,.5); }
+  .corner-group-label--mimi { left: 23%; top: 51%; transform: rotate(13deg); padding: .4em .55em; background: linear-gradient(145deg, #a88969, #80634e); border: 1px dashed rgba(#493327,.78); box-shadow: 1px 2px 5px rgba(#100807,.5); color: #35221e; font: italic 600 clamp(.65rem, 2.5vw, .88rem)/1 $font-display; letter-spacing: 0; text-shadow: none; }
+  .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
+  .corner-hotspot__label { display: none; }
+  .corner-hotspot--book { height: 11%; }
+  .corner-hotspot--1 { left: 34%; top: 60%; width: 21%; transform: none; }
+  .corner-hotspot--2 { left: 53%; top: 59%; width: 22%; transform: none; }
+  .corner-hotspot--3 { left: 73%; top: 57%; width: 25%; height: 12%; transform: none; }
+  .corner-hotspot--hoodie { left: 79%; top: 35%; width: 16%; height: 15%; }
+  .corner-hotspot--tee { left: 86%; top: 20%; width: 14%; height: 15%; }
+  .corner-plush { left: 8%; top: 51%; width: 25%; height: 14%; padding: 0; border: 0; background: transparent; font-size: 0; }
   .corner-list-toggle { right: 4%; bottom: 3%; }
   .corner-list { display: block; }
   .corner-list > div + div { margin-top: 2.5rem; }

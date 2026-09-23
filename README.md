@@ -6,6 +6,8 @@ The homepage combines a late-night bedroom editorial with a transparent torn low
 
 `/your-corner` is a visual account-space prototype in the same shared room. The dark book on the side table opens a small sign-in/register interface with email and password fields. On narrow screens the intact book shifts left beyond the viewport, keeping the right page and spine in their natural proportions. Warm ambient light falls from outside the upper-right screen edge. Hovering that light area dims the book; clicking it, clicking outside the book, or pressing Escape closes it. Authentication requests are not wired to an API; submitting clearly reports that details were not sent or saved. Connect the form to the real shop auth contract before presenting it as live sign-in.
 
+The mobile room photograph includes the closed book, three readable books, Mimi, the hoodie, and the tee. Each has its own transparent tap target. The image retains its portrait proportions on mobile so the hotspots stay aligned; the desktop room keeps its existing photographed book on the side table.
+
 ## Style architecture
 
 All styling is raw SCSS under `src/styles/`:

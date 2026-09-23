@@ -36,9 +36,15 @@
 
 <main class="corner-page">
   <section class="corner-scene" aria-labelledby="corner-title">
-    <img class="corner-scene__image" src="/images/your-corner-room.webp" alt="A shared candlelit loft with readers in the distance, books on a burgundy sofa, a moth plush and a clothing rack" />
+    <picture class="corner-scene__picture">
+      <source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" />
+      <img class="corner-scene__image" src="/images/your-corner-room.webp" alt="A shared candlelit loft with readers in the distance, books on a burgundy sofa, a moth plush and a clothing rack" />
+    </picture>
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
+    <span class="corner-group-label corner-group-label--stories" aria-hidden="true">stories</span>
+    <span class="corner-group-label corner-group-label--rack" aria-hidden="true">on the rack</span>
+    <span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>
 
     <button class="registry-prop" type="button" aria-label="Open the dark Moth Milk book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
 
