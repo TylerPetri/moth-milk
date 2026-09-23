@@ -64,8 +64,8 @@
   <section class="home-shop" id="shop" aria-labelledby="shop-title">
     <header class="home-shop__header">
       <div>
-        <span>Apparel · plush · objects</span>
-        <h2 id="shop-title">Shop</h2>
+        <span class="shop-kicker">Apparel · plush · objects</span>
+        <h2 id="shop-title"><img src="/images/shop-type/shop.webp" alt="Shop" width="1959" height="648" /></h2>
       </div>
       <a href="/shop">View everything <span>↗</span></a>
     </header>

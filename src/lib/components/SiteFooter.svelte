@@ -1,6 +1,5 @@
 <footer class="site-footer">
-  <div class="site-footer__mark">Moth Milk</div>
-  <p>Original horror fiction, apparel and objects.</p>
-  <div class="site-footer__links"><a href="/#library">Library</a><a href="/shop">Shop</a><a href="/lookbook">Lookbook</a><a href="/about">About</a></div>
-  <small>© 2026 Moth Milk</small>
+  <a class="site-footer__story" href="/#library"><span>One more</span><em>story?</em><small>Open the library <span aria-hidden="true">↗</span></small></a>
+  <p>Original horror fiction. Free to read.</p>
+  <small class="site-footer__legal">© 2026 Moth Milk</small>
 </footer>

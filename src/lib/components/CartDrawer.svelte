@@ -7,13 +7,13 @@
   <button class="cart-backdrop" type="button" aria-label="Close bag" onclick={() => (ui.cartOpen = false)}></button>
   <aside class="cart-drawer" aria-label="Shopping bag">
     <div class="cart-drawer__header">
-      <div><span>packing slip</span><strong>MM / {String(ui.cart.length).padStart(2, '0')}</strong></div>
+      <div><span>your things</span><strong>MM / {String(ui.cart.length).padStart(2, '0')}</strong></div>
       <button type="button" onclick={() => (ui.cartOpen = false)} aria-label="Close bag">×</button>
     </div>
 
     {#if ui.cart.length === 0}
       <div class="cart-empty">
-        <h2>Your bag is empty.</h2>
+        <h2><img src="/images/shop-type/bag-empty.webp" alt="Your bag is empty." width="2169" height="266" /></h2>
         <a href="/shop" onclick={() => (ui.cartOpen = false)}>Continue shopping →</a>
       </div>
     {:else}
@@ -27,7 +27,7 @@
         {/each}
       </div>
       <div class="cart-total"><span>total / CAD</span><strong>${total}</strong></div>
-      <button class="checkout-button" type="button">check out <span>→</span></button>
+      <button class="checkout-button" type="button"><span class="checkout-button__label">check out</span><span class="checkout-button__arrow" aria-hidden="true">→</span></button>
     {/if}
   </aside>
 {/if}

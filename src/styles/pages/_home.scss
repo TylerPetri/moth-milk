@@ -205,21 +205,11 @@
   overflow: hidden;
   color: $white;
   background:
-    linear-gradient(rgba(#130d0e, 0.86), rgba(#0b0808, 0.97)),
-    radial-gradient(circle at 16% 18%, rgba($cherry, 0.27), transparent 34%),
-    url('/textures/book-cloth.svg') center / 18rem 24rem;
+    linear-gradient(180deg, rgba(#100908, 0.4), rgba(#090606, 0.74) 58%, #090606 88%),
+    url('/images/shop-bedroom-surface.webp') center top / 100% auto no-repeat;
+  background-color: #090606;
   border-top: 0.72rem solid #3b2018;
   box-shadow: inset 0 0.35rem 0 rgba(#c08d65, 0.12), inset 0 2.5rem 5rem rgba(#000, 0.48);
-
-  &::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    content: '';
-    opacity: 0.1;
-    background: url('/textures/ink-wear.svg') center / 21rem 11rem;
-    mix-blend-mode: screen;
-  }
 
   &__header {
     margin-bottom: 4rem;
@@ -229,25 +219,14 @@
     gap: 2rem;
   }
 
-  &__header > div > span {
-    font-family: $font-mono;
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    opacity: 0.62;
-  }
+  &__header > div > .shop-kicker { display: inline-block; }
 
   &__header h2 {
     margin: 0.7rem 0 0;
-    font-family: $font-serif;
-    font-size: clamp(4.5rem, 8vw, 8rem);
-    font-weight: 700;
-    letter-spacing: -0.07em;
-    line-height: 0.82;
-    text-transform: uppercase;
-    @include inked-text(#e3d3bb);
+    width: clamp(14rem, 32vw, 31rem);
+    line-height: 0;
   }
+  &__header h2 img { display: block; width: 100%; height: auto; filter: drop-shadow(0 0.25rem 0.75rem rgba(#080505, 0.62)); }
 
   &__header > a {
     padding: 0.75rem 1rem 0.68rem;
@@ -281,6 +260,7 @@
 }
 
 @include below(760px) {
+  .home-shop { background-size: auto, auto 38rem; background-position: center, left top; }
   .after-hours-hero { height: 48rem; min-height: 100svh; }
   .after-hours-hero__image { object-position: 66% center; }
   .after-hours-hero__image { object-fit: cover; }
@@ -300,7 +280,7 @@
   .after-hours-hero__scroll { display: none; }
   .home-shop { padding-block: 6rem; }
   .home-shop__header { align-items: start; }
-  .home-shop__header h2 { font-size: 4.6rem; }
+  .home-shop__header h2 { width: min(55vw, 21rem); }
   .home-shop__header > a { margin-top: 0.6rem; font-size: 0.55rem; }
   .home-shop__grid { display: block; }
   .home-shop__grid .product-card { margin-bottom: 4rem; }

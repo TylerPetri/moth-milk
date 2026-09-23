@@ -2,14 +2,13 @@
 
 <main class="lookbook-page page-shell">
   <header class="page-heading lookbook-heading">
-    <p class="eyebrow">Contact sheet 001</p>
-    <h1>Lookbook</h1>
+    <h1><span>LOOK</span><em>book</em></h1>
   </header>
 
   <div class="lookbook-board">
-    <figure class="lookbook-shot lookbook-shot--one"><img src="/images/night-shift-hoodie.webp" alt="Night Shift Hoodie lookbook portrait" /><figcaption>frame 03 / Night Shift Hoodie</figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--two"><img src="/images/after-hours-tee.webp" alt="After Hours Baby Tee on rumpled bedding" /><figcaption>frame 11 / After Hours Tee</figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--three"><img src="/images/mimi-plush.webp" alt="Mimi Moth Plush" /><figcaption>frame 19 / Mimi Plush</figcaption></figure>
-    <div class="lookbook-type" aria-hidden="true">MM<br /><em>01</em></div>
+    <figure class="lookbook-shot lookbook-shot--one"><a href="/product/night-shift-hoodie"><img src="/images/night-shift-hoodie.webp" alt="Night Shift Hoodie in the bedroom" /></a><figcaption><a href="/product/night-shift-hoodie">Night Shift Hoodie <span aria-hidden="true">↗</span></a></figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--two"><a href="/product/after-hours-baby-tee"><img src="/images/after-hours-tee.webp" alt="After Hours Baby Tee on rumpled bedding" /></a><figcaption><a href="/product/after-hours-baby-tee">After Hours Tee <span aria-hidden="true">↗</span></a></figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--three"><a href="/product/mimi-plush"><img src="/images/mimi-plush.webp" alt="Mimi Moth Plush" /></a><figcaption><a href="/product/mimi-plush">Mimi <span aria-hidden="true">↗</span></a></figcaption></figure>
+    <div class="lookbook-marks" aria-hidden="true"><span>02:14 AM</span><p><i>soft is not</i> <strong>harmless</strong></p><span>MM-001</span></div>
   </div>
 </main>

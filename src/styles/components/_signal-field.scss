@@ -1,5 +1,7 @@
 @use '../abstracts' as *;
 
+.quiet-backdrop .signal-field { display: none; }
+
 .signal-field {
   position: fixed;
   z-index: 0;
@@ -31,7 +33,28 @@
     transform: translate(var(--dx), var(--dy)) rotate(-8deg);
     transition: transform 0.25s ease-out;
   }
-  &__ink--one { top: 20%; left: 3%; }
+  &__ink--one {
+    top: 20%; left: 3%;
+    max-width: 17rem;
+    color: #dbc0b3;
+    font-family: $font-serif;
+    font-size: clamp(1.4rem, 2.5vw, 2.8rem);
+    font-style: italic;
+    font-weight: 600;
+    line-height: 0.95;
+    opacity: 0.17;
+    text-transform: lowercase;
+  }
+  &__ink--one strong {
+    display: block;
+    margin-top: 0.14em;
+    font-family: 'Bodoni Moda', Georgia, serif;
+    font-size: 0.83em;
+    font-style: normal;
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    text-transform: uppercase;
+  }
   &__ink--two { right: 4%; top: 42%; transform: translate(var(--dx), var(--dy)) rotate(5deg); }
   &__ink--three { left: 28%; bottom: 8%; transform: translate(var(--dx), var(--dy)) rotate(-3deg); }
 }

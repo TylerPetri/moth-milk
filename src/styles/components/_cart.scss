@@ -15,17 +15,13 @@
   border-left: 0.5rem solid #3a2018;
   box-shadow: -1rem 0 4rem rgba(#000, 0.5), inset 0.25rem 0 rgba(#c4916d, 0.08);
   animation: drawer-in 0.45s $ease-out both;
-  @include cloth-surface(#171112);
-
-  &::after {
-    position: absolute;
-    inset: 0;
-    content: '';
-    pointer-events: none;
-    opacity: 0.1;
-    background: url('/textures/ink-wear.svg') center / 18rem 9rem;
-    mix-blend-mode: screen;
-  }
+  background-color: #130b0a;
+  background-image:
+    linear-gradient(180deg, rgba(#100908, 0.08), rgba(#080505, 0.43) 52%, rgba(#070505, 0.7)),
+    url('/images/cart-bedroom-surface.webp');
+  background-position: center top;
+  background-size: cover;
+  background-repeat: no-repeat;
 
   &__header {
     position: relative;
@@ -37,16 +33,18 @@
     box-shadow: 0.25rem 0.35rem 0 rgba(#050303, 0.2);
     clip-path: polygon(0.5% 2%, 99% 0, 100% 95%, 97% 100%, 1% 98%, 0 6%);
     transform: rotate(-0.25deg);
-    @include paper-surface(#cfbfa8);
+    background: #d6c6b0 url('/textures/archive-paper.svg') center / 25rem 18rem;
   }
   &__header > div { display: flex; flex-direction: column; gap: 0.25rem; }
-  &__header span { font-family: $font-mono; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; }
-  &__header strong { font-family: $font-display; font-size: 1.5rem; }
-  &__header button { align-self: start; width: 2.2rem; aspect-ratio: 1; border: 1px solid rgba(#281a17, 0.42); background: none; cursor: pointer; font-size: 1.35rem; line-height: 1; }
+  &__header span { width: fit-content; font-family: $font-mono; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.11em; text-transform: uppercase; color: #542c29; background: linear-gradient(#542c29, #542c29), url('/textures/ink-wear.svg') center / 12rem 6rem; background-blend-mode: multiply; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+  &__header strong { font-family: $font-display; font-size: 1.5rem; color: #34211f; }
+  &__header button { align-self: start; width: 2rem; aspect-ratio: 1; padding: 0; border: 0; color: #593e39; background: transparent; cursor: pointer; font-family: $font-display; font-size: 1.65rem; line-height: 1; opacity: 0.65; transition: opacity 0.2s ease, transform 0.2s ease; }
+  &__header button:hover, &__header button:focus-visible { opacity: 1; transform: rotate(8deg); }
+  &__header button:focus-visible { outline: 2px solid #754045; outline-offset: 1px; }
 }
 .cart-empty { position: relative; z-index: 1; margin: auto; text-align: center; }
-.cart-empty h2 { margin: 1rem 0 0.4rem; font-family: $font-serif; font-size: 2.3rem; @include inked-text(#e6d6bd); }
-.cart-empty h2 { margin-bottom: 1.6rem; }
+.cart-empty h2 { margin: 1rem 0 1.6rem; line-height: 0; }
+.cart-empty h2 img { display: block; width: min(100%, 25rem); height: auto; margin-inline: auto; filter: drop-shadow(0 0.15rem 0.5rem rgba(#000, 0.7)); }
 .cart-empty a { border-bottom: 1px solid; font-size: 0.67rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
 .cart-lines { position: relative; z-index: 1; overflow: auto; }
 .cart-lines { margin-top: 1rem; }
@@ -58,6 +56,10 @@
 .cart-total { position: relative; z-index: 1; display: flex; justify-content: space-between; padding: 1.4rem 0; font-family: $font-mono; font-size: 0.62rem; letter-spacing: 0.1em; text-transform: uppercase; }
 .cart-total strong { font-family: $font-display; font-size: 1.7rem; letter-spacing: 0; }
 .checkout-button, .add-button { position: relative; z-index: 1; display: flex; justify-content: space-between; width: 100%; padding: 1.25rem 1.5rem; border: 1px solid rgba($white, 0.7); border-radius: 0; background: $cherry-deep; color: $white; cursor: pointer; font-family: $font-mono; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
-.checkout-button { border-color: rgba(#e9d7bd, 0.26); box-shadow: 0.22rem 0.3rem 0 rgba(#050303, 0.3); clip-path: polygon(0.5% 3%, 99% 0, 100% 94%, 97% 100%, 1% 97%, 0 8%); @include leather-surface(#611820); }
+.checkout-button { isolation: isolate; border-color: rgba(#e9d7bd, 0.26); box-shadow: 0.22rem 0.3rem 0 rgba(#050303, 0.3); clip-path: polygon(0.5% 3%, 99% 0, 100% 94%, 97% 100%, 1% 97%, 0 8%); @include leather-surface(#611820); }
+.checkout-button::before { position: absolute; z-index: -1; inset: 0; content: ''; pointer-events: none; opacity: 0.2; background: url('/textures/ink-wear.svg') center / 16rem 9rem; mix-blend-mode: screen; }
+.checkout-button__label, .checkout-button__arrow { color: #f0ddc8; background: url('/images/shop-type/subtitle-ink.webp') center / 12rem 4rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.checkout-button__arrow { font-size: 1.4rem; line-height: 0.55; }
+.checkout-button:hover { background-color: #7b2930; }
 
 @keyframes drawer-in { from { transform: translateX(100%); } }

@@ -5,6 +5,7 @@
   import '@fontsource/cormorant-garamond/latin-500.css';
   import '@fontsource/cormorant-garamond/latin-600.css';
   import '@fontsource/cormorant-garamond/latin-700.css';
+  import '@fontsource/cormorant-garamond/latin-600-italic.css';
   import '@fontsource/bodoni-moda/latin-700.css';
   import '@fontsource/courier-prime/latin-400.css';
   import '@fontsource/courier-prime/latin-700.css';
@@ -14,6 +15,7 @@
   import ReactiveBackdrop from '$lib/components/ReactiveBackdrop.svelte';
   import CartDrawer from '$lib/components/CartDrawer.svelte';
   import { ui } from '$lib/stores/ui.svelte.js';
+  import { page } from '$app/state';
 
   let { children } = $props();
 </script>
@@ -22,7 +24,7 @@
   <link rel="icon" href="/favicon.svg" />
 </svelte:head>
 
-<div class:feral={ui.mood === 'feral'} class="app-shell">
+<div class:feral={ui.mood === 'feral'} class:quiet-backdrop={page.url.pathname === '/lookbook' || page.url.pathname.startsWith('/product/')} class="app-shell">
   <ReactiveBackdrop />
   <SiteHeader />
   {@render children()}

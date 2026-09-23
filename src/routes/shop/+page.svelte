@@ -9,9 +9,9 @@
 
 <main class="shop-page page-shell">
   <header class="page-heading shop-page__heading">
-    <p class="eyebrow">Apparel / plush / objects</p>
-    <h1>Shop</h1>
-    <p>Small-run Moth Milk apparel and objects from the room.</p>
+    <p class="shop-kicker">Apparel · plush · objects</p>
+    <h1><img src="/images/shop-type/shop.webp" alt="Shop" width="1959" height="648" /></h1>
+    <p><span>Small-run Moth Milk apparel and objects from the room.</span></p>
   </header>
 
   <div class="shop-toolbar">

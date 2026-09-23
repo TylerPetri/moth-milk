@@ -1,19 +1,101 @@
 @use '../abstracts' as *;
 
-.lookbook-heading, .broadcasts-heading { padding-bottom: 5rem; }
-.lookbook-board { position: relative; min-height: 100rem; border-top: $line; }
-.lookbook-shot { position: absolute; padding: 0; background: #181414; box-shadow: 0 1.5rem 4rem rgba(#000, 0.35); }
-.lookbook-shot img { width: 100%; height: 100%; object-fit: cover; }
-.lookbook-shot figcaption { padding: 0.8rem; border-top: 1px solid rgba($white, 0.16); color: $white; font-size: 0.55rem; letter-spacing: 0.08em; text-transform: uppercase; }
-.lookbook-shot--one { top: 6rem; left: 5%; width: min(37rem, 45%); height: 49rem; }
-.lookbook-shot--two { top: 17rem; right: 2%; width: min(31rem, 38%); height: 34rem; }
-.lookbook-shot--three { top: 60rem; right: 17%; width: 26rem; height: 29rem; background: #221b1c; }
-.lookbook-shot--three img { object-fit: contain; }
-.lookbook-note { position: absolute; top: 59rem; left: 11%; width: 23rem; padding: 2rem; border: 1px solid rgba($white, 0.35); background: $cherry-deep; color: $white; box-shadow: none; }
-.lookbook-note span { font-size: 2rem; }
-.lookbook-note p { margin: 0.5rem 0 0; font-family: $font-serif; font-size: 1.35rem; font-style: italic; line-height: 1.2; }
-.lookbook-type { position: absolute; right: 2%; bottom: 1rem; font-family: $font-display; font-size: clamp(5rem, 11vw, 11rem); font-weight: 900; line-height: 0.65; letter-spacing: -0.08em; opacity: 0.12; text-align: right; }
-.lookbook-type em { font-family: $font-serif; font-size: 0.22em; letter-spacing: 0; }
+@mixin story-ink($shade: #e8d6bf) {
+  color: $shade;
+  background-image: linear-gradient(115deg, #f3e3d0, $shade 51%, #c7ad96), url('/textures/ink-wear.svg');
+  background-size: auto, 13rem 7rem;
+  background-blend-mode: multiply;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0.16rem 0.1rem rgba(#090505, 0.5));
+}
+
+.editorial-kicker {
+  width: fit-content;
+  color: #d9bea9;
+  font-family: $font-body;
+  font-weight: 500;
+  letter-spacing: 0.26em;
+  @include story-ink(#d9bea9);
+}
+
+.lookbook-page {
+  position: relative;
+  isolation: isolate;
+  min-height: 100vh;
+  background: #100809;
+}
+.lookbook-page::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  content: '';
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(#120809, 0.6), rgba(#1b0c0d, 0.26) 35%, rgba(#100809, 0.3)), url('/images/lookbook-velvet-surface.webp') center / cover no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+}
+.lookbook-heading { padding-bottom: clamp(2rem, 5vw, 5rem); }
+.broadcasts-heading { padding-bottom: 5rem; }
+.lookbook-heading h1 {
+  grid-column: 1 / -1;
+  width: fit-content;
+  white-space: nowrap;
+  font-family: 'Bodoni Moda', Georgia, serif;
+  font-size: clamp(3.4rem, 8.7vw, 8.6rem);
+  font-weight: 700;
+  letter-spacing: -0.075em;
+  padding: 0.12em 0.12em 0.16em 0.02em;
+  line-height: 1.08;
+}
+.lookbook-heading h1 span {
+  color: #f0dcc7;
+  background: url('/images/lookbook-type/look-ink.webp') center / 15rem 5rem;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0.2rem 0.12rem rgba(#130506, 0.65));
+}
+.lookbook-heading h1 em {
+  display: inline-block;
+  padding-right: 0.08em;
+  font-family: $font-serif;
+  font-style: italic;
+  font-weight: 600;
+  letter-spacing: -0.07em;
+  text-transform: none;
+  color: #e0a7aa;
+  background: url('/images/lookbook-type/book-satin.webp') center / 13rem 5rem;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.lookbook-board { position: relative; min-height: 100rem; border-top: 1px solid rgba($cream, 0.26); }
+.lookbook-shot { position: absolute; padding: 0.42rem; background: #d8c9b2 url('/textures/paper-fiber.svg') center / 20rem; box-shadow: 0.25rem 0.3rem 0 #4c2a29, 0 1.5rem 3rem rgba(#000, 0.45); }
+.lookbook-shot { display: grid; grid-template-rows: minmax(0, 1fr) auto; }
+.lookbook-shot > a { min-height: 0; }
+.lookbook-shot figcaption a { display: flex; align-items: center; justify-content: space-between; gap: 1rem; color: #35211f; }
+.lookbook-shot img { width: 100%; height: 100%; min-height: 0; object-fit: cover; background: #302324; }
+.lookbook-shot figcaption { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; padding: 0.65rem 0.85rem 0.35rem; font-family: $font-serif; font-size: clamp(1.35rem, 2vw, 1.75rem); font-weight: 700; font-style: italic; letter-spacing: -0.02em; line-height: 1.05; }
+.lookbook-shot figcaption span { color: #7b3437; font-family: $font-body; font-size: 1rem; font-style: normal; }
+.lookbook-shot a:hover, .lookbook-shot a:focus-visible { color: #87333c; }
+.lookbook-shot a:focus-visible { outline: 2px solid #8b343c; outline-offset: 2px; }
+.lookbook-shot--one { top: 6rem; left: 5%; width: min(37rem, 45%); height: 49rem; transform: rotate(-1.2deg); }
+.lookbook-shot--two { top: 17rem; right: 2%; width: min(31rem, 38%); height: 34rem; transform: rotate(1.4deg); }
+.lookbook-shot--three { top: 60rem; right: 17%; width: 26rem; height: 29rem; transform: rotate(-0.8deg); }
+.lookbook-shot--three img { object-fit: contain; padding: 1rem; background: #392a2b url('/textures/book-cloth.svg') center / 15rem; }
+.lookbook-marks { position: absolute; top: 58rem; left: 6%; display: grid; gap: 1.2rem; max-width: 22rem; color: #d9baa9; transform: rotate(-3deg); }
+.lookbook-marks span { font-family: $font-mono; font-size: 0.72rem; letter-spacing: 0.18em; opacity: 0.72; }
+.lookbook-marks p { margin: 0; font-family: $font-serif; font-size: clamp(2rem, 3vw, 3.4rem); font-style: italic; font-weight: 600; line-height: 0.96; }
+.lookbook-marks i { font-style: italic; color: #eed9e5; background: url('/images/lookbook-type/soft-pencil.webp') center / 13rem 4rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.lookbook-marks strong { display: block; margin-top: 0.13em; font-family: 'Bodoni Moda', Georgia, serif; font-size: 0.8em; font-style: normal; letter-spacing: -0.06em; text-transform: uppercase; color: #e6a98d; background: url('/images/lookbook-type/harmless-foil.webp') center / 15rem 5rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+
+@media (min-width: 761px) and (max-width: 1050px) {
+  .lookbook-marks { left: 3%; max-width: 15rem; }
+  .lookbook-marks p { font-size: 2rem; }
+  .lookbook-shot--three { right: 3%; }
+}
 
 .broadcasts-heading .live-dot { margin-right: 0.5rem; }
 .broadcast-index { border-top: $line; }
@@ -26,31 +108,12 @@
 .signal-note strong { font-size: 0.65rem; letter-spacing: 0.13em; }
 .signal-note p { margin: 0.8rem 0 0; font-family: $font-serif; font-size: 1.05rem; font-style: italic; line-height: 1.2; }
 
-.about-intro { min-height: 70vh; display: grid; grid-template-columns: 1.3fr 0.7fr; gap: 7vw; align-items: center; }
-.about-intro h1 { @include display-title; margin-top: 1.5rem; }
-.about-intro > p { margin: 0; font-family: $font-serif; font-size: clamp(1.3rem, 2vw, 2rem); line-height: 1.5; }
-.about-values { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; padding: 7rem 0; border-block: $line; }
-.about-values article { padding-right: 3vw; }
-.about-values span { display: inline-grid; width: 2.5rem; aspect-ratio: 1; place-items: center; border: 1px solid; border-radius: 0; color: var(--accent); font-family: $font-display; }
-.about-values h2 { margin: 3rem 0 1rem; font-family: $font-serif; font-size: 2.2rem; line-height: 0.95; }
-.about-values p { max-width: 25rem; margin: 0; line-height: 1.65; }
-.about-mimi { padding: 8rem 5vw 2rem; display: grid; grid-template-columns: minmax(18rem, 0.8fr) 1fr; gap: 7vw; align-items: center; }
-.about-mimi > img { max-height: 38rem; margin: auto; filter: drop-shadow(0 1.5rem 1.4rem rgba($ink, 0.2)); }
-.about-mimi h2 { @include display-title(clamp(3.4rem, 6vw, 7rem)); margin: 1.5rem 0; }
-.about-mimi p:not(.eyebrow) { max-width: 34rem; font-family: $font-serif; font-size: 1.15rem; line-height: 1.55; }
-.about-mimi a { display: inline-block; margin-top: 1rem; border-bottom: 1px solid; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; }
-
 @include below(760px) {
+  .lookbook-heading h1 { font-size: clamp(2.55rem, 10.3vw, 5.75rem); }
   .lookbook-board { min-height: auto; display: flex; flex-direction: column; gap: 3rem; padding-top: 3rem; }
-  .lookbook-shot, .lookbook-note, .lookbook-type { position: relative; inset: auto; width: 92%; height: auto; min-height: 26rem; }
-  .lookbook-shot--two { margin-left: auto; }
-  .lookbook-shot--three { width: 80%; margin: auto; }
-  .lookbook-note { min-height: 0; }
-  .lookbook-type { display: none; }
+  .lookbook-shot { position: relative; inset: auto; width: min(92%, 34rem); height: auto; aspect-ratio: 0.8; }
+  .lookbook-shot--two { margin-left: auto; aspect-ratio: 1; }
+  .lookbook-shot--three { width: min(80%, 28rem); margin: auto; aspect-ratio: 0.9; }
+  .lookbook-marks { position: relative; inset: auto; margin: 1.5rem 0 2rem 8%; transform: rotate(-2deg); }
   .broadcast-index article { grid-template-columns: 3rem 1fr auto; gap: 1rem; }
-  .about-intro { min-height: auto; display: block; padding-bottom: 6rem; }
-  .about-intro > p { margin: 3rem 0 0 12%; }
-  .about-values { grid-template-columns: 1fr; }
-  .about-values article { padding: 1rem 0 3rem; border-bottom: $line; }
-  .about-mimi { padding-inline: 0; grid-template-columns: 1fr; }
 }

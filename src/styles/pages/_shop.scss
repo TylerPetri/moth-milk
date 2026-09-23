@@ -5,19 +5,10 @@
   min-height: 100vh;
   color: $white;
   background:
-    linear-gradient(rgba(#130c0d, 0.9), rgba(#090707, 0.98)),
-    radial-gradient(circle at 77% 8%, rgba(#701b24, 0.28), transparent 34%),
-    url('/textures/book-cloth.svg') center / 18rem 24rem;
+    linear-gradient(180deg, rgba(#120b0a, 0.37), rgba(#090606, 0.72) 48%, #090606 78%),
+    url('/images/shop-bedroom-surface.webp') center top / 100% auto no-repeat;
+  background-color: #090606;
 
-  &::before {
-    position: absolute;
-    z-index: -1;
-    inset: 0;
-    content: '';
-    opacity: 0.1;
-    background: url('/textures/ink-wear.svg') center / 20rem 10rem;
-    mix-blend-mode: screen;
-  }
 }
 
 .shop-page__heading {
@@ -26,10 +17,11 @@
   border: 1px solid rgba(#e8d7bd, 0.14);
   box-shadow: 0.8rem 1rem 2.8rem rgba(#000, 0.28), inset 0 0 4rem rgba(#050303, 0.35);
   clip-path: polygon(0.2% 1%, 13% 0.2%, 29% 0.8%, 47% 0.1%, 64% 0.7%, 81% 0.2%, 99.8% 0.9%, 99.5% 99.2%, 81% 99.8%, 61% 99.1%, 40% 99.8%, 21% 99.2%, 0.4% 99.8%);
-  @include brocade-surface;
+  background: linear-gradient(110deg, rgba(#1b0b0c, 0.88), rgba(#240f12, 0.73) 60%, rgba(#120809, 0.86));
 
-  .eyebrow { font-family: $font-mono; opacity: 0.62; }
-  h1 { @include inked-text(#eadbc4); }
+  .shop-kicker { grid-column: 1 / -1; margin-bottom: 1.2rem; }
+  h1 { margin: 0; width: min(100%, 31rem); line-height: 0; }
+  h1 img { display: block; width: 100%; height: auto; filter: drop-shadow(0 0.25rem 0.75rem rgba(#080505, 0.62)); }
   > p:last-child {
     margin: 0;
     padding: 1.2rem 1.4rem;
@@ -42,8 +34,9 @@
     box-shadow: 0.25rem 0.35rem 0 rgba(#080404, 0.22);
     clip-path: polygon(1% 3%, 98% 0, 100% 94%, 96% 100%, 2% 97%, 0 9%);
     transform: rotate(0.45deg);
-    @include paper-surface(#cdbda5);
+    background: #d7c8b1 url('/textures/archive-paper.svg') center / 25rem 18rem;
   }
+  > p:last-child span { color: #36221d; background: linear-gradient(110deg, #2d1c1a, #5b302b 53%, #30201d), url('/textures/ink-wear.svg') center / 13rem 7rem; background-blend-mode: multiply; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 }
 
 .shop-toolbar {
@@ -78,6 +71,7 @@
 .shop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5rem 2.5vw; padding: 4.5rem 0 8rem; }
 
 @include below(760px) {
+  .shop-page { background-size: auto, auto 38rem; background-position: center, left top; }
   .shop-page__heading { padding: 2.5rem 1.2rem; }
   .shop-page__heading > p:last-child { margin-top: 2rem; }
   .shop-toolbar { align-items: flex-start; gap: 1rem; }

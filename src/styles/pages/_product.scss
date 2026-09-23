@@ -5,18 +5,18 @@
   min-height: 100vh;
   color: $white;
   background:
-    linear-gradient(rgba(#110b0c, 0.88), rgba(#090707, 0.98)),
-    radial-gradient(circle at 11% 24%, rgba(#712028, 0.22), transparent 35%),
-    url('/textures/book-cloth.svg') center / 18rem 24rem;
+    linear-gradient(180deg, rgba(#10090a, 0.42), rgba(#10090a, 0.67) 50%, #0d0808 96%),
+    url('/images/product-bedroom-surface.webp') center top / 100% auto no-repeat;
+  background-color: #0d0808;
 
   &::before {
     position: absolute;
     z-index: -1;
     inset: 0;
     content: '';
-    opacity: 0.1;
-    background: url('/textures/ink-wear.svg') center / 20rem 10rem;
-    mix-blend-mode: screen;
+    opacity: 0.06;
+    background: url('/textures/paper-fiber.svg') center / 20rem;
+    mix-blend-mode: soft-light;
   }
 }
 

@@ -17,6 +17,23 @@ body:has(.cart-drawer),
 body:has(.reader-layer) { overflow: hidden; }
 ::selection { color: $white; background: var(--accent-dark); }
 
+.shop-kicker {
+  display: inline-block;
+  margin: 0;
+  font-family: $font-body;
+  font-size: clamp(0.65rem, 0.8vw, 0.78rem);
+  font-weight: 500;
+  letter-spacing: 0.27em;
+  line-height: 1.5;
+  text-transform: uppercase;
+  color: #dfcdb6;
+  background: url('/images/shop-type/subtitle-ink.webp') center / 13rem 4rem;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 1px 1px rgba(#000, 0.7));
+}
+
 /* Ink-dark tracks and worn oxblood thumbs across page and nested scrollers. */
 html, .library-shelf-viewport, .library-list, .cart-drawer {
   scrollbar-width: thin;

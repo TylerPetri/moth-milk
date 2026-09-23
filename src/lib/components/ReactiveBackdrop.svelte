@@ -24,7 +24,7 @@
 
 <div bind:this={field} class="signal-field" aria-hidden="true">
   <div class="signal-field__wash"></div>
-  <div class="signal-field__ink signal-field__ink--one">soft is not harmless</div>
+  <div class="signal-field__ink signal-field__ink--one"><span>soft is not</span> <strong>harmless</strong></div>
   <div class="signal-field__ink signal-field__ink--two">02:14 AM</div>
   <div class="signal-field__ink signal-field__ink--three">MM-001</div>
 </div>
