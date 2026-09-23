@@ -38,7 +38,7 @@
   <section class="corner-scene" aria-labelledby="corner-title">
     <picture class="corner-scene__picture">
       <source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" />
-      <img class="corner-scene__image" src="/images/your-corner-room.webp" alt="A shared candlelit loft with readers in the distance, books on a burgundy sofa, a moth plush and a clothing rack" />
+      <img class="corner-scene__image" src="/images/your-corner-room.webp" srcset="/images/your-corner-room.webp 1670w, /images/your-corner-room-4k.webp 3840w" sizes="100vw" width="1670" height="942" alt="A shared candlelit loft with readers in the distance, books on a burgundy sofa, a moth plush and a clothing rack" />
     </picture>
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>

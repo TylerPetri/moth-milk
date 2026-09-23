@@ -1,8 +1,8 @@
 @use '../abstracts' as *;
 
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-.corner-page { padding-top: $header-height; min-height: 100vh; background: #110b0b; color: #eadccd; }
-.corner-scene { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1669 / 942; min-height: 42rem; overflow: hidden; background: #160d0c; }
+.corner-page { padding-top: $header-height; background: #110b0b; color: #eadccd; }
+.corner-scene { position: relative; isolation: isolate; width: 100%; aspect-ratio: 1670 / 942; overflow: hidden; background: #160d0c; }
 .corner-scene__picture { position: absolute; inset: 0; display: block; }
 .corner-scene__image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 .corner-scene__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(#100908,.48), transparent 27%); }
