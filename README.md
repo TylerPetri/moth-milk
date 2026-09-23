@@ -2,7 +2,7 @@
 
 A multi-route SvelteKit 5 storefront and free horror-fiction library for the fictional MOTH MILK label.
 
-The homepage combines a late-night bedroom editorial, interactive room hotspots, a selectable list/shelf library, an in-browser story reader, and the existing apparel/plush shop.
+The homepage combines a late-night bedroom editorial with a transparent torn lower edge, interactive room hotspots, an overlapping selectable list/shelf library, an in-browser story reader, and the existing apparel/plush shop.
 
 ## Style architecture
 

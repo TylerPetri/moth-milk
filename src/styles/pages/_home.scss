@@ -9,11 +9,12 @@
   --cursor-x: 50%;
   --cursor-y: 50%;
   position: relative;
+  z-index: 6;
   isolation: isolate;
-  height: clamp(40rem, 47vw, 44rem);
+  height: clamp(40rem, 49vw, 50rem);
   min-height: 40rem;
   overflow: hidden;
-  background: #100b0b;
+  background: transparent;
 
   &::after {
     position: absolute;
@@ -24,6 +25,8 @@
     opacity: 0.38;
     background: radial-gradient(15rem circle at var(--cursor-x) var(--cursor-y), rgba(126, 31, 38, 0.24), transparent 72%);
     mix-blend-mode: screen;
+    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
+    mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
   }
 
   &__image {
@@ -33,10 +36,7 @@
     width: 100%;
     height: 100%;
     max-width: none;
-    object-fit: cover;
-    object-position: center;
-    filter: contrast(1.03) saturate(0.91) brightness(0.98);
-    transform: scale(1.005);
+    object-fit: fill;
   }
 
   &__shade {
@@ -46,6 +46,8 @@
     background:
       linear-gradient(90deg, rgba(#080606, 0.38) 0%, rgba(#080606, 0.12) 48%, rgba(#080606, 0.1) 100%),
       linear-gradient(180deg, rgba(#070505, 0.15), transparent 24%, transparent 75%, rgba(#080606, 0.3));
+    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
+    mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
   }
 
   &__grain {
@@ -56,12 +58,14 @@
     opacity: 0.13;
     background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.78' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.45'/%3E%3C/svg%3E");
     mix-blend-mode: soft-light;
+    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
+    mask: url('/images/after-hours-library-hero-v3.webp') center / 100% 100% no-repeat;
   }
 
   &__copy {
     position: absolute;
     z-index: 5;
-    top: 47%;
+    top: 45.5%;
     left: clamp(1.25rem, 18.5vw, 20rem);
     width: min(31rem, 29vw);
     text-align: center;
@@ -190,9 +194,9 @@
   &:hover span, &:focus-visible span { transform: translate(-50%, 0); }
 
   &--tv { top: 13%; left: 4.7%; width: 16%; height: 24%; }
-  &--books { left: 9%; bottom: 6%; width: 49%; height: 31%; }
+  &--books { left: 9%; bottom: 7%; width: 49%; height: 31%; }
   &--hoodie { top: 15%; right: 17%; width: 31%; height: 55%; }
-  &--mimi { right: 1.5%; bottom: 17%; width: 15%; height: 29%; }
+  &--mimi { right: 1%; bottom: 23%; width: 18%; height: 30%; }
 }
 
 .home-shop {
@@ -280,6 +284,13 @@
 @include below(760px) {
   .after-hours-hero { height: 48rem; min-height: 100svh; }
   .after-hours-hero__image { object-position: 66% center; }
+  .after-hours-hero__image { object-fit: cover; }
+  .after-hours-hero::after, .after-hours-hero__shade, .after-hours-hero__grain {
+    -webkit-mask-position: 66% center;
+    mask-position: 66% center;
+    -webkit-mask-size: auto 100%;
+    mask-size: auto 100%;
+  }
   .after-hours-hero__shade { background: linear-gradient(180deg, rgba(#080606, 0.1), rgba(#080606, 0.2) 38%, rgba(#080606, 0.9) 86%); }
   .after-hours-hero__copy { top: auto; right: 1rem; bottom: 4.3rem; left: 1rem; width: auto; transform: none; }
   .after-hours-hero__copy { max-width: none; }

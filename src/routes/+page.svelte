@@ -28,7 +28,7 @@
   <section class="after-hours-hero" aria-labelledby="hero-title">
     <img
       class="after-hours-hero__image"
-      src="/images/after-hours-library-hero-v2.webp"
+      src="/images/after-hours-library-hero-v3.webp"
       alt="A late-night bedroom with horror books spread across an oxblood bed, a model in the Night Shift Hoodie, Mimi plush and a CRT television"
       fetchpriority="high"
     />
