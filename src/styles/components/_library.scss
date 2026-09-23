@@ -357,6 +357,10 @@
   .library-feature .book-cover__wear { opacity: 0.1; }
   .library-feature .book-cover__edge { border-color: rgba(#d8c6ad, 0.14); box-shadow: inset 0 0 0 0.1rem rgba(#050303, 0.18); }
 
+  .library-view button { width: 4.625rem; min-width: 4.625rem; height: 2.375rem; min-height: 2.375rem; padding-block: 0.1rem 0; }
+}
+
+/* The same photographic shelf and independent bindings are used at every width. */
   .library-collection {
     height: 100%;
     min-height: 0;
@@ -476,7 +480,20 @@
   .book-spine-slot:has(.book-spine:focus-visible),
   .book-spine-slot:has(.book-spine.selected) { z-index: 12; }
 
-  .library-view button { width: 4.625rem; min-width: 4.625rem; height: 2.375rem; min-height: 2.375rem; padding-block: 0.1rem 0; }
+
+
+@media (max-width: 1199px) {
+  .library-collection {
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-inline: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+  .library-shelf {
+    width: 61.1875rem;
+    height: 15.5rem;
+    min-height: 15.5rem;
+  }
 }
 
 .reader-layer {
@@ -545,9 +562,6 @@
   .library-browser { grid-template-columns: minmax(21rem, 37%) minmax(0, 63%); }
   .library-feature { padding-inline: 1.15rem; }
   .library-feature__body { grid-template-columns: 6.2rem 1fr; gap: 1rem; }
-  .library-shelf { padding-inline: 0.5rem; }
-  .library-shelf__wood { margin-inline: -0.5rem; }
-  .book-spine { width: clamp(1.32rem, calc(var(--spine-width) * 0.82), 3rem); }
 }
 
 @include below(760px) {
@@ -557,11 +571,7 @@
   .library-feature__body { grid-template-columns: 6.4rem 1fr; }
   .library-feature__copy h3 { font-size: 2rem; }
   .library-feature__copy p { font-size: 0.9rem; }
-  .library-collection, .library-shelf { min-height: 21rem; }
-  .library-shelf { padding: 3.2rem 0.4rem 0; overflow-x: auto; }
-  .library-shelf__books { width: max-content; min-width: 100%; height: 15.5rem; justify-content: flex-start; padding-inline: 0.7rem; }
-  .library-shelf__wood { width: max(100%, 58rem); margin-inline: -0.4rem; flex: none; }
-  .book-spine { width: clamp(1.55rem, var(--spine-width), 3.1rem); }
+  .library-collection { height: 15.5rem; min-height: 15.5rem; }
   .library-list { max-height: 25rem; padding-top: 2.45rem; }
 }
 
