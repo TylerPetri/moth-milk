@@ -57,19 +57,16 @@
           {/each}
         </div>
       {:else}
-        <div class="library-shelf" aria-label="Bookshelf">
-          <div class="library-shelf__frame" aria-hidden="true">
-            <span class="library-shelf__frame-piece library-shelf__frame-piece--top"></span>
-            <span class="library-shelf__frame-piece library-shelf__frame-piece--left"></span>
-            <span class="library-shelf__frame-piece library-shelf__frame-piece--right"></span>
-            <span class="library-shelf__frame-piece library-shelf__frame-piece--bottom"></span>
+        <div class="library-shelf-viewport" role="region" aria-label="Bookshelf; scroll horizontally to browse all books">
+          <div class="library-shelf">
+            <div class="library-shelf__frame" aria-hidden="true"></div>
+            <div class="library-shelf__books">
+              {#each libraryBooks as book, index (book.slug)}
+                <BookSpine {book} selected={selectedIndex === index} onclick={() => selectBook(index)} />
+              {/each}
+            </div>
+            <div class="library-shelf__wood"></div>
           </div>
-          <div class="library-shelf__books">
-            {#each libraryBooks as book, index (book.slug)}
-              <BookSpine {book} selected={selectedIndex === index} onclick={() => selectBook(index)} />
-            {/each}
-          </div>
-          <div class="library-shelf__wood"></div>
         </div>
       {/if}
     </div>

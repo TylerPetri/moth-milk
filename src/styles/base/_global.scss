@@ -18,25 +18,25 @@ body:has(.reader-layer) { overflow: hidden; }
 ::selection { color: $white; background: var(--accent-dark); }
 
 /* Ink-dark tracks and worn oxblood thumbs across page and nested scrollers. */
-html, .library-collection, .library-list, .cart-drawer {
+html, .library-shelf-viewport, .library-list, .cart-drawer {
   scrollbar-width: thin;
   scrollbar-color: #7a3437 #241716;
 }
-html::-webkit-scrollbar, .library-collection::-webkit-scrollbar,
+html::-webkit-scrollbar, .library-shelf-viewport::-webkit-scrollbar,
 .library-list::-webkit-scrollbar, .cart-drawer::-webkit-scrollbar { width: 0.65rem; height: 0.65rem; }
-html::-webkit-scrollbar-track, .library-collection::-webkit-scrollbar-track,
+html::-webkit-scrollbar-track, .library-shelf-viewport::-webkit-scrollbar-track,
 .library-list::-webkit-scrollbar-track, .cart-drawer::-webkit-scrollbar-track {
   background: linear-gradient(90deg, #160d0d, #31201c 50%, #160d0d);
   box-shadow: inset 0 0 0 1px rgba(#c59b7d, 0.12);
 }
-html::-webkit-scrollbar-thumb, .library-collection::-webkit-scrollbar-thumb,
+html::-webkit-scrollbar-thumb, .library-shelf-viewport::-webkit-scrollbar-thumb,
 .library-list::-webkit-scrollbar-thumb, .cart-drawer::-webkit-scrollbar-thumb {
   border: 1px solid #291512;
   border-radius: 2px;
   background: linear-gradient(90deg, #512027, #8a4141 52%, #59252b);
   box-shadow: inset 0 0 0 1px rgba(#e2bda1, 0.16);
 }
-html::-webkit-scrollbar-thumb:hover, .library-collection::-webkit-scrollbar-thumb:hover,
+html::-webkit-scrollbar-thumb:hover, .library-shelf-viewport::-webkit-scrollbar-thumb:hover,
 .library-list::-webkit-scrollbar-thumb:hover, .cart-drawer::-webkit-scrollbar-thumb:hover {
   background: linear-gradient(90deg, #642831, #a64f4d 52%, #702d33);
 }

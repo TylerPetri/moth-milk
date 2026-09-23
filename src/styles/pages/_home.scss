@@ -25,8 +25,8 @@
     opacity: 0.38;
     background: radial-gradient(15rem circle at var(--cursor-x) var(--cursor-y), rgba(126, 31, 38, 0.24), transparent 72%);
     mix-blend-mode: screen;
-    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center / cover no-repeat;
-    mask: url('/images/after-hours-library-hero-v3.webp') center / cover no-repeat;
+    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center 80% / cover no-repeat;
+    mask: url('/images/after-hours-library-hero-v3.webp') center 80% / cover no-repeat;
   }
 
   &__image {
@@ -37,7 +37,7 @@
     height: 100%;
     max-width: none;
     object-fit: cover;
-    object-position: center;
+    object-position: center 80%;
   }
 
   &__shade {
@@ -47,8 +47,8 @@
     background:
       linear-gradient(90deg, rgba(#080606, 0.38) 0%, rgba(#080606, 0.12) 48%, rgba(#080606, 0.1) 100%),
       linear-gradient(180deg, rgba(#070505, 0.15), transparent 24%, transparent 75%, rgba(#080606, 0.3));
-    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center / cover no-repeat;
-    mask: url('/images/after-hours-library-hero-v3.webp') center / cover no-repeat;
+    -webkit-mask: url('/images/after-hours-library-hero-v3.webp') center 80% / cover no-repeat;
+    mask: url('/images/after-hours-library-hero-v3.webp') center 80% / cover no-repeat;
   }
 
   &__grain {

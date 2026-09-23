@@ -20,7 +20,7 @@ Physical surfaces are reusable rather than page-specific:
 - SCSS material mixins live in `src/styles/abstracts/_mixins.scss`
 - procedural SVG archive paper, general paper, cloth, leather, brocade, ink, and wood textures live in `static/textures/`
 - compact photographic material and cover-art atlases live in `static/images/book-material-atlas-v1.webp` and `horror-cover-atlas-v1.webp`
-- the desktop shelf crops `static/images/empty-library-shelf-v1.webp` into independent top, side, and bottom wood-frame layers over a translucent cavity, so the bedroom and cursor light continue behind it instead of ending at a rectangular image boundary
+- the shelf uses a single transparent dark-walnut frame (`static/images/empty-library-shelf-v2.webp`) with a plain wood top beam, side posts, and a lower lip around the interactive spines
 - all 22 independently interactive alpha-masked bindings live in `static/images/transparent-spines-v2/`
 - product photography uses WebP assets to keep the storefront and source archive small
 - book content and spine dimensions live in `src/lib/data/library.js`
