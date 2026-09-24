@@ -10,12 +10,11 @@
 .corner-belonging { position: absolute; inset: 0; display: block; pointer-events: none; }
 .corner-belonging img { width: 100%; height: 100%; object-fit: cover; }
 // Feather each belonging back into the same camera view as the empty room.
-.corner-belonging--book-1 { -webkit-mask-image: radial-gradient(ellipse 12% 13% at 36% 73%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 12% 13% at 36% 73%, #000 52%, transparent 100%); }
-.corner-belonging--book-2 { -webkit-mask-image: radial-gradient(ellipse 11% 13% at 51% 72%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 11% 13% at 51% 72%, #000 52%, transparent 100%); }
-.corner-belonging--book-3 { -webkit-mask-image: radial-gradient(ellipse 12% 13% at 64% 70%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 12% 13% at 64% 70%, #000 52%, transparent 100%); }
+.corner-belonging--registry { z-index: 1; -webkit-mask-image: radial-gradient(ellipse 10% 15% at 6% 81%, #000 47%, transparent 100%); mask-image: radial-gradient(ellipse 10% 15% at 6% 81%, #000 47%, transparent 100%); }
 .corner-belonging--night-shift-hoodie { -webkit-mask-image: radial-gradient(ellipse 8% 35% at 87% 40%, #000 58%, transparent 100%); mask-image: radial-gradient(ellipse 8% 35% at 87% 40%, #000 58%, transparent 100%); }
 .corner-belonging--after-hours-baby-tee { -webkit-mask-image: radial-gradient(ellipse 8% 27% at 96% 31%, #000 58%, transparent 100%); mask-image: radial-gradient(ellipse 8% 27% at 96% 31%, #000 58%, transparent 100%); }
 .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 10% 14% at 17% 67%, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 10% 14% at 17% 67%, #000 55%, transparent 100%); }
+.sofa-books-canvas { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
 .corner-scene__shade { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(0deg, rgba(#100908,.48), transparent 27%); }
 .corner-group-label { display: none; }
 .corner-room-link { position: absolute; z-index: 2; display: block; border: 1px solid transparent; background: transparent; text-decoration: none; color: #f2e8da; cursor: pointer; transition: border-color .3s ease, background .3s ease, box-shadow .3s ease; }
@@ -45,17 +44,9 @@
 .corner-hotspot--book:hover .corner-hotspot__target, .corner-hotspot--book:focus-visible .corner-hotspot__target { border-color: rgba(#f2e8da,.26); background: transparent; box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
 .corner-hotspot--book::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
 .corner-hotspot--book:hover::after, .corner-hotspot--book:focus-visible::after { opacity: 1; }
-.sofa-book { position: absolute; inset: 0; pointer-events: none; }
-.sofa-book__face { position: absolute; left: 9%; top: 16%; width: 82%; height: 72%; overflow: hidden; border-radius: 2% 3% 3% 2%; background-image: linear-gradient(125deg, rgba(#e3ad72,.18), transparent 35%, rgba(#070508,.2) 85%), var(--cover-art); background-size: 100% 100%, 300% 200%; background-position: center, var(--cover-x) var(--cover-y); box-shadow: inset .25rem .2rem .5rem rgba(#e3b68b,.24), inset -.5rem -.45rem .55rem rgba(#050305,.55), 0 .22rem .38rem rgba(#000,.55); filter: saturate(.69) sepia(.19) brightness(.86); transform: perspective(28rem) rotateX(16deg) skewX(-3deg); }
-.sofa-book__face::after { position: absolute; inset: 0; content: ''; pointer-events: none; border: .14rem solid rgba(#d1ab82,.13); background: linear-gradient(105deg, rgba(#eed4a0,.12), transparent 26%, rgba(#030304,.2) 100%); mix-blend-mode: screen; }
-.sofa-book__imprint { position: absolute; inset: 7% 6% 9%; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 4% 2%; color: #d3bc9b; text-align: center; text-shadow: 0 1px 3px #090507, 0 0 8px #0e0807; border: 1px solid rgba(#cfaf84,.35); box-shadow: inset 0 0 0 2px rgba(#130c0b,.48); }
-.sofa-book__imprint small { font: 700 clamp(.27rem,.44vw,.5rem)/1 'Courier Prime',monospace; letter-spacing: .04em; }
-.sofa-book__imprint strong { max-width: 100%; font: 600 clamp(.65rem,1.15vw,1.45rem)/.9 'Cormorant Garamond',Georgia,serif; text-transform: uppercase; text-wrap: balance; overflow-wrap: anywhere; }
-.corner-hotspot--2 .sofa-book__face { top: 19%; height: 66%; }
-.corner-hotspot--3 .sofa-book__face { left: 11%; top: 10%; width: 80%; height: 70%; }
-.corner-hotspot--1 { left: 29%; width: 14.5%; transform: rotate(-8deg); }
-.corner-hotspot--2 { left: 44%; width: 14%; transform: rotate(-6deg); }
-.corner-hotspot--3 { left: 55.5%; width: 17%; transform: rotate(-10deg); }
+.corner-hotspot--1 { left: 37%; width: 15%; }
+.corner-hotspot--2 { left: 48%; width: 15%; }
+.corner-hotspot--3 { left: 59%; width: 16%; }
 .corner-hotspot--hoodie { left: 81%; top: 18%; width: 10%; height: 46%; }
 .corner-hotspot--tee { left: 91%; top: 17%; width: 8%; height: 49%; }
 .corner-hotspot--hoodie .corner-hotspot__label, .corner-hotspot--tee .corner-hotspot__label { left: auto; right: 0; transform: none; }
@@ -102,12 +93,11 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 @media (max-width: 900px) {
   .corner-scene { min-height: 0; aspect-ratio: 2 / 3; }
   .corner-scene__image { object-position: center; }
-  .corner-belonging--book-1 { -webkit-mask-image: radial-gradient(ellipse 16% 10% at 28% 70%, #000 50%, transparent 100%); mask-image: radial-gradient(ellipse 16% 10% at 28% 70%, #000 50%, transparent 100%); }
-  .corner-belonging--book-2 { -webkit-mask-image: radial-gradient(ellipse 14% 10% at 46% 67%, #000 50%, transparent 100%); mask-image: radial-gradient(ellipse 14% 10% at 46% 67%, #000 50%, transparent 100%); }
-  .corner-belonging--book-3 { -webkit-mask-image: radial-gradient(ellipse 17% 10% at 67% 65%, #000 50%, transparent 100%); mask-image: radial-gradient(ellipse 17% 10% at 67% 65%, #000 50%, transparent 100%); }
+  .corner-belonging--registry { z-index: 1; -webkit-mask-image: radial-gradient(ellipse 17% 7% at 28% 70%, #000 57%, transparent 100%); mask-image: radial-gradient(ellipse 17% 7% at 28% 70%, #000 57%, transparent 100%); }
+  .corner-belonging--registry img { transform: none; }
   .corner-belonging--night-shift-hoodie { -webkit-mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); }
   .corner-belonging--after-hours-baby-tee { -webkit-mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); }
-  .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 16% 11% at 19% 58%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 16% 11% at 19% 58%, #000 52%, transparent 100%); }
+  .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 15% 9% at 19% 57%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 15% 9% at 19% 57%, #000 52%, transparent 100%); }
   .corner-group-label { position: absolute; z-index: 2; display: block; pointer-events: none; white-space: nowrap; padding: .48em .64em; color: #f2e8da; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); font: 700 clamp(.58rem, 2.2vw, .78rem)/1 $font-mono; letter-spacing: .04em; text-transform: lowercase; }
   .corner-group-label--rack { right: 3%; top: 14%; transform: rotate(3deg); }
   .corner-group-label--mimi { left: 23%; top: 51%; transform: rotate(13deg); padding: .4em .55em; background: linear-gradient(145deg, #a88969, #80634e); border: 1px dashed rgba(#493327,.78); box-shadow: 1px 2px 5px rgba(#100807,.5); color: #35221e; font: italic 600 clamp(.65rem, 2.5vw, .88rem)/1 $font-display; letter-spacing: 0; text-shadow: none; }
@@ -115,16 +105,12 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-room-link--shop { right: 1%; top: 12%; width: 19%; height: 42%; }
   .corner-room-link > span { bottom: auto; top: 0; transform: translate(-50%, -30%); opacity: 1; font-size: clamp(.58rem, 2.2vw, .78rem); }
   .corner-room-link:hover > span, .corner-room-link:focus-visible > span { transform: translate(-50%, -30%); }
-  .registry-prop { left: 14%; top: 64%; width: 27%; height: 12%; }
+  .registry-prop { left: 12%; top: 62%; width: 28%; height: 13%; }
   .corner-hotspot__label { display: none; }
   .corner-hotspot--book { height: 11%; }
-  .sofa-book__face { top: 13%; height: 73%; }
-  .sofa-book__imprint { inset: 7% 7% 10%; }
-  .sofa-book__imprint small { font-size: clamp(.2rem,.67vw,.35rem); }
-  .sofa-book__imprint strong { font-size: clamp(.46rem,1.8vw,.75rem); }
-  .corner-hotspot--1 { left: 34%; top: 60%; width: 21%; transform: none; }
-  .corner-hotspot--2 { left: 53%; top: 59%; width: 22%; transform: none; }
-  .corner-hotspot--3 { left: 73%; top: 57%; width: 25%; height: 12%; transform: none; }
+  .corner-hotspot--1 { left: 34%; top: 61%; width: 21%; transform: none; }
+  .corner-hotspot--2 { left: 54%; top: 61%; width: 22%; transform: none; }
+  .corner-hotspot--3 { left: 74%; top: 60%; width: 25%; height: 12%; transform: none; }
   .corner-hotspot--hoodie { left: 79%; top: 35%; width: 16%; height: 15%; }
   .corner-hotspot--tee { left: 86%; top: 20%; width: 14%; height: 15%; }
   .corner-plush { left: 8%; top: 51%; width: 25%; height: 14%; padding: 0; border: 0; background: transparent; font-size: 0; }

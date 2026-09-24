@@ -1,6 +1,7 @@
 <script>
   // @ts-nocheck
   import { libraryBooks } from '$lib/data/library.js';
+  import SofaBooks from '$lib/SofaBooks.svelte';
   import { onMount } from 'svelte';
   import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.js';
   import { corner, loadCorner } from '$lib/stores/corner.svelte.js';
@@ -99,17 +100,14 @@
 <main class="corner-page">
   <section class="corner-scene" aria-labelledby="corner-title" onpointermove={trackCornerCursor}>
     <picture class="corner-scene__picture">
-      <source media="(max-width: 900px)" srcset={auth.userId ? '/images/your-corner-empty-mobile.png' : '/images/your-corner-mobile.webp'} />
-      <img class="corner-scene__image" src={auth.userId ? '/images/your-corner-empty-desktop.png' : '/images/your-corner-room.webp'} srcset={auth.userId ? undefined : '/images/your-corner-room.webp 1670w, /images/your-corner-room-4k.webp 3840w'} sizes="100vw" width="1670" height="942" alt="A shared candlelit loft with an inviting burgundy sofa and a clothing rack" />
+      <source media="(max-width: 900px)" srcset="/images/your-corner-empty-mobile.png" />
+      <img class="corner-scene__image" src="/images/your-corner-empty-desktop.png" width="1670" height="942" alt="A shared candlelit loft with a burgundy sofa and a clothing rack" />
     </picture>
-    {#if auth.userId}
-      {#each couchBooks as book, index (book.slug)}
-        <picture class={`corner-belonging corner-belonging--book-${index + 1}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>
-      {/each}
-      {#each ['night-shift-hoodie', 'after-hours-baby-tee', 'mimi-plush'] as item}
-        {#if owned.includes(item)}<picture class={`corner-belonging corner-belonging--${item}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>{/if}
-      {/each}
-    {/if}
+    <picture class="corner-belonging corner-belonging--registry" aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-registry-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>
+    {#each ['night-shift-hoodie', 'after-hours-baby-tee', 'mimi-plush'] as item}
+      {#if !auth.userId || owned.includes(item)}<picture class={`corner-belonging corner-belonging--${item}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>{/if}
+    {/each}
+    <SofaBooks books={couchBooks} {coverArt} />
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
     {#if !auth.userId || owned.includes('mimi-plush')}<span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>{/if}
@@ -123,9 +121,6 @@
       {#each couchBooks as book, index (book.slug)}
         <button class={`corner-hotspot corner-hotspot--book corner-hotspot--${index + 1}`} type="button" onclick={() => (selectedBook = book)} aria-label={`Read ${book.title}`}>
           <span class="corner-hotspot__target" aria-hidden="true"></span>
-          <span class="sofa-book" aria-hidden="true" style={`--cover-art:url('/images/sofa-cover-atlas-${coverArt[book.slug].sheet}.png');--cover-x:${coverArt[book.slug].x}%;--cover-y:${coverArt[book.slug].y}%`}>
-            <span class="sofa-book__face"><span class="sofa-book__imprint"><small>MOTH MILK / AFTER HOURS</small><strong>{book.title}</strong><small>AN ORIGINAL STORY</small></span></span>
-          </span>
         </button>
       {/each}
     </div>
