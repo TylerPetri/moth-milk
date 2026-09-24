@@ -115,7 +115,7 @@
     <a class="corner-room-link corner-room-link--library" href="/#library" aria-label="Browse the library and choose books"><span>library <span aria-hidden="true">↗</span></span></a>
     <a class="corner-room-link corner-room-link--shop" href="/shop" aria-label="Browse the Moth Milk shop"><span>shop <span aria-hidden="true">↗</span></span></a>
 
-    <button class="registry-prop" type="button" aria-label="Open the dark Moth Milk book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
+    <button class="registry-prop" type="button" aria-label="Open the sign-in and registration book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
 
     <div class="corner-books" aria-label="Books on the sofa">
       {#each couchBooks as book, index (book.slug)}

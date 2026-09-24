@@ -17,11 +17,18 @@
       { crop:[719,877,284,194], shape:[[727,919],[868,889],[996,1019],[815,1062]], face:[[740,927],[854,902],[982,1006],[830,1040]] }
     ] }
   };
-  const cache = new Map();
+  // Concurrent renders share the same pending load instead of replacing onload.
+  const imageLoads = new Map();
   function load(src) {
-    if (!cache.has(src)) { const img = new Image(); img.src = src; cache.set(src,img); }
-    const img=cache.get(src);
-    return img.complete ? Promise.resolve(img) : new Promise(resolve=>{img.onload=()=>resolve(img);img.onerror=()=>resolve(img);});
+    if (!imageLoads.has(src)) {
+      imageLoads.set(src, new Promise((resolve) => {
+        const img = new Image();
+        img.addEventListener('load', () => resolve(img), { once: true });
+        img.addEventListener('error', () => { imageLoads.delete(src); resolve(img); }, { once: true });
+        img.src = src;
+      }));
+    }
+    return imageLoads.get(src);
   }
   function point(face,u,v) {
     const [a,b,c,d]=face;
@@ -62,10 +69,14 @@
   async function draw(items,artwork,mobile) {
     if(!canvas)return;
     const current=++token,scene=mobile?scenes.mobile:scenes.desktop,books=items.slice(0,3);
+    if (!books.length) {
+      canvas.width=scene.size[0];canvas.height=scene.size[1];
+      return;
+    }
+    const [photo,...atlases]=await Promise.all([load(scene.photo),...books.map(b=>load(`/images/sofa-cover-atlas-${artwork[b.slug]?.sheet}.png`))]);
+    if(current!==token||!canvas.isConnected||!photo.naturalWidth)return;
     canvas.width=scene.size[0];canvas.height=scene.size[1];
     const ctx=canvas.getContext('2d');
-    const [photo,...atlases]=await Promise.all([load(scene.photo),...books.map(b=>load(`/images/sofa-cover-atlas-${artwork[b.slug]?.sheet}.png`))]);
-    if(current!==token||!photo.naturalWidth)return;
     books.forEach((book,i)=>{
       const slot=scene.slots[i], [x,y,w,h]=slot.crop, f=slot.face;
       // A feathered contour keeps the original cushion indentation and page block.
@@ -96,8 +107,8 @@
   let mobile=$state(false);
   onMount(()=>{
     const media=matchMedia('(max-width: 900px)');mobile=media.matches;
-    const changed=()=>{mobile=media.matches;draw(books,coverArt,mobile);};
-    media.addEventListener('change',changed);draw(books,coverArt,mobile);
+    const changed=()=>{mobile=media.matches;};
+    media.addEventListener('change',changed);
     return()=>media.removeEventListener('change',changed);
   });
   $effect(()=>{draw(books,coverArt,mobile);});
