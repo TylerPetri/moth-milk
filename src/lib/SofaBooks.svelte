@@ -30,33 +30,40 @@
     }
     return imageLoads.get(src);
   }
-  function point(face,u,v) {
-    const [a,b,c,d]=face;
-    return [a[0]*(1-u)*(1-v)+b[0]*u*(1-v)+c[0]*u*v+d[0]*(1-u)*v,
-      a[1]*(1-u)*(1-v)+b[1]*u*(1-v)+c[1]*u*v+d[1]*(1-u)*v];
+  function printOnFace(ctx, surface, face, opacity) {
+    const [topLeft,topRight,,bottomLeft]=face;
+    ctx.save();
+    ctx.globalAlpha=opacity;
+    ctx.setTransform(
+      (topRight[0]-topLeft[0])/surface.width,
+      (topRight[1]-topLeft[1])/surface.width,
+      (bottomLeft[0]-topLeft[0])/surface.height,
+      (bottomLeft[1]-topLeft[1])/surface.height,
+      topLeft[0],topLeft[1]
+    );
+    ctx.drawImage(surface,0,0);
+    ctx.restore();
   }
-  function mapTriangle(ctx,img,src,dst) {
-    const [a,b,c]=src,[p,q,r]=dst;
-    const det=(a[0]-c[0])*(b[1]-c[1])-(b[0]-c[0])*(a[1]-c[1]);
-    if(!det)return;
-    const xx=((p[0]-r[0])*(b[1]-c[1])-(q[0]-r[0])*(a[1]-c[1]))/det;
-    const xy=((q[0]-r[0])*(a[0]-c[0])-(p[0]-r[0])*(b[0]-c[0]))/det;
-    const yx=((p[1]-r[1])*(b[1]-c[1])-(q[1]-r[1])*(a[1]-c[1]))/det;
-    const yy=((q[1]-r[1])*(a[0]-c[0])-(p[1]-r[1])*(b[0]-c[0]))/det;
-    ctx.save();ctx.beginPath();ctx.moveTo(...p);ctx.lineTo(...q);ctx.lineTo(...r);ctx.closePath();ctx.clip();
-    ctx.setTransform(xx,yx,xy,yy,p[0]-xx*a[0]-xy*a[1],p[1]-yx*a[0]-yy*a[1]);
-    ctx.drawImage(img,0,0);ctx.restore();
-  }
-  function cover(book,art,atlas) {
+  function coverArtSurface(art,atlas) {
     const out=document.createElement('canvas');out.width=240;out.height=320;
     const c=out.getContext('2d');const w=atlas.naturalWidth/3,h=atlas.naturalHeight/2;
-    c.fillStyle='#1b1012';c.fillRect(0,0,240,320);
     c.drawImage(atlas,(art.x/50)*w,(art.y/100)*h,w,h,0,0,240,320);
-    const shade=c.createLinearGradient(0,0,0,320);
-    shade.addColorStop(0,'rgba(20,8,10,.42)');shade.addColorStop(.5,'rgba(15,7,8,.12)');shade.addColorStop(1,'rgba(12,5,6,.65)');
-    c.fillStyle=shade;c.fillRect(0,0,240,320);
-    c.strokeStyle='#bba080';c.lineWidth=2;c.strokeRect(13,13,214,294);
-    c.textAlign='center';c.fillStyle='#f3d8ae';c.shadowColor='#140b0b';c.shadowBlur=7;
+    // Fade the ink into the original photographed cover, leaving its binding and edges intact.
+    c.globalCompositeOperation='destination-in';
+    const horizontal=c.createLinearGradient(0,0,240,0);
+    horizontal.addColorStop(0,'transparent');horizontal.addColorStop(.14,'black');
+    horizontal.addColorStop(.86,'black');horizontal.addColorStop(1,'transparent');
+    c.fillStyle=horizontal;c.fillRect(0,0,240,320);
+    const vertical=c.createLinearGradient(0,0,0,320);
+    vertical.addColorStop(0,'transparent');vertical.addColorStop(.15,'black');
+    vertical.addColorStop(.84,'black');vertical.addColorStop(1,'transparent');
+    c.fillStyle=vertical;c.fillRect(0,0,240,320);
+    return out;
+  }
+  function titleSurface(book) {
+    const out=document.createElement('canvas');out.width=240;out.height=320;
+    const c=out.getContext('2d');
+    c.textAlign='center';c.fillStyle='#f3d8ae';c.shadowColor='#140b0b';c.shadowBlur=4;
     c.font='bold 12px Georgia';c.fillText('MOTH MILK',120,39);
     c.font=`bold ${book.title.length>17?25:32}px Georgia`;
     const lines=[],words=book.title.toUpperCase().split(' ');let line='';
@@ -90,18 +97,8 @@
       lc.globalCompositeOperation='destination-in';lc.drawImage(mask,0,0);
       ctx.drawImage(layer,0,0);
       const atlas=atlases[i],art=artwork[book.slug];if(!atlas?.naturalWidth||!art)return;
-      const printed=cover(book,art,atlas);
-      ctx.globalCompositeOperation='source-over';ctx.globalAlpha=.82;
-      for(let row=0;row<8;row++)for(let col=0;col<8;col++){
-        const u=col/8,v=row/8,U=(col+1)/8,V=(row+1)/8;
-        const p=(a,b)=>[a*240,b*320],q=(a,b)=>point(f,a,b);
-        mapTriangle(ctx,printed,[p(u,v),p(U,v),p(U,V)],[q(u,v),q(U,v),q(U,V)]);
-        mapTriangle(ctx,printed,[p(u,v),p(U,V),p(u,V)],[q(u,v),q(U,V),q(u,V)]);
-      }
-      ctx.globalCompositeOperation='source-over';ctx.globalAlpha=1;
-      ctx.save();ctx.beginPath();ctx.moveTo(...f[0]);
-      for(const corner of f.slice(1))ctx.lineTo(...corner);
-      ctx.closePath();ctx.clip();ctx.globalAlpha=.16;ctx.drawImage(photo,0,0);ctx.restore();
+      printOnFace(ctx,coverArtSurface(art,atlas),f,.58);
+      printOnFace(ctx,titleSurface(book),f,.88);
     });
   }
   let mobile=$state(false);

@@ -41,6 +41,22 @@ npm run check
 npm run build
 ```
 
+## Deploy on Vercel
+
+Import this project into Vercel with the **SvelteKit** framework preset. Keep the project root as this directory and use the default `npm run build` command. The Vercel adapter is configured in `svelte.config.js`; no output directory or rewrite rule is needed. Vercel installs dependencies from `package-lock.json`.
+
+Set these environment variables in the Vercel project for each deployment environment (Production and Preview as appropriate):
+
+| Variable | Value |
+| --- | --- |
+| `VITE_API_URL` | Public HTTPS URL of the backend gateway, without a trailing slash |
+| `VITE_SHOP_ID` | UUID printed by the Moth Milk backend seed script |
+| `VITE_STRIPE_PUBLISHABLE_KEY` | Publishable key for the matching Stripe mode (`pk_test_…` or `pk_live_…`) |
+
+These `VITE_` values are embedded in browser code at build time. Keep Stripe secret keys, webhook secrets, database credentials, and notification credentials on the backend only. Redeploy after changing a storefront variable.
+
+Set the Moth Milk shop's backend storefront URL to the deployed Vercel URL (or its custom domain). Allow that exact origin in the gateway's CORS configuration. For Preview deployments, either configure the changing preview origins on the backend or use a stable preview domain and matching shop configuration. The gateway must be publicly reachable over HTTPS; `localhost` from `env.example` only works for local development. Point payment webhooks to the backend, not this Vercel storefront. The backend is deployed separately.
+
 ## Live Moth Milk wiring
 
 Copy `env.example` to `.env`, then set `VITE_API_URL` and `VITE_STRIPE_PUBLISHABLE_KEY` for your environment. The example already contains the Moth Milk `VITE_SHOP_ID`. The backend needs a matching storefront URL, `NOTIFICATION_URL`, working mail delivery, Stripe PaymentIntent keys, and a signed webhook. From the backend repository, run `python3 scripts/seed/moth_milk.py` and enter the owner email, password, and storefront URL when prompted. It prints the shop UUID for `VITE_SHOP_ID`; it creates each hoodie and tee size as a separate product and stock row. Use Stripe test keys and a webhook before testing checkout. This package does not contain live credentials.
