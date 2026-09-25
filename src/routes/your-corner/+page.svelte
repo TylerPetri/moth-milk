@@ -10,11 +10,6 @@
   const previewBooks = libraryBooks.filter((book) => ['static', 'hush', 'underbed'].includes(book.slug)).sort((a, b) => ['static', 'hush', 'underbed'].indexOf(a.slug) - ['static', 'hush', 'underbed'].indexOf(b.slug));
   const selectedBooks = $derived(auth.userId ? corner.slugs.map((slug) => libraryBooks.find((book) => book.slug === slug)).filter(Boolean) : previewBooks);
   const couchBooks = $derived(selectedBooks.slice(0, 3));
-  const coverArt = Object.fromEntries(libraryBooks.map((book, index) => [book.slug, {
-    sheet: Math.floor(index / 6) + 1,
-    x: (index % 3) * 50,
-    y: Math.floor((index % 6) / 3) * 100
-  }]));
   let owned = $state([]);
   let sceneNotice = $state('');
   let busy = $state(false);
@@ -107,7 +102,7 @@
     {#each ['night-shift-hoodie', 'after-hours-baby-tee', 'mimi-plush'] as item}
       {#if !auth.userId || owned.includes(item)}<picture class={`corner-belonging corner-belonging--${item}`} aria-hidden="true"><source media="(max-width: 900px)" srcset="/images/your-corner-mobile.webp" /><img src="/images/your-corner-room.webp" alt="" /></picture>{/if}
     {/each}
-    <SofaBooks books={couchBooks} {coverArt} />
+    <SofaBooks books={couchBooks} />
     <div class="corner-scene__shade" aria-hidden="true"></div>
     <h1 class="sr-only" id="corner-title">Your corner</h1>
     {#if !auth.userId || owned.includes('mimi-plush')}<span class="corner-group-label corner-group-label--mimi" aria-hidden="true">Mimi</span>{/if}
@@ -115,7 +110,7 @@
     <a class="corner-room-link corner-room-link--library" href="/#library" aria-label="Browse the library and choose books"><span>library <span aria-hidden="true">↗</span></span></a>
     <a class="corner-room-link corner-room-link--shop" href="/shop" aria-label="Browse the Moth Milk shop"><span>shop <span aria-hidden="true">↗</span></span></a>
 
-    <button class="registry-prop" type="button" aria-label="Open the sign-in and registration book" onclick={openRegistry}><img src="/images/registry-closed.webp" alt="" aria-hidden="true" /></button>
+    <button class="registry-prop" type="button" aria-label="Open the sign-in and registration book" onclick={openRegistry}><img src="/images/registry-closed-mobile-preview.png" alt="" aria-hidden="true" /></button>
 
     <div class="corner-books" aria-label="Books on the sofa">
       {#each couchBooks as book, index (book.slug)}
@@ -138,7 +133,7 @@
   {#if listOpen}
     <section class="corner-list" id="corner-list" aria-label="Books and clothing in this corner">
       <div><h2>On the sofa</h2>{#each selectedBooks as book}<button class="corner-list-book" type="button" onclick={() => (selectedBook = book)}>
-        <span class="corner-list-cover" aria-hidden="true" style={`--cover-art:url('/images/sofa-cover-atlas-${coverArt[book.slug].sheet}.png');--cover-x:${coverArt[book.slug].x}%;--cover-y:${coverArt[book.slug].y}%`}><span class="corner-list-cover__imprint"><small>MOTH MILK</small><strong>{book.title}</strong><small>AFTER HOURS</small></span></span>
+        <span class="corner-list-cover" aria-hidden="true" style={`--cover-art:url('/images/sofa-books/${book.slug}-cover.webp')`}></span>
         <span class="corner-list-book__title">{book.title}</span><span class="corner-list-book__time">{book.minutes} min read ↗</span>
       </button>{/each}
       {#if auth.userId && selectedBooks.length === 0}<p>Choose a story from the library and it will find its place here.</p>{/if}

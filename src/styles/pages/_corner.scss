@@ -44,9 +44,9 @@
 .corner-hotspot--book:hover .corner-hotspot__target, .corner-hotspot--book:focus-visible .corner-hotspot__target { border-color: rgba(#f2e8da,.26); background: transparent; box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
 .corner-hotspot--book::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
 .corner-hotspot--book:hover::after, .corner-hotspot--book:focus-visible::after { opacity: 1; }
-.corner-hotspot--1 { left: 30.2%; top: 64%; width: 12.8%; height: 15%; }
-.corner-hotspot--2 { left: 44.8%; top: 64.5%; width: 11.6%; height: 15%; }
-.corner-hotspot--3 { left: 56.5%; top: 61.8%; width: 14%; height: 17%; }
+.corner-hotspot--1 { left: 31.6%; top: 67.4%; width: 12.7%; height: 14.2%; clip-path: polygon(0 17%, 64% 0, 100% 70%, 100% 84%, 30% 100%, 14% 96%); }
+.corner-hotspot--2 { left: 44%; top: 66%; width: 11.7%; height: 15%; clip-path: polygon(0 23%, 83% 0, 100% 71%, 100% 88%, 17% 100%, 8% 90%); }
+.corner-hotspot--3 { left: 54.1%; top: 65.8%; width: 12.6%; height: 14.4%; clip-path: polygon(0 23%, 72% 0, 100% 68%, 100% 84%, 22% 100%, 8% 88%); }
 .corner-hotspot--hoodie { left: 81%; top: 18%; width: 10%; height: 46%; }
 .corner-hotspot--tee { left: 91%; top: 17%; width: 8%; height: 49%; }
 .corner-hotspot--hoodie .corner-hotspot__label, .corner-hotspot--tee .corner-hotspot__label { left: auto; right: 0; transform: none; }
@@ -58,10 +58,7 @@
 .corner-list button, .corner-list a { display: flex; justify-content: space-between; width: 100%; padding: 1rem 0; border: 0; border-bottom: 1px solid rgba(#e0c4a7,.28); color: #eadccd; background: none; cursor: pointer; text-decoration: none; font: 500 1.15rem $font-display; text-align: left; }
 .corner-list span { font: 700 .6rem $font-mono; text-transform: uppercase; }
 .corner-list .corner-list-book { justify-content: flex-start; gap: clamp(.8rem,2vw,1.35rem); align-items: center; }
-.corner-list-cover { position: relative; display: block; flex: 0 0 clamp(3.1rem,6vw,4.25rem); aspect-ratio: 2 / 3; overflow: hidden; border-radius: .08rem .2rem .16rem .08rem; background-image: linear-gradient(125deg, rgba(#d9ad7e,.16), transparent 45%, rgba(#070506,.22)),var(--cover-art); background-size: 100% 100%,300% 200%; background-position: center,var(--cover-x) var(--cover-y); box-shadow: inset .18rem .1rem .35rem rgba(#dcb590,.23), inset -.25rem -.25rem .4rem rgba(#070508,.55), .18rem .25rem .35rem rgba(#000,.42); filter: sepia(.12) saturate(.78); }
-.corner-list .corner-list-cover__imprint { position: absolute; inset: 8%; display: flex; flex-direction: column; justify-content: space-between; align-items: center; padding: 9% 2%; border: 1px solid rgba(#dcc39b,.46); color: #ecd7b7; text-align: center; text-shadow: 0 1px 3px #090507; }
-.corner-list .corner-list-cover__imprint small { font: 700 clamp(.25rem,.5vw,.34rem) 'Courier Prime',monospace; letter-spacing: .02em; }
-.corner-list .corner-list-cover__imprint strong { font: 600 clamp(.5rem,.88vw,.72rem)/.95 'Cormorant Garamond',Georgia,serif; text-wrap: balance; overflow-wrap: anywhere; }
+.corner-list-cover { position: relative; display: block; flex: 0 0 clamp(3.1rem,6vw,4.25rem); aspect-ratio: 3 / 4; overflow: hidden; border-radius: .08rem .2rem .16rem .08rem; background: var(--cover-art) center / cover no-repeat; box-shadow: inset .18rem .1rem .35rem rgba(#dcb590,.15), inset -.25rem -.25rem .4rem rgba(#070508,.35), .18rem .25rem .35rem rgba(#000,.42); }
 .corner-list .corner-list-book__title { flex: 1; min-width: 0; font: 500 1.15rem $font-display; text-transform: none; }
 .corner-list .corner-list-book__time { flex: 0 0 auto; color: #c7ab94; }
 .corner-list-book:hover .corner-list-cover, .corner-list-book:focus-visible .corner-list-cover { filter: sepia(.06) saturate(.96) brightness(1.1); }
@@ -95,9 +92,9 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-scene__image { object-position: center; }
   // A separate transparent prop stays clear of the first story book.
   .corner-belonging--registry { display: none; }
-  .registry-prop { left: 6%; top: 63.2%; width: 25%; height: 9%; z-index: 5; }
-  .registry-prop img { display: block; width: 100%; height: 100%; object-fit: fill; pointer-events: none; transform: rotate(-6deg) skewX(-4deg) scaleY(.91); filter: brightness(.72) saturate(.78) drop-shadow(0 .7rem .5rem rgba(9, 3, 4, .8)); }
-  .registry-prop:hover img, .registry-prop:focus-visible img { filter: brightness(.84) saturate(.85) drop-shadow(0 .7rem .55rem rgba(9, 3, 4, .85)); }
+  .registry-prop { left: 12.2%; top: 64.45%; width: 20.5%; height: 11.72%; z-index: 5; }
+  .registry-prop img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 .25rem .2rem rgba(9, 3, 4, .28)); }
+  .registry-prop:hover img, .registry-prop:focus-visible img { filter: brightness(1.12) drop-shadow(0 .35rem .32rem rgba(9, 3, 4, .44)); }
   .corner-belonging--night-shift-hoodie { -webkit-mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); }
   .corner-belonging--after-hours-baby-tee { -webkit-mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); }
   .corner-belonging--mimi-plush { -webkit-mask-image: radial-gradient(ellipse 15% 9% at 19% 57%, #000 52%, transparent 100%); mask-image: radial-gradient(ellipse 15% 9% at 19% 57%, #000 52%, transparent 100%); }
@@ -111,9 +108,9 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 
   .corner-hotspot__label { display: none; }
   // Match the photographed book silhouettes in the 1024 × 1536 room image.
-  .corner-hotspot--1 { left: 33.2%; top: 60.2%; width: 20.5%; height: 11.3%; transform: none; }
-  .corner-hotspot--2 { left: 53.8%; top: 59.7%; width: 21%; height: 11.3%; transform: none; }
-  .corner-hotspot--3 { left: 74.9%; top: 57.7%; width: 22.3%; height: 11.5%; transform: none; }
+  .corner-hotspot--1 { left: 27.8%; top: 61.3%; width: 24.4%; height: 12.8%; transform: none; }
+  .corner-hotspot--2 { left: 49.3%; top: 59.7%; width: 25.8%; height: 13.5%; transform: none; }
+  .corner-hotspot--3 { left: 70.9%; top: 58.6%; width: 25.8%; height: 12%; transform: none; }
   .corner-hotspot--hoodie { left: 79%; top: 35%; width: 16%; height: 15%; }
   .corner-hotspot--tee { left: 86%; top: 20%; width: 14%; height: 15%; }
   .corner-plush { left: 8%; top: 51%; width: 25%; height: 14%; padding: 0; border: 0; background: transparent; font-size: 0; }
