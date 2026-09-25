@@ -28,15 +28,19 @@
 .corner-room-link:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
 
 /* The book is already in the photograph; this is its invisible, keyboard-accessible hit area. */
-.registry-prop { position: absolute; z-index: 3; left: 0; top: 75%; width: 13%; height: 13%; padding: 0; border: 0; background: transparent; cursor: pointer; transition: box-shadow .35s ease; }
+.registry-prop { position: absolute; z-index: 3; left: -1%; top: 74%; width: 16%; height: 15%; padding: 0; border: 1px solid transparent; background: transparent; cursor: pointer; transition: border-color .3s ease, box-shadow .3s ease; }
 .registry-prop img { display: none; }
-.registry-prop:hover { box-shadow: inset 0 0 2rem rgba(#c6a07d,.13); }
+.registry-prop::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
+.registry-prop:hover, .registry-prop:focus-visible { border-color: rgba(#f2e8da,.26); box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
+.registry-prop:hover::after, .registry-prop:focus-visible::after { opacity: 1; }
 .registry-prop:focus-visible { outline: 2px solid #ead3a8; outline-offset: 3px; }
+.corner-books { position: absolute; z-index: 3; inset: 0; pointer-events: none; }
+.corner-books .corner-hotspot { pointer-events: auto; }
 .corner-hotspot { position: absolute; display: block; color: #f2e8da; text-decoration: none; cursor: pointer; background: transparent; border: 0; padding: 0; font: 700 .68rem $font-mono; text-align: left; }
 .corner-rack .corner-hotspot { z-index: 4; }
 .corner-hotspot__target { display: block; width: 100%; height: 100%; border: 1px solid transparent; transition: background .2s, border-color .2s; }
 .corner-hotspot:hover .corner-hotspot__target, .corner-hotspot:focus-visible .corner-hotspot__target { border-color: rgba(#e8d4b9,.6); background: rgba(#e8d4b9,.08); }
-.corner-hotspot:focus-visible, .corner-list-toggle:focus-visible, .corner-plush:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
+.corner-hotspot:focus-visible, .corner-list-toggle:focus-visible { outline: 2px solid #f2d4ad; outline-offset: 3px; }
 .corner-hotspot__label { position: absolute; top: 100%; left: 50%; white-space: nowrap; transform: translateX(-50%); padding: .48rem .64rem; background: rgba(#1b1110,.86); border: 1px solid rgba(#e0b998,.48); box-shadow: 0 .25rem .8rem rgba(#000,.5); }
 .corner-hotspot__label span { margin-left: .35rem; }
 .corner-hotspot--book { top: 0; height: 0; }
@@ -44,13 +48,13 @@
 .corner-hotspot--book:hover .corner-hotspot__target, .corner-hotspot--book:focus-visible .corner-hotspot__target { border-color: rgba(#f2e8da,.26); background: transparent; box-shadow: inset 0 0 3rem rgba(#7b1d25,.18); }
 .corner-hotspot--book::after { position: absolute; inset: -.8rem; content: ''; pointer-events: none; opacity: 0; background: radial-gradient(circle, rgba(105,20,27,.22), transparent 68%); transition: opacity .3s ease; }
 .corner-hotspot--book:hover::after, .corner-hotspot--book:focus-visible::after { opacity: 1; }
-.corner-hotspot--1 { left: 31.6%; top: 67.4%; width: 12.7%; height: 14.2%; clip-path: polygon(0 17%, 64% 0, 100% 70%, 100% 84%, 30% 100%, 14% 96%); }
-.corner-hotspot--2 { left: 44%; top: 66%; width: 11.7%; height: 15%; clip-path: polygon(0 23%, 83% 0, 100% 71%, 100% 88%, 17% 100%, 8% 90%); }
-.corner-hotspot--3 { left: 54.1%; top: 65.8%; width: 12.6%; height: 14.4%; clip-path: polygon(0 23%, 72% 0, 100% 68%, 100% 84%, 22% 100%, 8% 88%); }
+.corner-hotspot--1 { left: 31.6%; top: 67.4%; width: 12.7%; height: 14.2%; }
+.corner-hotspot--2 { left: 44%; top: 66%; width: 11.7%; height: 15%; }
+.corner-hotspot--3 { left: 54.1%; top: 65.8%; width: 12.6%; height: 14.4%; }
 .corner-hotspot--hoodie { left: 81%; top: 18%; width: 10%; height: 46%; }
 .corner-hotspot--tee { left: 91%; top: 17%; width: 8%; height: 49%; }
+.corner-hotspot--mimi { z-index: 4; left: 10%; top: 57%; width: 14%; height: 22%; }
 .corner-hotspot--hoodie .corner-hotspot__label, .corner-hotspot--tee .corner-hotspot__label { left: auto; right: 0; transform: none; }
-.corner-plush { position: absolute; left: 10%; top: 73%; padding: .5rem .65rem; background: rgba(#1b1110,.85); color: #eee1d1; font: 700 .64rem $font-mono; text-decoration: none; border: 1px solid rgba(#e0b998,.48); }
 .corner-list-toggle { position: absolute; right: 3%; bottom: 3%; padding: .65rem .85rem; border: 1px solid rgba(#ead4bc,.48); color: #f1e3d1; background: rgba(#160d0c,.85); cursor: pointer; font: 700 .66rem $font-mono; letter-spacing: .08em; text-transform: uppercase; }
 .corner-list-toggle span { margin-left: .8rem; }
 .corner-list { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: clamp(2rem, 7vw, 8rem); padding: 3rem clamp(1.5rem, 7vw, 8rem); background: #211411; }
@@ -92,8 +96,8 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-scene__image { object-position: center; }
   // A separate transparent prop stays clear of the first story book.
   .corner-belonging--registry { display: none; }
-  .registry-prop { left: 12.2%; top: 64.45%; width: 20.5%; height: 11.72%; z-index: 5; }
-  .registry-prop img { display: block; width: 100%; height: 100%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 .25rem .2rem rgba(9, 3, 4, .28)); }
+  .registry-prop { left: 9%; top: 63.4%; width: 23.7%; height: 13.8%; z-index: 5; }
+  .registry-prop img { position: absolute; left: 13.5%; top: 7.6%; display: block; width: 86.5%; height: 84.9%; object-fit: contain; pointer-events: none; filter: drop-shadow(0 .25rem .2rem rgba(9, 3, 4, .28)); }
   .registry-prop:hover img, .registry-prop:focus-visible img { filter: brightness(1.12) drop-shadow(0 .35rem .32rem rgba(9, 3, 4, .44)); }
   .corner-belonging--night-shift-hoodie { -webkit-mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 24% at 88% 34%, #000 54%, transparent 100%); }
   .corner-belonging--after-hours-baby-tee { -webkit-mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); mask-image: radial-gradient(ellipse 9% 14% at 96% 26%, #000 54%, transparent 100%); }
@@ -113,7 +117,7 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
   .corner-hotspot--3 { left: 70.9%; top: 58.6%; width: 25.8%; height: 12%; transform: none; }
   .corner-hotspot--hoodie { left: 79%; top: 35%; width: 16%; height: 15%; }
   .corner-hotspot--tee { left: 86%; top: 20%; width: 14%; height: 15%; }
-  .corner-plush { left: 8%; top: 51%; width: 25%; height: 14%; padding: 0; border: 0; background: transparent; font-size: 0; }
+  .corner-hotspot--mimi { left: 8%; top: 51%; width: 25%; height: 14%; }
   .corner-list-toggle { right: 4%; bottom: 3%; }
   .corner-list { display: block; }
   .corner-list > div + div { margin-top: 2.5rem; }

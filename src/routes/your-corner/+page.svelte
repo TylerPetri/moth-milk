@@ -124,7 +124,7 @@
       {#if !auth.userId || owned.includes('night-shift-hoodie')}<a class="corner-hotspot corner-hotspot--hoodie" href="/product/night-shift-hoodie" aria-label="View Night Shift Hoodie"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">Night Shift Hoodie {owned.includes('night-shift-hoodie') ? '· yours' : '↗'}</span></a>{/if}
       {#if !auth.userId || owned.includes('after-hours-baby-tee')}<a class="corner-hotspot corner-hotspot--tee" href="/product/after-hours-baby-tee" aria-label="View After Hours Baby Tee"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">After Hours Tee {owned.includes('after-hours-baby-tee') ? '· yours' : '↗'}</span></a>{/if}
     </div>
-    {#if !auth.userId || owned.includes('mimi-plush')}<a class="corner-plush" href="/product/mimi-plush" aria-label="Meet Mimi Moth Plush">{owned.includes('mimi-plush') ? 'Mimi · yours' : 'meet Mimi ↗'}</a>{/if}
+    {#if !auth.userId || owned.includes('mimi-plush')}<a class="corner-hotspot corner-hotspot--mimi" href="/product/mimi-plush" aria-label="Meet Mimi Moth Plush"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">{owned.includes('mimi-plush') ? 'Mimi · yours' : 'meet Mimi ↗'}</span></a>{/if}
     <button class="corner-list-toggle" type="button" aria-expanded={listOpen} aria-controls="corner-list" onclick={() => (listOpen = !listOpen)}>{listOpen ? 'hide list' : 'view as list'} <span aria-hidden="true">{listOpen ? '×' : '☰'}</span></button>
   </section>
 
