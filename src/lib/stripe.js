@@ -2,10 +2,10 @@
 let stripePromise;
 export function loadStripe() {
   if (typeof window === 'undefined') return Promise.reject(new Error('Checkout is available in the browser.'));
-  if (!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) return Promise.reject(new Error('Stripe publishable key is not configured.'));
+  if (!import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) return Promise.reject(new Error('Stripe publishable key is not configured.'));
   stripePromise ||= new Promise((resolve, reject) => {
     const ready = () => {
-      if (window.Stripe) resolve(window.Stripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY));
+      if (window.Stripe) resolve(window.Stripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY));
       else reject(new Error('Stripe could not load.'));
     };
     if (window.Stripe) return ready();

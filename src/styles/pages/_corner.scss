@@ -133,7 +133,6 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 .corner-personal-note { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1.2rem 5vw; background: #201310; color: #dfc6a8; font: .75rem 'Courier Prime', monospace; }
 .corner-personal-note button { border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: inherit; cursor: pointer; font: inherit; }
 .corner-scene-notice { margin: 0; padding: 1rem 5vw; color: #edc1ab; font: .8rem 'Courier Prime', monospace; }
-.library-keep { margin-left: .65rem; }
 .account-note { min-height: 75vh; padding: 10rem max(6vw, 1.5rem) 5rem; color: #eadccd; background: #160d0c url('/textures/archive-paper.svg') center / 24rem; }
 .account-note__eyebrow { color: #b89382; font: .8rem 'Courier Prime', monospace; }
 .account-note h1 { max-width: 30ch; font: italic 600 clamp(2.4rem, 6vw, 5rem)/1.1 'Cormorant Garamond', Georgia, serif; }

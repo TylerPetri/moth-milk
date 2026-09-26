@@ -98,6 +98,7 @@
 
   &__copy > span { font-family: $font-mono; font-size: 0.54rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
   &__copy p { max-width: 27ch; margin: 0.65rem 0 0.85rem; font-family: $font-display; font-size: clamp(0.82rem, 0.95vw, 0.98rem); font-weight: 500; line-height: 1.38; }
+  &__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.15rem; }
   &__copy button {
     position: relative;
     min-width: 9.2rem;

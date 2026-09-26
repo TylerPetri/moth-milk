@@ -27,7 +27,7 @@
 .site-footer > * { position: relative; z-index: 1; }
 .site-footer__story { display: block; width: fit-content; max-width: 100%; font-family: 'Bodoni Moda', Georgia, serif; font-size: clamp(2rem, 6vw, 5.5rem); font-weight: 700; letter-spacing: -0.065em; line-height: 1.28; }
 .site-footer__headline { display: block; white-space: nowrap; padding: 0.12em 0.5em 0.18em 0.02em; }
-.site-footer__headline > span { color: #edd7c3; background: url('/images/lookbook-type/look-ink.webp') center / 13rem 5rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.site-footer__headline > span { display: inline-block; padding-right: 0.13em; color: #edd7c3; background: url('/images/lookbook-type/look-ink.webp') center / 13rem 5rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .site-footer__headline em { display: inline-block; padding-right: 0.28em; color: #e2a9aa; font-family: $font-serif; font-weight: 600; background: url('/images/lookbook-type/book-satin.webp') center / 12rem 5rem; -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .site-footer__story small { display: block; margin-top: 0.55rem; color: #ddbaa7; font-family: $font-mono; font-size: 0.67rem; font-weight: 700; letter-spacing: 0.13em; line-height: 1.4; text-transform: uppercase; }
 .site-footer__story small span { display: inline-block; transition: transform 0.2s ease; }

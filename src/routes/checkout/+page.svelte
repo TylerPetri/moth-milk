@@ -1,6 +1,6 @@
 <script>
   // @ts-nocheck
-  import { onMount } from 'svelte';
+  import { onMount, tick } from 'svelte';
   import { ui, persistCart } from '$lib/stores/ui.svelte.js';
   import { auth, initAuth } from '$lib/stores/auth.svelte.js';
   import { catalog, variantFor } from '$lib/catalog.js';
@@ -8,24 +8,43 @@
   import { loadStripe } from '$lib/stripe.js';
 
   const checkoutKey = 'moth-milk-pending-checkout';
+  const stubKey = 'moth-milk-stub-checkout';
+  const stubMode = import.meta.env.PUBLIC_PAYMENT_MODE !== 'stripe';
+  const testMode = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith('pk_test_');
   const subtotal = $derived(ui.cart.reduce((sum, item) => sum + Number(item.price || 0), 0));
   let email = $state(''); let firstName = $state(''); let lastName = $state('');
   let line1 = $state(''); let city = $state(''); let province = $state(''); let postalCode = $state(''); let country = $state('CA');
   let error = $state(''); let notice = $state(''); let phase = $state('details'); let processing = $state(false);
   let total = $state(null); let checkout = $state(null); let stripe; let elements; let paymentElement;
+  let stubCheckout = $state(null);
   let paymentContainer = $state(null); let currentCheckoutStatus = ''; let returnedFromStripe = false;
   let stopped = false;
 
   function saveCheckout(value) { checkout = value; sessionStorage.setItem(checkoutKey, JSON.stringify(value)); }
   function clearCheckout() { checkout = null; sessionStorage.removeItem(checkoutKey); }
+  function saveStub(value) { stubCheckout = value; sessionStorage.setItem(stubKey, JSON.stringify(value)); }
+  function clearStub() { stubCheckout = null; sessionStorage.removeItem(stubKey); }
   async function paymentScreen(secret) {
     stripe = await loadStripe();
     if (!stripe) throw new Error('Secure card entry is unavailable.');
     paymentElement?.destroy();
-    elements = stripe.elements({ clientSecret: secret, appearance: { theme: 'night', variables: { colorPrimary: '#bb9391', colorBackground: '#201719', colorText: '#f1e2d6', fontFamily: 'Georgia, serif', borderRadius: '2px' } } });
+    elements = stripe.elements({ clientSecret: secret, appearance: {
+      theme: 'night',
+      variables: {
+        colorPrimary: '#d6a3a5', colorBackground: '#211619', colorText: '#f2e2d6',
+        colorDanger: '#ffb7af', colorTextSecondary: '#cfb7b2', colorTextPlaceholder: '#a58c8b',
+        fontFamily: 'Georgia, serif', fontSizeBase: '16px', borderRadius: '4px', spacingUnit: '5px'
+      },
+      rules: {
+        '.Input': { border: '1px solid #886d70', boxShadow: 'inset 0 1px 5px rgba(0,0,0,.25)' },
+        '.Input:focus': { border: '1px solid #e0b3aa', boxShadow: '0 0 0 2px rgba(214,163,165,.24)' },
+        '.Tab': { border: '1px solid #806267' },
+        '.Tab--selected': { border: '1px solid #d6a3a5', backgroundColor: '#352127' }
+      }
+    } });
     paymentElement = elements.create('payment', { layout: 'tabs' });
     phase = 'payment';
-    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await tick();
     paymentElement.mount(paymentContainer);
   }
   async function status() {
@@ -33,11 +52,11 @@
     const current = await api(`/v1/orders/${checkout.id}/checkout-status`, { method: 'POST', body: JSON.stringify({ idempotency_key: checkout.idempotency_key }) });
     currentCheckoutStatus = current.status;
     if (current.status === 'confirmed') {
-      clearCheckout(); ui.cart = []; persistCart(); paymentElement?.destroy();
+      clearCheckout(); clearStub(); ui.cart = []; persistCart(); paymentElement?.destroy();
       phase = 'confirmed'; notice = 'It is yours. A note is on its way.'; return;
     }
     if (current.status === 'failed' || current.status === 'cancelled') {
-      clearCheckout(); paymentElement?.destroy(); phase = 'failed'; notice = 'This checkout did not finish. Your bag is still here.'; return;
+      clearCheckout(); clearStub(); paymentElement?.destroy(); phase = 'failed'; notice = 'This checkout did not finish. Your bag is still here.'; return;
     }
     phase = 'waiting';
     notice = current.status === 'paid' ? 'Payment received. The room is finishing your order.' : 'Waiting for the payment confirmation…';
@@ -51,6 +70,17 @@
     if (phase === 'waiting') notice = 'Still waiting. You can return later; this checkout will be here.';
   }
   async function resume() {
+    if (stubMode) {
+      const savedStub = JSON.parse(sessionStorage.getItem(stubKey) || 'null');
+      if (!savedStub?.idempotency_key) return;
+      stubCheckout = savedStub;
+      if (savedStub.id) {
+        checkout = savedStub;
+        try { await status(); if (phase === 'waiting') await waitForConfirmation(); }
+        catch (err) { error = err.message; }
+      } else { phase = 'payment'; total = savedStub.estimatedTotal; }
+      return;
+    }
     const saved = JSON.parse(sessionStorage.getItem(checkoutKey) || 'null');
     const url = new URL(location.href);
     returnedFromStripe = url.searchParams.has('payment_intent') || url.searchParams.has('redirect_status');
@@ -83,7 +113,7 @@
     processing = true; error = '';
     try {
       if (!ui.cart.length) throw new Error('Your bag is empty.');
-      if (!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) throw new Error('This room is not ready to take payments yet.');
+      if (!stubMode && !import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) throw new Error('This room is not ready to take payments yet.');
       const products = await catalog();
       const lines = ui.cart.map((item) => variantFor(products, item.slug, item.selectedSize));
       if (lines.some((item) => !item)) throw new Error('One of your things is no longer available in this shop. Please check your bag.');
@@ -91,6 +121,21 @@
       if (currencies.length !== 1) throw new Error('These things cannot be checked out together.');
       const items = lines.map((item) => ({ product_id: item.id, quantity: 1 }));
       const fingerprint = JSON.stringify({ items, email: email.toLowerCase().trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
+      if (stubMode) {
+        const existingStub = JSON.parse(sessionStorage.getItem(stubKey) || 'null');
+        if (existingStub && existingStub.fingerprint !== fingerprint) throw new Error('Finish the earlier checkout before changing your bag.');
+        const body = {
+          idempotency_key: existingStub?.idempotency_key || crypto.randomUUID(),
+          stripe_payment_method_id: 'pm_card_visa', customer_email: email.trim(),
+          customer_name: `${firstName} ${lastName}`.trim(), currency: currencies[0],
+          tax_country: country, tax_region: province,
+          shipping: { line1, city, state: province, postal_code: postalCode, country },
+          items: lines.map((item) => ({ product_id: item.id, sku: item.sku, quantity: 1, unit_price: item.amount, currency: item.currency }))
+        };
+        const estimatedTotal = lines.reduce((sum, item) => sum + item.amount, 0);
+        saveStub({ idempotency_key: body.idempotency_key, fingerprint, body, estimatedTotal });
+        total = estimatedTotal; phase = 'payment'; return;
+      }
       const existing = JSON.parse(sessionStorage.getItem(checkoutKey) || 'null');
       if (existing && existing.fingerprint !== fingerprint) throw new Error('Finish or cancel the earlier checkout before changing your bag.');
       const key = existing?.idempotency_key || crypto.randomUUID();
@@ -105,6 +150,22 @@
     finally { processing = false; }
   }
   async function pay() {
+    if (stubMode) {
+      if (!stubCheckout?.body || processing) return;
+      processing = true; error = '';
+      try {
+        const response = await api('/v1/orders', { method: 'POST', body: JSON.stringify(stubCheckout.body), ...(auth.access ? { token: auth.access } : {}) });
+        const updated = { ...stubCheckout, id: response.id };
+        saveStub(updated); checkout = updated;
+        if (response.status === 'confirmed') {
+          clearCheckout(); clearStub(); ui.cart = []; persistCart();
+          phase = 'confirmed'; notice = 'It is yours. A note is on its way.';
+        }
+        else { phase = 'waiting'; notice = 'The room is finishing your order…'; await waitForConfirmation(); }
+      } catch (err) { error = err.message; }
+      finally { processing = false; }
+      return;
+    }
     if (!stripe || !elements || processing) return;
     processing = true; error = '';
     try {
@@ -119,7 +180,7 @@
   }
   function cancelPending() {
     // The backend's reservation worker cancels the unpaid intent and releases stock.
-    clearCheckout(); paymentElement?.destroy(); phase = 'details'; notice = '';
+    clearCheckout(); clearStub(); paymentElement?.destroy(); phase = 'details'; notice = '';
   }
 </script>
 
@@ -135,9 +196,17 @@
         {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<button type="button" onclick={() => (phase = 'details')}>Try again ↗</button>{:else}<button type="button" onclick={waitForConfirmation}>Check again ↗</button>{/if}</div>
         {:else if phase === 'payment'}
           <p class="checkout-tv__intro">One last thing.</p>
-          <div class="checkout-form"><fieldset class="checkout-form__payment"><legend>03 / Payment</legend><div class="checkout-form__card checkout-form__card--stripe" bind:this={paymentContainer}></div></fieldset>
+          <div class="checkout-form"><fieldset class="checkout-form__payment"><legend>03 / Payment</legend>
+            <div class="checkout-payment">
+              <div class="checkout-payment__header"><span class="checkout-payment__stitch" aria-hidden="true">✳</span><div><strong>Keep this one close.</strong><small>{stubMode ? 'A test card for this room.' : 'Card details go straight to Stripe.'}</small></div><span class="checkout-payment__star" aria-hidden="true">✦</span></div>
+              {#if stubMode}<div class="checkout-payment__demo" role="status"><span>✦ MOTH MILK · TEST CARD</span><strong>•••• &nbsp; •••• &nbsp; •••• &nbsp; 4242</strong><small>Visa test payment · no card details needed</small></div>
+              {:else}<div class="checkout-form__card checkout-form__card--stripe" bind:this={paymentContainer}></div>{/if}
+              <div class="checkout-payment__footer"><span aria-hidden="true">✧ · ✧ · ✧</span><span>Safe inside the screen</span></div>
+            </div>
+            {#if !stubMode && testMode}<p class="checkout-payment__test">Testing the room? Use 4242 4242 4242 4242, any future expiry, and any three digits for CVC.</p>{/if}
+          </fieldset>
             {#if total !== null}<p>Amount from the shop / ${(total / 100).toFixed(2)} CAD</p>{/if}
-            <button type="button" disabled={processing} onclick={pay}>{processing ? 'One moment…' : 'Place order'} <span aria-hidden="true">→</span></button>
+            <button type="button" disabled={processing} onclick={pay}>{processing ? 'One moment…' : stubMode ? 'Place test order' : 'Place order'} <span aria-hidden="true">→</span></button>
             <button class="checkout-form__secondary" type="button" onclick={cancelPending}>Start over</button></div>
         {:else}
           <p class="checkout-tv__intro">Where should your things go?</p>
