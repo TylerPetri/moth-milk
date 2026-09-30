@@ -1,10 +1,27 @@
-node_modules
-.svelte-kit
-build
-.sites-runtime
-.DS_Store
+# Dependencies and generated output
+node_modules/
+.svelte-kit/
+build/
+.vercel/
+.sites-runtime/
 
+# Browser test reports
+playwright-report/
+test-results/
+blob-report/
+playwright/.cache/
+
+# Local environment files
+.env
+.env.*
+!env.example
+!.env.example
+
+# Logs and system files
+*.log
+.DS_Store
+Thumbs.db
+
+# Archives
 *.tar.gz
 *.zip
-
-.env

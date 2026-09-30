@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { auth, withAuth } from '$lib/stores/auth.svelte.js';
+import { friendlyError } from '$lib/recovery.js';
 import { libraryBooks } from '$lib/data/library.js';
 
 export const corner = $state({ slugs: [], loaded: false, busy: false, error: '' });
@@ -9,7 +10,7 @@ export async function loadCorner() {
     const data = await withAuth('/v1/auth/me/books');
     corner.slugs = data.books.filter((slug) => libraryBooks.some((book) => book.slug === slug));
     corner.error = '';
-  } catch (error) { corner.error = error.message; }
+  } catch (error) { corner.error = friendlyError(error); }
   corner.loaded = true;
 }
 export async function toggleCornerBook(slug) {
@@ -22,6 +23,6 @@ export async function toggleCornerBook(slug) {
     const response = await withAuth('/v1/auth/me/books', { method: 'PUT', body: JSON.stringify({ books: next }) });
     corner.slugs = response.books;
     corner.error = '';
-  } catch (error) { corner.error = error.message; throw error; }
+  } catch (error) { corner.error = friendlyError(error); throw error; }
   finally { corner.busy = false; }
 }

@@ -1,3 +1,4 @@
+import { readSaved, writeSaved } from '$lib/checkout.js';
 /**
  * @typedef {Object} StoreProduct
  * @property {string} slug
@@ -14,11 +15,11 @@ const cartKey = 'moth-milk-bag';
 export function initCart() {
   if (typeof sessionStorage === 'undefined') return;
   try {
-    const saved = JSON.parse(sessionStorage.getItem(cartKey) || '[]');
+    const saved = readSaved(cartKey) || [];
     if (Array.isArray(saved)) ui.cart = saved.filter((item) => typeof item.slug === 'string' && typeof item.selectedSize === 'string' && typeof item.lineId === 'string');
   } catch { ui.cart = []; }
 }
-export function persistCart() { if (typeof sessionStorage !== 'undefined') sessionStorage.setItem(cartKey, JSON.stringify(ui.cart)); }
+export function persistCart() { if (typeof window !== 'undefined') writeSaved(cartKey, $state.snapshot(ui.cart)); }
 
 export const ui = $state({
   mood: 'soft',
@@ -29,7 +30,7 @@ export const ui = $state({
 
 /** @param {StoreProduct} product @param {string} [size] */
 export function addToCart(product, size = product.sizes[0]) {
-  ui.cart.push({ ...product, selectedSize: size, lineId: `${product.slug}-${Date.now()}` });
+  ui.cart.push({ ...product, selectedSize: size, lineId: crypto.randomUUID() });
   ui.cartOpen = true;
   persistCart();
 }

@@ -6,26 +6,58 @@
   import { catalog, variantFor } from '$lib/catalog.js';
   import { api } from '$lib/api.js';
   import { loadStripe } from '$lib/stripe.js';
+  import { friendlyError, isUnavailable, watchRecovery } from '$lib/recovery.js';
+  import { readSaved, writeSaved, saveReceipt, receipts, money, shipmentLabel } from '$lib/checkout.js';
 
   const checkoutKey = 'moth-milk-pending-checkout';
+  const draftKey = 'moth-milk-checkout-details';
   const stubKey = 'moth-milk-stub-checkout';
-  const stubMode = import.meta.env.PUBLIC_PAYMENT_MODE !== 'stripe';
+  const stubMode = import.meta.env.PUBLIC_PAYMENT_MODE === 'stub';
   const testMode = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY?.startsWith('pk_test_');
   const subtotal = $derived(ui.cart.reduce((sum, item) => sum + Number(item.price || 0), 0));
   let email = $state(''); let firstName = $state(''); let lastName = $state('');
   let line1 = $state(''); let city = $state(''); let province = $state(''); let postalCode = $state(''); let country = $state('CA');
-  let error = $state(''); let notice = $state(''); let phase = $state('details'); let processing = $state(false);
+  let error = $state(''); let notice = $state(''); let phase = $state('restoring'); let processing = $state(false);
   let total = $state(null); let checkout = $state(null); let stripe; let elements; let paymentElement;
   let stubCheckout = $state(null);
-  let paymentContainer = $state(null); let currentCheckoutStatus = ''; let returnedFromStripe = false;
-  let stopped = false;
+  let paymentContainer = $state(null); let currentCheckoutStatus = $state(''); let returnedFromStripe = false;
+  let stopped = false; let polling = $state(false); let pollController; let receipt = $state(null);
+  let currency = $state('CAD'); let recovering = $state(false); let initialized = $state(false);
+  const checkoutOutage = 'Something’s wrong on our end. Your checkout is saved—come back here to check it. Please don’t pay again.';
+  function showError(err) {
+    if (receipt?.status === 'confirmed') { error = friendlyError(err, 'Shipping updates are temporarily unavailable. Your order is still confirmed.'); return; }
+    error = friendlyError(err, checkout || stubCheckout || receipt ? checkoutOutage : 'Something’s wrong on our end. Your bag and details are saved. Please try again or come back later.');
+  }
+  $effect(() => {
+    const details = { customer_email: email, customer_name: `${firstName} ${lastName}`.trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } };
+    if (initialized && phase === 'details') writeSaved(draftKey, details);
+  });
+  const summaryItems = $derived(receipt?.items || checkout?.items || stubCheckout?.items || ui.cart);
+  function restore(saved) {
+    const body = saved.body || {}; const address = body.shipping || {};
+    email = body.customer_email || email;
+    [firstName, ...nameParts] = (body.customer_name || '').split(' '); lastName = nameParts.join(' ');
+    line1 = address.line1 || ''; city = address.city || ''; province = address.state || '';
+    postalCode = address.postal_code || ''; country = address.country || 'CA';
+    total = saved.total ?? saved.estimatedTotal ?? null; currency = body.currency || saved.currency || 'CAD';
+  }
+  let nameParts = [];
+  function finish(current) {
+    const saved = checkout || stubCheckout;
+    receipt = saveReceipt({ ...saved, ...current, total: current.total ?? saved.total ?? total, currency: current.currency || saved.body?.currency || currency, confirmedAt: saved.confirmedAt || new Date().toISOString() });
+    const purchased = new Set((saved.items || []).map(item => item.lineId));
+    ui.cart = ui.cart.filter(item => !purchased.has(item.lineId)); persistCart();
+    history.replaceState(history.state, '', `/checkout?order=${encodeURIComponent(receipt.id)}`);
+    clearCheckout(); clearStub(); writeSaved(draftKey, null); paymentElement?.destroy(); phase = 'confirmed'; notice = 'It is yours. Your order is confirmed.';
+  }
 
-  function saveCheckout(value) { checkout = value; sessionStorage.setItem(checkoutKey, JSON.stringify(value)); }
-  function clearCheckout() { checkout = null; sessionStorage.removeItem(checkoutKey); }
-  function saveStub(value) { stubCheckout = value; sessionStorage.setItem(stubKey, JSON.stringify(value)); }
-  function clearStub() { stubCheckout = null; sessionStorage.removeItem(stubKey); }
+  function saveCheckout(value) { checkout = value; if (!writeSaved(checkoutKey, value)) throw new Error('This browser cannot save your checkout. Enable site storage before paying.'); }
+  function clearCheckout() { checkout = null; writeSaved(checkoutKey, null); }
+  function saveStub(value) { stubCheckout = value; if (!writeSaved(stubKey, value)) throw new Error('This browser cannot save your checkout. Enable site storage before paying.'); }
+  function clearStub() { stubCheckout = null; writeSaved(stubKey, null); }
   async function paymentScreen(secret) {
     stripe = await loadStripe();
+    if (stopped) return;
     if (!stripe) throw new Error('Secure card entry is unavailable.');
     paymentElement?.destroy();
     elements = stripe.elements({ clientSecret: secret, appearance: {
@@ -45,84 +77,130 @@
     paymentElement = elements.create('payment', { layout: 'tabs' });
     phase = 'payment';
     await tick();
+    if (stopped) { paymentElement?.destroy(); return; }
     paymentElement.mount(paymentContainer);
   }
-  async function status() {
-    if (!checkout) return;
-    const current = await api(`/v1/orders/${checkout.id}/checkout-status`, { method: 'POST', body: JSON.stringify({ idempotency_key: checkout.idempotency_key }) });
-    currentCheckoutStatus = current.status;
+  async function status(signal) {
+    const saved = checkout || receipt;
+    if (!saved?.id) return;
+    const current = await api(`/v1/orders/${saved.id}/checkout-status`, { method: 'POST', signal, timeoutMs: 15000, body: JSON.stringify({ idempotency_key: saved.idempotency_key, ...(saved.tracking_proof ? { tracking_proof: saved.tracking_proof } : {}) }) });
+    if (stopped || signal?.aborted) return;
+    if (!['reserved', 'paid', 'confirmed', 'failed', 'cancelled'].includes(current.status)) throw Object.assign(new Error('Checkout response unavailable.'), { retryable: true });
+    error = ''; currentCheckoutStatus = current.status;
     if (current.status === 'confirmed') {
-      clearCheckout(); clearStub(); ui.cart = []; persistCart(); paymentElement?.destroy();
-      phase = 'confirmed'; notice = 'It is yours. A note is on its way.'; return;
+      if (checkout) finish(current);
+      else { receipt = saveReceipt({ ...receipt, ...current, shipment: current.shipment_unavailable ? receipt.shipment : current.shipment || null, shipment_unavailable: Boolean(current.shipment_unavailable) }); phase = 'confirmed'; notice = 'It is yours. Your order is confirmed.'; }
+      return;
     }
     if (current.status === 'failed' || current.status === 'cancelled') {
-      clearCheckout(); clearStub(); paymentElement?.destroy(); phase = 'failed'; notice = 'This checkout did not finish. Your bag is still here.'; return;
+      paymentElement?.destroy(); phase = 'failed';
+      notice = current.status === 'cancelled' ? 'This checkout was cancelled. Your bag is still here.' : 'Your order could not be completed. Check with the shop before trying another payment if your card was charged.';
+      return;
     }
     phase = 'waiting';
-    notice = current.status === 'paid' ? 'Payment received. The room is finishing your order.' : 'Waiting for the payment confirmation…';
+    notice = current.status === 'paid' ? 'Payment received. We are confirming your order. Please do not pay again.' : 'Waiting for payment confirmation. Please do not pay again.';
   }
   async function waitForConfirmation() {
-    for (let attempt = 0; attempt < 30 && !stopped && checkout; attempt++) {
-      try { await status(); } catch (err) { if (err.status === 404) { error = err.message; return; } }
-      if (phase === 'confirmed' || phase === 'failed') return;
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-    }
-    if (phase === 'waiting') notice = 'Still waiting. You can return later; this checkout will be here.';
+    if (polling || stopped || phase === 'failed') return;
+    polling = true; pollController = new AbortController();
+    const signal = pollController.signal;
+    try {
+      for (let attempt = 0; attempt < 15 && !signal.aborted; attempt++) {
+        try { await status(signal); }
+        catch (err) {
+          if (signal.aborted) return;
+          if (err.status === 404) error = 'This receipt could not be verified. Keep your order number and contact the shop.'; else showError(err);
+          if (err.status === 404 || isUnavailable(err)) return;
+        }
+        if (phase === 'confirmed' || phase === 'failed' || (!checkout?.id && !receipt?.id)) return;
+        await new Promise(resolve => { const timer = setTimeout(done, Math.min(2000 * (attempt + 1), 10000)); function done() { clearTimeout(timer); signal.removeEventListener('abort', done); resolve(); } signal.addEventListener('abort', done, { once: true }); });
+      }
+      if (phase === 'waiting') notice = 'Confirmation is taking longer than usual. Your checkout is saved. Check again here; please do not pay again.';
+    } finally { polling = false; }
   }
   async function resume() {
+    if (recovering || polling || processing || stopped) return;
+    recovering = true;
+    try { await restoreCheckout(); } catch (err) { if (!stopped) showError(err); } finally { recovering = false; }
+  }
+  async function restoreCheckout() {
+    const urlParams = new URL(location.href).searchParams;
+    const orderId = urlParams.get('order');
+    const proof = new URLSearchParams(location.hash.slice(1)).get('proof') || urlParams.get('tracking_proof');
+    receipt = orderId ? receipts().find(item => item.id === orderId) : null;
+    if (orderId && proof) { receipt = saveReceipt({ ...receipt, id: orderId, tracking_proof: proof }); history.replaceState(history.state, '', `/checkout?order=${encodeURIComponent(orderId)}`); }
+    if (receipt) { total = receipt.total ?? null; currency = receipt.currency || 'CAD'; phase = receipt.status === 'confirmed' ? 'confirmed' : 'waiting'; notice = receipt.status === 'confirmed' ? 'It is yours. Your order is confirmed.' : 'Checking your receipt…'; await waitForConfirmation(); return; }
+    if (orderId) { error = 'This receipt is not saved on this device. Open the tracking link from your order email.'; return; }
     if (stubMode) {
-      const savedStub = JSON.parse(sessionStorage.getItem(stubKey) || 'null');
-      if (!savedStub?.idempotency_key) return;
-      stubCheckout = savedStub;
+      const savedStub = readSaved(stubKey);
+      if (!savedStub?.idempotency_key) { const draft = readSaved(draftKey); if (draft) restore({ body: draft }); phase = 'details'; return; }
+      stubCheckout = savedStub; restore(savedStub);
       if (savedStub.id) {
-        checkout = savedStub;
-        try { await status(); if (phase === 'waiting') await waitForConfirmation(); }
-        catch (err) { error = err.message; }
+        checkout = savedStub; phase = 'waiting'; notice = 'Checking your saved checkout. Please don’t pay again.';
+        await waitForConfirmation();
+      } else if (savedStub.paymentSubmitted) {
+        phase = 'waiting'; notice = checkoutOutage;
+        try { const response = await api('/v1/orders', { method: 'POST', body: JSON.stringify(savedStub.body), ...(auth.access ? { token: auth.access } : {}) }); const saved = { ...savedStub, id: response.id, total: response.total }; saveStub(saved); checkout = saved; await waitForConfirmation(); } catch (err) { showError(err); }
       } else { phase = 'payment'; total = savedStub.estimatedTotal; }
       return;
     }
-    const saved = JSON.parse(sessionStorage.getItem(checkoutKey) || 'null');
+    const saved = readSaved(checkoutKey);
     const url = new URL(location.href);
     returnedFromStripe = url.searchParams.has('payment_intent') || url.searchParams.has('redirect_status');
     if (returnedFromStripe) history.replaceState(history.state, '', location.pathname);
-    if (!saved?.id || !saved?.idempotency_key) return;
-    checkout = saved;
+    if (!saved?.idempotency_key) { const draft = readSaved(draftKey); if (draft) restore({ body: draft }); phase = 'details'; return; }
+    checkout = saved; restore(saved); phase = 'waiting'; notice = 'Checking your saved checkout. Please don’t pay again.';
+    if (!saved.id) {
+      try { const response = await api('/v1/orders/prepare', { method: 'POST', timeoutMs: 15000, body: JSON.stringify(saved.body), ...(auth.access ? { token: auth.access } : {}) }); saveCheckout({ ...saved, id: response.id, total: response.total }); total = response.total; await paymentScreen(response.payment_client_secret); }
+      catch (err) { showError(err); }
+      return;
+    }
     try {
       await status();
       if (phase === 'waiting' && currentCheckoutStatus === 'reserved' && !returnedFromStripe) {
         try {
           const response = await api('/v1/orders/prepare', { method: 'POST', body: JSON.stringify(saved.body), ...(auth.access ? { token: auth.access } : {}) });
-          total = response.total;
+          total = response.total; saveCheckout({ ...checkout, total });
           const stripeClient = await loadStripe();
           const intent = await stripeClient.retrievePaymentIntent(response.payment_client_secret);
           if (intent.paymentIntent?.status === 'succeeded' || intent.paymentIntent?.status === 'processing') await waitForConfirmation();
           else await paymentScreen(response.payment_client_secret);
         } catch (err) {
-          // An intent already completing at Stripe cannot return its client secret again.
+          error = 'Card entry could not be restored. Checking the saved payment first.';
           await waitForConfirmation();
         }
       } else if (phase === 'waiting') await waitForConfirmation();
-    } catch (err) { error = err.message; }
+    } catch (err) { showError(err); }
+  }
+  async function recover() {
+    if (recovering || processing || polling || stopped || phase === 'failed') return;
+    if (phase === 'confirmed' || (phase === 'waiting' && checkout?.id)) await waitForConfirmation();
+    else if (phase === 'waiting') await resume();
   }
   onMount(() => {
-    void (async () => { await initAuth(); if (auth.email) email = auth.email; await resume(); })();
-    return () => { stopped = true; paymentElement?.destroy(); };
+    const stopRecovery = watchRecovery(recover);
+    const pause = () => { if (document.visibilityState === 'hidden') pollController?.abort(); };
+    document.addEventListener('visibilitychange', pause);
+    void (async () => { try { await initAuth(); } catch { /* Guest checkout remains available. */ } if (auth.email) email = auth.email; await resume(); })().catch(showError).finally(() => { initialized = true; if (phase === 'restoring') phase = 'details'; });
+    return () => { stopped = true; stopRecovery(); document.removeEventListener('visibilitychange', pause); pollController?.abort(); paymentElement?.destroy(); };
   });
   async function prepare(event) {
-    event.preventDefault(); if (processing) return;
+    event.preventDefault(); if (processing || recovering || polling) return;
     processing = true; error = '';
     try {
       if (!ui.cart.length) throw new Error('Your bag is empty.');
       if (!stubMode && !import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) throw new Error('This room is not ready to take payments yet.');
+      writeSaved(draftKey, { customer_email: email, customer_name: `${firstName} ${lastName}`.trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
       const products = await catalog();
       const lines = ui.cart.map((item) => variantFor(products, item.slug, item.selectedSize));
       if (lines.some((item) => !item)) throw new Error('One of your things is no longer available in this shop. Please check your bag.');
       const currencies = [...new Set(lines.map((item) => item.currency))];
       if (currencies.length !== 1) throw new Error('These things cannot be checked out together.');
+      currency = currencies[0];
       const items = lines.map((item) => ({ product_id: item.id, quantity: 1 }));
-      const fingerprint = JSON.stringify({ items, email: email.toLowerCase().trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
+      const fingerprint = JSON.stringify({ items, name: `${firstName} ${lastName}`.trim(), email: email.toLowerCase().trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
       if (stubMode) {
-        const existingStub = JSON.parse(sessionStorage.getItem(stubKey) || 'null');
+        const existingStub = readSaved(stubKey);
         if (existingStub && existingStub.fingerprint !== fingerprint) throw new Error('Finish the earlier checkout before changing your bag.');
         const body = {
           idempotency_key: existingStub?.idempotency_key || crypto.randomUUID(),
@@ -133,54 +211,58 @@
           items: lines.map((item) => ({ product_id: item.id, sku: item.sku, quantity: 1, unit_price: item.amount, currency: item.currency }))
         };
         const estimatedTotal = lines.reduce((sum, item) => sum + item.amount, 0);
-        saveStub({ idempotency_key: body.idempotency_key, fingerprint, body, estimatedTotal });
+        saveStub({ idempotency_key: body.idempotency_key, fingerprint, body, estimatedTotal, items: structuredClone($state.snapshot(ui.cart)), currency: currencies[0] });
         total = estimatedTotal; phase = 'payment'; return;
       }
-      const existing = JSON.parse(sessionStorage.getItem(checkoutKey) || 'null');
+      const existing = readSaved(checkoutKey);
       if (existing && existing.fingerprint !== fingerprint) throw new Error('Finish or cancel the earlier checkout before changing your bag.');
       const key = existing?.idempotency_key || crypto.randomUUID();
       const body = { idempotency_key: key, customer_email: email.trim(), customer_name: `${firstName} ${lastName}`.trim(), currency: currencies[0], tax_country: country, tax_region: province, shipping: { line1, city, state: province, postal_code: postalCode, country }, items };
       // Store the UUID before sending: retry the same reservation after a lost response.
-      saveCheckout({ id: existing?.id || '', idempotency_key: key, fingerprint, body });
+      saveCheckout({ id: existing?.id || '', idempotency_key: key, fingerprint, body, items: structuredClone($state.snapshot(ui.cart)), currency: currencies[0] });
       const response = await api('/v1/orders/prepare', { method: 'POST', body: JSON.stringify(body), ...(auth.access ? { token: auth.access } : {}) });
-      saveCheckout({ ...checkout, id: response.id });
+      saveCheckout({ ...checkout, id: response.id, total: response.total });
       total = response.total;
       await paymentScreen(response.payment_client_secret);
-    } catch (err) { error = err.message; }
+    } catch (err) { showError(err); if (checkout && isUnavailable(err)) { phase = 'waiting'; notice = checkoutOutage; } }
     finally { processing = false; }
   }
   async function pay() {
     if (stubMode) {
-      if (!stubCheckout?.body || processing) return;
+      if (!stubCheckout?.body || processing || recovering || polling) return;
       processing = true; error = '';
       try {
+        saveStub({ ...stubCheckout, paymentSubmitted: true });
         const response = await api('/v1/orders', { method: 'POST', body: JSON.stringify(stubCheckout.body), ...(auth.access ? { token: auth.access } : {}) });
-        const updated = { ...stubCheckout, id: response.id };
+        const updated = { ...stubCheckout, id: response.id, total: response.total };
         saveStub(updated); checkout = updated;
         if (response.status === 'confirmed') {
-          clearCheckout(); clearStub(); ui.cart = []; persistCart();
-          phase = 'confirmed'; notice = 'It is yours. A note is on its way.';
+          finish(response);
         }
         else { phase = 'waiting'; notice = 'The room is finishing your order…'; await waitForConfirmation(); }
-      } catch (err) { error = err.message; }
+      } catch (err) { showError(err); if (isUnavailable(err)) { checkout = stubCheckout; phase = 'waiting'; notice = checkoutOutage; } }
       finally { processing = false; }
       return;
     }
-    if (!stripe || !elements || processing) return;
+    if (!stripe || !elements || processing || recovering || polling) return;
     processing = true; error = '';
     try {
       const { error: submissionError } = await elements.submit();
       if (submissionError) throw new Error(submissionError.message);
+      saveCheckout({ ...checkout, paymentSubmitted: true });
       const result = await stripe.confirmPayment({ elements, confirmParams: { return_url: `${location.origin}/checkout`, payment_method_data: { billing_details: { email, name: `${firstName} ${lastName}`.trim() } } }, redirect: 'if_required' });
-      if (result.error) throw new Error(result.error.message);
+      if (result.error) {
+        if (['validation_error', 'card_error'].includes(result.error.type)) { saveCheckout({ ...checkout, paymentSubmitted: false }); throw new Error(result.error.message); }
+        throw Object.assign(new Error(checkoutOutage), { retryable: true });
+      }
       phase = 'waiting';
       await waitForConfirmation();
-    } catch (err) { error = err.message; }
+    } catch (err) { showError(err); if (checkout?.paymentSubmitted) { phase = 'waiting'; notice = checkoutOutage; paymentElement?.destroy(); } }
     finally { processing = false; }
   }
   function cancelPending() {
-    // The backend's reservation worker cancels the unpaid intent and releases stock.
-    clearCheckout(); clearStub(); paymentElement?.destroy(); phase = 'details'; notice = '';
+    if (phase !== 'failed') return;
+    clearCheckout(); clearStub(); paymentElement?.destroy(); phase = 'details'; notice = ''; error = '';
   }
 </script>
 
@@ -191,9 +273,10 @@
     <section class="checkout-tv" aria-labelledby="checkout-title">
       <div class="checkout-tv__screen"><div class="checkout-tv__content">
         <p class="checkout-tv__channel">Moth Milk / Checkout</p><h1 id="checkout-title">Almost <em>yours.</em></h1>
-        {#if phase === 'confirmed'}<div class="checkout-tv__empty"><p role="status">{notice}</p><a href="/your-corner">Back to your corner →</a></div>
-        {:else if ui.cart.length === 0}<div class="checkout-tv__empty"><p>Your bag is empty.</p><a href="/shop">Find something to take home →</a></div>
-        {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<button type="button" onclick={() => (phase = 'details')}>Try again ↗</button>{:else}<button type="button" onclick={waitForConfirmation}>Check again ↗</button>{/if}</div>
+        {#if phase === 'restoring'}<div class="checkout-tv__empty"><p role="status">Finding your saved checkout…</p></div>
+        {:else if phase === 'confirmed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if receipt}<p>Order / {receipt.id}</p><p>{receipt.shipment_unavailable ? 'Shipping updates are temporarily unavailable. Your order is still confirmed.' : shipmentLabel(receipt.shipment?.status)}</p>{#if receipt.shipment?.tracking_number}<p>{receipt.shipment.carrier} · {receipt.shipment.tracking_number}</p>{/if}<button type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check shipping ↗'}</button>{/if}<a href="/your-corner">Your receipts and your corner →</a></div>
+        {:else if ui.cart.length === 0 && phase === 'details'}<div class="checkout-tv__empty"><p>Your bag is empty.</p><a href="/shop">Find something to take home →</a></div>
+        {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<button type="button" onclick={cancelPending}>Try again ↗</button>{:else}<button type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check again ↗'}</button>{#if currentCheckoutStatus === 'reserved' && !polling && !recovering && !checkout?.paymentSubmitted}<button type="button" disabled={recovering || processing} onclick={resume}>Return to saved card entry ↗</button>{/if}{/if}</div>
         {:else if phase === 'payment'}
           <p class="checkout-tv__intro">One last thing.</p>
           <div class="checkout-form"><fieldset class="checkout-form__payment"><legend>03 / Payment</legend>
@@ -205,9 +288,9 @@
             </div>
             {#if !stubMode && testMode}<p class="checkout-payment__test">Testing the room? Use 4242 4242 4242 4242, any future expiry, and any three digits for CVC.</p>{/if}
           </fieldset>
-            {#if total !== null}<p>Amount from the shop / ${(total / 100).toFixed(2)} CAD</p>{/if}
+            {#if total !== null}<p>Amount from the shop / {money(total, currency)}</p>{/if}
             <button type="button" disabled={processing} onclick={pay}>{processing ? 'One moment…' : stubMode ? 'Place test order' : 'Place order'} <span aria-hidden="true">→</span></button>
-            <button class="checkout-form__secondary" type="button" onclick={cancelPending}>Start over</button></div>
+            <p>Your checkout is saved on this device. Return here to finish it.</p></div>
         {:else}
           <p class="checkout-tv__intro">Where should your things go?</p>
           <form class="checkout-form" onsubmit={prepare}>
@@ -225,8 +308,8 @@
       </div></div>
       <div class="checkout-tv__controls" aria-hidden="true"><span class="checkout-tv__brand">MM</span><span class="checkout-tv__dial"></span><span class="checkout-tv__dial checkout-tv__dial--small"></span><span class="checkout-tv__power"></span></div><div class="checkout-tv__foot" aria-hidden="true"><span></span><span></span></div>
     </section>
-    <aside class="checkout-summary" aria-label="Order summary"><span class="checkout-summary__eyebrow">Your things</span><h2>In your bag.</h2>
-      {#if ui.cart.length === 0}<p>Nothing here yet.</p>{:else}<ul>{#each ui.cart as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>Estimated subtotal / CAD</span><strong>${subtotal}</strong></div><p>Final amount appears on the TV before payment.</p>{/if}<a href="/shop">Keep looking ↗</a>
+    <aside class="checkout-summary" aria-label="Order summary"><span class="checkout-summary__eyebrow">Your things</span><h2>{receipt ? 'Yours.' : checkout || stubCheckout ? 'This checkout.' : 'In your bag.'}</h2>
+      {#if summaryItems.length === 0}<p>{receipt ? 'See your order email for the item details.' : 'Nothing here yet.'}</p>{:else}<ul>{#each summaryItems as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>{total !== null ? 'Shop total' : 'Estimated subtotal / CAD'}</span><strong>{total !== null ? money(total, currency) : `$${subtotal}`}</strong></div>{#if !receipt}<p>Final amount appears on the TV before payment.</p>{/if}{/if}<a href="/shop">Keep looking ↗</a>
     </aside>
   </div>
 </main>

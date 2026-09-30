@@ -18,7 +18,7 @@
   import { auth, initAuth } from '$lib/stores/auth.svelte.js';
   import { loadCorner } from '$lib/stores/corner.svelte.js';
   import { onMount } from 'svelte';
-  onMount(async () => { initCart(); await initAuth(); if (auth.userId) await loadCorner(); });
+  onMount(() => { initCart(); void initAuth().then(() => { if (auth.userId) return loadCorner(); }).catch(() => { /* Pages expose their own retry states. */ }); });
   import { page } from '$app/state';
 
   let { children } = $props();

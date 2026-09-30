@@ -5,6 +5,11 @@
   import { onMount } from 'svelte';
   import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.js';
   import { corner, loadCorner } from '$lib/stores/corner.svelte.js';
+  import { receipts, money } from '$lib/checkout.js';
+  let savedReceipts = $state([]);
+  import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
+  import { friendlyError, watchRecovery } from '$lib/recovery.js';
+  let sceneBusy = $state(false); let disposed = false;
   import { catalog } from '$lib/catalog.js';
 
   const previewBooks = libraryBooks.filter((book) => ['static', 'hush', 'underbed'].includes(book.slug)).sort((a, b) => ['static', 'hush', 'underbed'].indexOf(a.slug) - ['static', 'hush', 'underbed'].indexOf(b.slug));
@@ -19,31 +24,36 @@
   let emailProof = $state('');
   let registryPassword = $state('');
   async function loadScene() {
-    sceneNotice = '';
-    await loadCorner();
-    owned = [];
-    if (!auth.userId || !auth.verified) return;
+    if (sceneBusy || disposed) return;
+    sceneBusy = true;
     try {
+      await initAuth();
+      await syncVerification();
+      await loadCorner();
+      if (corner.error) { sceneNotice = corner.error; return; }
+      if (!auth.userId || !auth.verified) { owned = []; sceneNotice = ''; return; }
       await withAuth('/v1/orders/claim', { method: 'POST' });
       const [history, items] = await Promise.all([withAuth(`/v1/users/${auth.userId}/orders?limit=100`), catalog()]);
-      owned = [...new Set(history.orders.filter((order) => order.status === 'confirmed').flatMap((order) => order.items).map((item) => items.find((product) => product.id === item.product_id)?.attributes?.style_slug).filter(Boolean))];
-    } catch (error) { sceneNotice = error.message; }
+      if (!disposed) {
+        owned = [...new Set(history.orders.filter((order) => order.status === 'confirmed').flatMap((order) => order.items).map((item) => items.find((product) => product.id === item.product_id)?.attributes?.style_slug).filter(Boolean))];
+        sceneNotice = '';
+      }
+    } catch (error) { if (!disposed) sceneNotice = friendlyError(error, 'Something’s wrong on our end. Your room could not be updated. Try again or come back later.'); }
+    finally { sceneBusy = false; }
   }
-  onMount(() => { void (async () => {
-    await initAuth();
-    try { await syncVerification(); } catch (error) { sceneNotice = error.message; }
-    await loadScene();
-    const pending = JSON.parse(sessionStorage.getItem('moth-milk-proof') || 'null');
-    if (pending?.proof && pending?.email && pending?.mode) {
-      emailProof = pending.proof; registryEmail = pending.email; registryMode = pending.mode;
-      sessionStorage.removeItem('moth-milk-proof'); openRegistry();
-    }
-  })(); });
-  async function checkVerification() {
-    if (!auth.refresh || auth.verified) return;
-    try { if (await syncVerification()) await loadScene(); } catch (error) { sceneNotice = error.message; }
-  }
-  async function leaveRoom() { try { await signOut(); owned = []; await loadCorner(); } catch (error) { sceneNotice = error.message; } }
+  onMount(() => {
+    savedReceipts = receipts(); void loadScene();
+    try {
+      const pending = JSON.parse(sessionStorage.getItem('moth-milk-proof') || 'null');
+      if (pending?.proof && pending?.email && pending?.mode) {
+        emailProof = pending.proof; registryEmail = pending.email; registryMode = pending.mode;
+        sessionStorage.removeItem('moth-milk-proof'); openRegistry();
+      }
+    } catch { /* Invalid saved proof cannot prevent the room opening. */ }
+    const stop = watchRecovery(() => { if (sceneNotice || (auth.refresh && !auth.verified)) return loadScene(); });
+    return () => { disposed = true; stop(); };
+  });
+  async function leaveRoom() { try { await signOut(); owned = []; await loadCorner(); } catch (error) { sceneNotice = friendlyError(error); } }
   let listOpen = $state(false);
   /** @type {HTMLDialogElement} */
   let registryDialog;
@@ -81,7 +91,7 @@
         emailProof = ''; closeRegistry();
         await loadScene();
       }
-    } catch (error) { registryNotice = error.message; }
+    } catch (error) { registryNotice = friendlyError(error); }
     finally { busy = false; }
   }
 </script>
@@ -90,7 +100,7 @@
   <title>Your Corner — Moth Milk</title>
   <meta name="description" content="Find a place for your books in the Moth Milk room." />
 </svelte:head>
-<svelte:window onkeydown={handleKeydown} onfocus={checkVerification} />
+<svelte:window onkeydown={handleKeydown} />
 
 <main class="corner-page">
   <section class="corner-scene" aria-labelledby="corner-title" onpointermove={trackCornerCursor}>
@@ -128,8 +138,9 @@
     <button class="corner-list-toggle" type="button" aria-expanded={listOpen} aria-controls="corner-list" onclick={() => (listOpen = !listOpen)}>{listOpen ? 'hide list' : 'view as list'} <span aria-hidden="true">{listOpen ? '×' : '☰'}</span></button>
   </section>
 
-  {#if sceneNotice}<p class="corner-scene-notice" role="status">{sceneNotice}</p>{/if}
-  {#if auth.userId}<div class="corner-personal-note"><span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = error.message; } }}>resend note ↗</button>{/if}<button type="button" onclick={leaveRoom}>leave the room ↗</button></div>{/if}
+  {#if savedReceipts.length}<section class="corner-list" aria-label="Your receipts"><div><h2>Your things</h2><p>Receipts saved on this device.</p>{#each savedReceipts as receipt (receipt.id)}<a href={`/checkout?order=${encodeURIComponent(receipt.id)}`}>Order {receipt.id.slice(0, 8)} <span>{receipt.total != null ? money(receipt.total, receipt.currency) : 'View receipt'} · shipping ↗</span></a>{/each}</div></section>{/if}
+  {#if sceneNotice}<RecoveryNotice message={sceneNotice} busy={sceneBusy} retry={loadScene} />{/if}
+  {#if auth.userId}<div class="corner-personal-note"><span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = friendlyError(error); } }}>resend note ↗</button>{/if}<button type="button" onclick={leaveRoom}>leave the room ↗</button></div>{/if}
   {#if listOpen}
     <section class="corner-list" id="corner-list" aria-label="Books and clothing in this corner">
       <div><h2>On the sofa</h2>{#each selectedBooks as book}<button class="corner-list-book" type="button" onclick={() => (selectedBook = book)}>

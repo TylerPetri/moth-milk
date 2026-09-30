@@ -6,12 +6,12 @@ export function loadStripe() {
   stripePromise ||= new Promise((resolve, reject) => {
     const ready = () => {
       if (window.Stripe) resolve(window.Stripe(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY));
-      else reject(new Error('Stripe could not load.'));
+      else reject(Object.assign(new Error('Secure card entry is temporarily unavailable.'), { retryable: true }));
     };
     if (window.Stripe) return ready();
     const script = document.createElement('script');
     script.src = 'https://js.stripe.com/v3/'; script.async = true;
-    script.onload = ready; script.onerror = () => reject(new Error('Secure payment could not load.'));
+    script.onload = ready; script.onerror = () => reject(Object.assign(new Error('Secure card entry is temporarily unavailable.'), { retryable: true }));
     document.head.appendChild(script);
   }).catch((error) => { stripePromise = null; throw error; });
   return stripePromise;

@@ -29,7 +29,7 @@ export async function initAuth() {
         auth.verified = Boolean(me.email_verified); auth.email = me.email; persist();
         return;
       }
-    } catch { clearSession(); }
+    } catch (error) { if (!auth.refresh || [401, 403].includes(error.status)) clearSession(); else { auth.ready = true; throw error; } }
     auth.ready = true;
   })().finally(() => { initPending = null; });
   return initPending;
@@ -51,7 +51,7 @@ export async function refreshSession() {
     try {
       const tokens = await api('/v1/auth/refresh', { method: 'POST', noShop: true, body: JSON.stringify({ refresh_token: auth.refresh }) });
       accept(tokens);
-    } catch (error) { clearSession(); throw error; }
+    } catch (error) { if ([400, 401, 403].includes(error.status)) clearSession(); throw error; }
   })().finally(() => { refreshPending = null; });
   return refreshPending;
 }

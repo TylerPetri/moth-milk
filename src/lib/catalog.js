@@ -4,7 +4,7 @@ let cached;
 let pending;
 export async function catalog() {
   if (cached) return cached;
-  pending ||= api('/v1/products?limit=100').then(({ products }) => (cached = products || [])).finally(() => { pending = null; });
+  pending ||= api('/v1/products?limit=100').then(({ products }) => { if (!Array.isArray(products)) throw Object.assign(new Error('Catalog response unavailable.'), { retryable: true }); return (cached = products); }).finally(() => { pending = null; });
   return pending;
 }
 export function invalidateCatalog() { cached = undefined; }

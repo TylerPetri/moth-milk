@@ -3,20 +3,31 @@
   import { addToCart } from '$lib/stores/ui.svelte.js';
   import { catalog, variantFor } from '$lib/catalog.js';
   import { api } from '$lib/api.js';
+  import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
+  import { friendlyError, watchRecovery } from '$lib/recovery.js';
   import { onMount } from 'svelte';
   let listings = $state([]);
   let catalogNotice = $state('');
-  onMount(() => { void catalog().then((items) => (listings = items)).catch((error) => (catalogNotice = error.message)); });
+  let loading = $state(true); let retrying = $state(false); let stockNotice = $state(''); let stockRevision = $state(0); let disposed = false;
+  async function loadProduct() {
+    if (retrying || disposed) return;
+    retrying = true; loading = true;
+    try { const items = await catalog(); if (!disposed) { listings = items; catalogNotice = ''; stockRevision++; } }
+    catch (error) { if (!disposed) catalogNotice = friendlyError(error, 'Something’s wrong on our end. Prices are temporarily unavailable. Try again or come back later.'); }
+    finally { retrying = false; if (!disposed) loading = false; }
+  }
+  async function retryProduct() { if (catalogNotice) await loadProduct(); else if (!retrying) stockRevision++; }
+  onMount(() => { void loadProduct(); const stop = watchRecovery(() => { if (catalogNotice || stockNotice) return retryProduct(); }); return () => { disposed = true; stop(); }; });
   let { data } = $props();
   let size = $state('');
   const variant = $derived(variantFor(listings, data.product.slug, size));
   const price = $derived(variant ? (variant.amount / 100).toFixed(2) : null);
   let stock = $state(null);
   $effect(() => {
-    const id = variant?.id; stock = null; if (!id) return;
-    let active = true;
-    void api(`/v1/stock/${id}`).then((data) => { if (active) stock = data.available; }).catch(() => { if (active) stock = 0; });
-    return () => { active = false; };
+    const id = variant?.id; const revision = stockRevision; stock = null; stockNotice = ''; if (!id) return;
+    let active = true; const controller = new AbortController();
+    void api(`/v1/stock/${id}`, { signal: controller.signal }).then((data) => { if (typeof data.available !== 'number' || !Number.isFinite(data.available)) throw Object.assign(new Error('Stock response unavailable.'), { retryable: true }); if (active) stock = data.available; }).catch(error => { if (active) stockNotice = friendlyError(error, 'Something’s wrong on our end. We could not check stock. Try again before adding this to your bag.'); });
+    return () => { active = false; controller.abort(); };
   });
   $effect(() => {
     if (!size) size = data.product.sizes[0];
@@ -44,8 +55,8 @@
         <div>{#each data.product.sizes as item}<button class:active={size === item} type="button" onclick={() => (size = item)}>{item}</button>{/each}</div>
       </div>
 
-      <button class="add-button" type="button" disabled={!variant || stock === null || stock <= 0} onclick={() => variant && stock > 0 && addToCart({ ...data.product, price: variant.amount / 100 }, size)}><span>{variant ? stock === null ? "checking stock" : stock > 0 ? "add to bag" : "sold out" : "unavailable"}</span><strong>{price === null ? "" : `$${price}`}</strong></button>
-      {#if catalogNotice}<p role="status">{catalogNotice}</p>{/if}
+      <button class="add-button" type="button" disabled={!variant || stock === null || stock <= 0} onclick={() => variant && stock > 0 && addToCart({ ...data.product, price: variant.amount / 100 }, size)}><span>{variant ? stockNotice ? "stock unavailable" : stock === null ? "checking stock" : stock > 0 ? "add to bag" : "sold out" : "unavailable"}</span><strong>{price === null ? "" : `$${price}`}</strong></button>
+      {#if catalogNotice || stockNotice}<RecoveryNotice message={catalogNotice || stockNotice} busy={loading || (Boolean(variant) && stock === null && !stockNotice)} retry={retryProduct} />{:else if loading}<p role="status">Finding your things…</p>{:else if !variant}<p role="status">This size is unavailable right now. Try another size.</p>{/if}
 
       <dl class="product-specs">
         <div><dt>fit</dt><dd>{data.product.fit}</dd></div>

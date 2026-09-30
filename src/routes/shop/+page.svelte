@@ -3,9 +3,18 @@
   import ProductCard from '$lib/components/ProductCard.svelte';
   import { products } from '$lib/data/products.js';
   import { catalog, variantFor } from '$lib/catalog.js';
+  import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
+  import { friendlyError, watchRecovery } from '$lib/recovery.js';
   import { onMount } from 'svelte';
-  let listings = $state([]); let catalogNotice = $state('');
-  onMount(() => { void catalog().then((items) => (listings = items)).catch((error) => (catalogNotice = error.message)); });
+  let listings = $state([]); let catalogNotice = $state(''); let loading = $state(true); let refreshing = false; let disposed = false;
+  async function loadShop() {
+    if (refreshing || disposed) return;
+    refreshing = true; loading = true;
+    try { const items = await catalog(); if (!disposed) { listings = items; catalogNotice = ''; } }
+    catch (error) { if (!disposed) catalogNotice = friendlyError(error, 'Something’s wrong on our end. The shop is temporarily unavailable. Please try again or come back later.'); }
+    finally { refreshing = false; if (!disposed) loading = false; }
+  }
+  onMount(() => { void loadShop(); const stop = watchRecovery(() => { if (catalogNotice) return loadShop(); }); return () => { disposed = true; stop(); }; });
   let filter = $state('all');
   const availableProducts = $derived(products.map((product) => { const variant = variantFor(listings, product.slug, product.sizes[0]); return variant ? { ...product, price: variant.amount / 100 } : null; }).filter(Boolean));
   const visibleProducts = $derived(filter === 'all' ? availableProducts : availableProducts.filter((product) => product.category === filter));
@@ -29,7 +38,7 @@
     <span>{availableProducts.length} objects / CAD</span>
   </div>
 
-  {#if catalogNotice}<p class="shop-notice" role="status">The shop is quiet right now. {catalogNotice}</p>{/if}
+  {#if catalogNotice}<RecoveryNotice message={catalogNotice} busy={loading} retry={loadShop} />{:else if loading}<p class="shop-notice" role="status">Finding your things…</p>{:else if visibleProducts.length === 0}<p class="shop-notice" role="status">Nothing here right now. Try another filter or come back later.</p>{/if}
   <div class="shop-grid">
     {#each visibleProducts as product, index}
       <ProductCard {product} number={String(index + 1).padStart(2, '0')} />
