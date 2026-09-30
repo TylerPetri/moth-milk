@@ -102,3 +102,6 @@ npm run test:e2e:live
 ```
 
 Optional settings: `E2E_PRODUCT_SLUG` (default `mimi-plush`), `E2E_CUSTOMER_EMAIL` (default a unique example.test address). Live traces/screenshots are disabled to keep receipt credentials out of artifacts. The runner validates the shop header and actual Stripe test publishable key before paying. The test shop must have stock and permit the sample Montreal address. Carrier delivery transitions and actual email delivery still need your integration environment; a mocked guest link verifies the frontend proof/recovery flow only. No live integration pass is claimed by the controlled suite.
+
+
+The confirmed checkout uses matching textured shipping/corner actions and an “All yours” heading. Sofa books use native responsive pictures rather than a canvas; their original artwork, positions and story hotspots are preserved. The receipt-to-corner regression checks image decoding/current sources after navigation, reload and viewport changes, plus signed-in selected stories.

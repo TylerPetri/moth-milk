@@ -96,3 +96,22 @@
 .checkout-form > button:disabled { cursor: wait; opacity: .6; }
 .checkout-form > .checkout-form__secondary { margin-top: 1rem; border: 0; background: transparent; color: #dac2b5; font: .8rem 'Courier Prime', monospace; text-transform: none; }
 .checkout-tv__empty button { border: 0; border-bottom: 1px solid #b98a7d; background: transparent; color: #ebd3c3; cursor: pointer; }
+
+.checkout-receipt { min-width: 0; margin-top: 1.75rem; color: #eed8c8; }
+.checkout-receipt__status { margin: 0 0 1.25rem; font: 600 1.45rem/1.3 $font-serif; }
+.checkout-receipt__reference { display: flex; flex-wrap: wrap; gap: .4rem .8rem; padding-bottom: 1.25rem;  font: .65rem/1.6 $font-mono; color: #cdb2a6; }
+.checkout-receipt__reference span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.checkout-receipt__shipping { padding: 1.25rem 0; }
+.checkout-receipt__shipping h2 { margin: 0 0 .65rem; font: 700 .65rem/1.4 $font-mono; letter-spacing: .1em; text-transform: uppercase; color: #d6afa2; }
+.checkout-receipt__shipping p { margin: 0; max-width: 34ch; font: 500 1.2rem/1.45 $font-serif; }
+.checkout-receipt__shipping .checkout-receipt__tracking { margin-top: .7rem; font: .72rem/1.5 $font-mono; overflow-wrap: anywhere; }
+.checkout-receipt__actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: .25rem; }
+.checkout-receipt__action { display: inline-flex; align-items: center; justify-content: center; min-height: 2.75rem; padding: .8rem 1rem; border: 0; border-radius: .18rem .3rem .22rem .12rem; box-shadow: 0 .2rem .6rem rgba(#000, .24); color: #eed8c8; background: #291418 url('/images/checkout-oxblood.webp') center / cover; font: 700 .65rem/1.4 $font-mono; letter-spacing: .07em; text-align: center; text-transform: uppercase; text-decoration: none; cursor: pointer; }
+.checkout-receipt__action:hover:not(:disabled) { filter: brightness(1.15); }
+.checkout-receipt__action:focus-visible { outline: 2px solid #d8b9a2; outline-offset: 3px; }
+.checkout-receipt__action:disabled { opacity: .55; cursor: wait; }
+
+.checkout-receipt__shipping { margin: .5rem 0 1.5rem; padding: 1.6rem; color: #33201c; background: #cfbba1 url('/images/cart-note-paper.webp') center / cover; border-radius: .12rem .35rem .18rem .25rem; box-shadow: 0 .35rem 1rem rgba(#000, .2); }
+.checkout-receipt__shipping h2 { color: #683c38; }
+.checkout-receipt__back { border: 0; padding: .7rem; color: #d6b9aa; background: transparent; font: .75rem/1.5 $font-mono; cursor: pointer; }
+.checkout-receipt__back:focus-visible { outline: 2px solid #d8b9a2; outline-offset: 3px; }

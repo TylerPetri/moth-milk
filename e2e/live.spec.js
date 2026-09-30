@@ -39,7 +39,7 @@ test('live Stripe test order is confirmed by backend and remains recoverable', a
  expect(saved.status).toBe('confirmed'); expect(saved.total).toBeGreaterThan(0);
  expect(saved.idempotency_key).toBeTruthy();
  await page.reload(); await expect(page.getByRole('status')).toContainText('Your order is confirmed');
- await page.getByRole('button', { name: 'Check shipping ↗' }).click();
- await expect(page.getByRole('button', { name: 'Check shipping ↗' })).toBeEnabled();
+ await page.getByRole('button', { name: 'Track your things ↗' }).click();
+ await expect(page.getByRole('button', { name: 'Refresh update ↗' })).toBeEnabled();
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
 });

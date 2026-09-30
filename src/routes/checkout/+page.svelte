@@ -20,6 +20,15 @@
   let error = $state(''); let notice = $state(''); let phase = $state('restoring'); let processing = $state(false);
   let total = $state(null); let checkout = $state(null); let stripe; let elements; let paymentElement;
   let stubCheckout = $state(null);
+  let trackingView = $state(false);
+  async function showTracking(value) {
+    trackingView = value;
+    const url = new URL(location.href);
+    if (value) url.searchParams.set('view', 'tracking'); else url.searchParams.delete('view');
+    history.replaceState(history.state, '', url);
+    await tick(); document.getElementById('checkout-title')?.focus();
+    if (value) await recover();
+  }
   let paymentContainer = $state(null); let currentCheckoutStatus = $state(''); let returnedFromStripe = false;
   let stopped = false; let polling = $state(false); let pollController; let receipt = $state(null);
   let currency = $state('CAD'); let recovering = $state(false); let initialized = $state(false);
@@ -125,6 +134,7 @@
   }
   async function restoreCheckout() {
     const urlParams = new URL(location.href).searchParams;
+    trackingView = urlParams.get('view') === 'tracking';
     const orderId = urlParams.get('order');
     const proof = new URLSearchParams(location.hash.slice(1)).get('proof') || urlParams.get('tracking_proof');
     receipt = orderId ? receipts().find(item => item.id === orderId) : null;
@@ -272,9 +282,29 @@
   <div class="checkout-layout">
     <section class="checkout-tv" aria-labelledby="checkout-title">
       <div class="checkout-tv__screen"><div class="checkout-tv__content">
-        <p class="checkout-tv__channel">Moth Milk / Checkout</p><h1 id="checkout-title">Almost <em>yours.</em></h1>
+        <p class="checkout-tv__channel">Moth Milk / Checkout</p><h1 id="checkout-title" tabindex="-1">{#if phase === 'confirmed' && trackingView}Your <em>things.</em>{:else if phase === 'confirmed'}All <em>yours.</em>{:else}Almost <em>yours.</em>{/if}</h1>
         {#if phase === 'restoring'}<div class="checkout-tv__empty"><p role="status">Finding your saved checkout…</p></div>
-        {:else if phase === 'confirmed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if receipt}<p>Order / {receipt.id}</p><p>{receipt.shipment_unavailable ? 'Shipping updates are temporarily unavailable. Your order is still confirmed.' : shipmentLabel(receipt.shipment?.status)}</p>{#if receipt.shipment?.tracking_number}<p>{receipt.shipment.carrier} · {receipt.shipment.tracking_number}</p>{/if}<button type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check shipping ↗'}</button>{/if}<a href="/your-corner">Your receipts and your corner →</a></div>
+        {:else if phase === 'confirmed'}
+          <div class="checkout-receipt">
+            <p class="checkout-receipt__status" role="status">{notice}</p>
+            {#if receipt}
+              <div class="checkout-receipt__reference"><span>Order</span><span>{receipt.id}</span></div>
+              {#if trackingView}<div class="checkout-receipt__shipping">
+                <h2>A note from the room</h2>
+                <p>{receipt.shipment_unavailable ? 'Shipping updates are temporarily unavailable. Your order is still confirmed.' : receipt.shipment?.status ? shipmentLabel(receipt.shipment.status) : 'Your order is confirmed and waiting to be packed.'}</p>
+                {#if receipt.shipment?.tracking_number}<p class="checkout-receipt__tracking">{receipt.shipment.carrier} · {receipt.shipment.tracking_number}</p>{/if}
+              </div>{/if}
+            {/if}
+            <div class="checkout-receipt__actions">
+              {#if receipt}
+                {#if trackingView}
+                  <button class="checkout-receipt__action" type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Refresh update ↗'}</button>
+                  <button class="checkout-receipt__back" type="button" onclick={() => showTracking(false)}>← Your receipt</button>
+                {:else}<button class="checkout-receipt__action" type="button" onclick={() => showTracking(true)}>Track your things ↗</button>{/if}
+              {/if}
+              <a class="checkout-receipt__action" href="/your-corner">Your corner ↗</a>
+            </div>
+          </div>
         {:else if ui.cart.length === 0 && phase === 'details'}<div class="checkout-tv__empty"><p>Your bag is empty.</p><a href="/shop">Find something to take home →</a></div>
         {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<button type="button" onclick={cancelPending}>Try again ↗</button>{:else}<button type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check again ↗'}</button>{#if currentCheckoutStatus === 'reserved' && !polling && !recovering && !checkout?.paymentSubmitted}<button type="button" disabled={recovering || processing} onclick={resume}>Return to saved card entry ↗</button>{/if}{/if}</div>
         {:else if phase === 'payment'}

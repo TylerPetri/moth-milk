@@ -41,22 +41,24 @@ test('saved payment outage retains checkout and reconnect confirms only purchase
 test('receipt remains visible while shipping service is unavailable', async ({ page, app }) => {
  app.status = 'confirmed'; app.shipmentUnavailable = true;
  await seed(page, { 'moth-milk-receipts': [receipt] }); await page.goto(`/checkout?order=${orderId}`);
+ await page.getByRole('button', { name: 'Track your things ↗' }).click();
  await expect(page.getByText('Shipping updates are temporarily unavailable. Your order is still confirmed.', { exact: true })).toBeVisible();
  await expect(page.getByRole('complementary', { name: 'Order summary' })).toContainText('Mimi Moth Plush');
  app.shipmentUnavailable = false; app.shipment = { status: 'in_transit', carrier: 'Canada Post', tracking_number: 'TEST123' };
- await page.getByRole('button', { name: 'Check shipping ↗' }).click();
+ await page.getByRole('button', { name: 'Refresh update ↗' }).click();
  await expect(page.getByText('Your things are on their way.', { exact: true })).toBeVisible();
  await expect(page.getByText('Canada Post · TEST123', { exact: true })).toBeVisible();
- app.statusDown = true; await page.getByRole('button', { name: 'Check shipping ↗' }).click();
+ app.statusDown = true; await page.getByRole('button', { name: 'Refresh update ↗' }).click();
  await expect(page.getByRole('alert')).toContainText('Shipping updates are temporarily unavailable');
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
 });
 test('status polling cannot overlap when return events fire repeatedly', async ({ page, app }) => {
  app.status = 'confirmed'; app.statusDelay = 1200;
  await seed(page, { 'moth-milk-receipts': [receipt] }); await page.goto(`/checkout?order=${orderId}`);
+ await page.getByRole('button', { name: 'Track your things ↗' }).click();
  await expect(page.getByRole('button', { name: 'Checking…' })).toBeDisabled();
  await page.evaluate(() => { for (let i = 0; i < 10; i++) { window.dispatchEvent(new Event('focus')); window.dispatchEvent(new Event('online')); } });
- await expect(page.getByRole('button', { name: 'Check shipping ↗' })).toBeEnabled();
+ await expect(page.getByRole('button', { name: 'Refresh update ↗' })).toBeEnabled();
  expect(app.maxActiveReads).toBe(1);
 });
 test('private guest link recovers after outage and removes credential from URL', async ({ page, app }) => {
