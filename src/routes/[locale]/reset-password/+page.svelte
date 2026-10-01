@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import { accountError, accountValidation } from '$lib/recovery.js';
+  import { accountError, accountValidation } from '$lib/recovery.ts';
   import { confirmReset } from '$lib/stores/auth.svelte.ts';
   let token = $state(''); let password = $state(''); let notice = $state(''); let done = $state(false); let busy = $state(false);
   onMount(() => { token = new URL(location.href).searchParams.get('token') || ''; history.replaceState(history.state, '', location.pathname); if (!token) notice = 'This link is missing its page.'; });

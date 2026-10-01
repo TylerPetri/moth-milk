@@ -1,7 +1,7 @@
 <script lang="ts">
   import ProductCard from '$lib/components/ProductCard.svelte';
   import LibrarySection from '$lib/components/LibrarySection.svelte';
-  import { products } from '$lib/data/products.js';
+  import { products } from '$lib/data/products.ts';
 
   function trackCursor(event: PointerEvent & { currentTarget: HTMLElement }) {
     const surfaces = event.currentTarget.querySelectorAll('.after-hours-hero, .library-collection');

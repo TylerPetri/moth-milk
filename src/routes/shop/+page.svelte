@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Product } from '$lib/types/api.js';
+  import type { Product } from '$lib/types/api.ts';
   import ProductCard from '$lib/components/ProductCard.svelte';
-  import { products } from '$lib/data/products.js';
-  import { catalog, variantFor } from '$lib/catalog.js';
+  import { products } from '$lib/data/products.ts';
+  import { catalog, variantFor } from '$lib/catalog.ts';
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
-  import { friendlyError, watchRecovery } from '$lib/recovery.js';
+  import { friendlyError, watchRecovery } from '$lib/recovery.ts';
   import { onMount } from 'svelte';
   let listings = $state<Product[]>([]); let catalogNotice = $state(''); let loading = $state(true); let refreshing = false; let disposed = false;
   async function loadShop() {

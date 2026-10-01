@@ -1,8 +1,8 @@
 <script lang="ts">
-  import { friendlyError } from '$lib/recovery.js';
+  import { friendlyError } from '$lib/recovery.ts';
   import BookCover from './BookCover.svelte';
   import BookSpine from './BookSpine.svelte';
-  import { libraryBooks } from '$lib/data/library.js';
+  import { libraryBooks } from '$lib/data/library.ts';
   import { corner, toggleCornerBook } from '$lib/stores/corner.svelte.ts';
   import { auth } from '$lib/stores/auth.svelte.ts';
   let keepNotice = $state('');

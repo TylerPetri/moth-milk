@@ -1,3 +1,6 @@
+<script lang="ts">
+</script>
+
 <svelte:head><title>Lookbook — MOTH MILK</title><meta name="description" content="Moth Milk photographed in the bedroom." /></svelte:head>
 
 <main class="lookbook-page page-shell">

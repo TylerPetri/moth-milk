@@ -22,8 +22,8 @@
   import { page } from '$app/state';
 
   let { children }: import('./$types').LayoutProps = $props();
-  import { api } from '$lib/api.js';
-  import { receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.js';
+  import { api } from '$lib/api.ts';
+  import { receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.ts';
   onMount(() => { void (async () => {
     // Migrate older saved receipts without losing recovery during an outage.
     for (const receipt of receipts().slice(0, 10)) {

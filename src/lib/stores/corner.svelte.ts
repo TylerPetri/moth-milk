@@ -1,6 +1,6 @@
 import { auth, withAuth } from '$lib/stores/auth.svelte.ts';
-import { friendlyError } from '$lib/recovery.js';
-import { libraryBooks } from '$lib/data/library.js';
+import { friendlyError } from '$lib/recovery.ts';
+import { libraryBooks } from '$lib/data/library.ts';
 
 export const corner = $state({ slugs: [] as string[], loaded: false, busy: false, error: '' });
 export async function loadCorner() {

@@ -1,5 +1,5 @@
-import { readSaved, writeSaved } from '$lib/checkout.js';
-import type { CartLine, StoreProduct } from '$lib/types/checkout.js';
+import { readSaved, writeSaved } from '$lib/checkout.ts';
+import type { CartLine, StoreProduct } from '$lib/types/checkout.ts';
 const initialCart: CartLine[] = [];
 const cartKey = 'moth-milk-bag';
 export function initCart() {

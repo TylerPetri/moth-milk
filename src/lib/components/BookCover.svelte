@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LibraryBook } from '$lib/types/content.js';
+  import type { LibraryBook } from '$lib/types/content.ts';
   let { book, compact = false }: { book: LibraryBook; compact?: boolean } = $props();
 </script>
 

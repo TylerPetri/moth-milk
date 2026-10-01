@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LibraryBook } from '$lib/types/content.js';
+  import type { LibraryBook } from '$lib/types/content.ts';
   import sofaPositions from '$lib/data/sofa-positions.json';
   let { books = [] }: { books?: LibraryBook[] } = $props();
   function position(index: number) {

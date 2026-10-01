@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect, seed, item, pending, receipt, orderId, key, details } from './helpers.js';
+import { test, expect, seed, item, pending, receipt, orderId, key, details } from './helpers.ts';
 test('shop outage is useful, hides server internals and retries on reconnect', async ({ page, app }) => {
  app.catalogDown = true; await page.goto('/shop');
  await expect(page.getByRole('status')).toContainText('Something’s wrong on our end');

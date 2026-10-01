@@ -1,4 +1,4 @@
-import type { StripeClient } from '$lib/types/stripe.js';
+import type { StripeClient } from '$lib/types/stripe.ts';
 let stripePromise: Promise<StripeClient> | undefined;
 export function loadStripe() {
   if (typeof window === 'undefined') return Promise.reject(new Error('Checkout is available in the browser.'));

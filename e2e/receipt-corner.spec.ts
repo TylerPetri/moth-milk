@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect, seed, receipt, orderId, item, details } from './helpers.js';
+import { test, expect, seed, receipt, orderId, item, details } from './helpers.ts';
 async function checkBooks(page, slugs = ['static', 'hush', 'underbed']) {
  await expect(page.locator('.sofa-books img')).toHaveCount(slugs.length);
  const mode = page.viewportSize().width <= 900 ? 'mobile' : 'desktop';

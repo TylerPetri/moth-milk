@@ -1,7 +1,7 @@
 // @ts-nocheck — Node test harness uses isolated browser storage doubles.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { readSaved, writeSaved, saveReceipt, receipts, shipmentLabel, money } from '../src/lib/checkout.js';
+import { readSaved, writeSaved, saveReceipt, receipts, shipmentLabel, money } from '../src/lib/checkout.ts';
 function storage() { const data = new Map(); return { getItem: key => data.get(key) || null, setItem: (key, value) => data.set(key, value), removeItem: key => data.delete(key) }; }
 beforeEach(() => { globalThis.localStorage = storage(); globalThis.sessionStorage = storage(); });
 test('recovers legacy session checkout and migrates on save', () => {

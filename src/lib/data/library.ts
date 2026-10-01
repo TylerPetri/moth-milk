@@ -1,17 +1,10 @@
-/**
- * @param {{
- *   slug: string;
- *   title: string;
- *   minutes: number;
- *   theme: string;
- *   shelf: number[];
- *   spine: Record<string, string | number>;
- *   description: string;
- *   excerpt: string[];
- *   cover: { position: number; accent: string; rotation: number };
- * }} entry
- */
-const book = (entry) => ({
+interface BookEntry {
+ slug: string; title: string; minutes: number; theme: string;
+ shelf: number[]; spine: Record<string, string | number>;
+ description: string; excerpt: string[];
+ cover: { position: number; accent: string; rotation: number };
+}
+const book = (entry: BookEntry) => ({
   ...entry,
   shelf: {
     x: entry.shelf[0],

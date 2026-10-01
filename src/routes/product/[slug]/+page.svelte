@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Product } from '$lib/types/api.js';
+  import type { Product } from '$lib/types/api.ts';
   import { addToCart } from '$lib/stores/ui.svelte.ts';
-  import { catalog, variantFor } from '$lib/catalog.js';
-  import { api } from '$lib/api.js';
+  import { catalog, variantFor } from '$lib/catalog.ts';
+  import { api } from '$lib/api.ts';
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
-  import { friendlyError, watchRecovery } from '$lib/recovery.js';
+  import { friendlyError, watchRecovery } from '$lib/recovery.ts';
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   const fromCorner = $derived(page.url.searchParams.get('from') === 'your-corner');

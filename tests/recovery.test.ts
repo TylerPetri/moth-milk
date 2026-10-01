@@ -1,7 +1,7 @@
 // @ts-nocheck
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { friendlyError, isUnavailable, accountError, accountValidation } from '../src/lib/recovery.js';
+import { friendlyError, isUnavailable, accountError, accountValidation } from '../src/lib/recovery.ts';
 test('server and network details never appear in outage messages', () => {
  for (const error of [{ status: 503, message: 'private database password' }, new TypeError('Failed to fetch'), { name: 'TimeoutError' }]) {
    assert.equal(isUnavailable(error), true);

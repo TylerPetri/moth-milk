@@ -2,10 +2,10 @@ import adapter from '@sveltejs/adapter-vercel';
 import { loadEnv } from 'vite';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
-/** @type {import('@sveltejs/kit').Config} */
+import type { Config } from '@sveltejs/kit';
 const settings = { ...loadEnv(process.env.NODE_ENV || 'production', process.cwd(), ''), ...process.env };
-let apiOrigin; try { apiOrigin = new URL(settings.PUBLIC_API_URL).origin; } catch {}
-const config = {
+let apiOrigin; try { apiOrigin = new URL(settings.PUBLIC_API_URL || '').origin; } catch {}
+const config: Config = {
   preprocess: vitePreprocess(),
   kit: { adapter: adapter(), csp: { mode: 'auto', directives: {
     'default-src': ['self'], 'script-src': ['self', 'https://js.stripe.com', 'https://*.js.stripe.com'],

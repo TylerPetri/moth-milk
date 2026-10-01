@@ -1,16 +1,16 @@
 <script lang="ts">
-  import type { CheckoutPhase, PendingCheckout, Receipt, SavedCheckoutBody } from '$lib/types/checkout.js';
-  import type { CheckoutStatusResponse, PrepareOrderRequest } from '$lib/types/api.js';
-  import type { StripeClient, StripeElements, PaymentElement } from '$lib/types/stripe.js';
+  import type { CheckoutPhase, PendingCheckout, Receipt, SavedCheckoutBody } from '$lib/types/checkout.ts';
+  import type { CheckoutStatusResponse, PrepareOrderRequest } from '$lib/types/api.ts';
+  import type { StripeClient, StripeElements, PaymentElement } from '$lib/types/stripe.ts';
   import { failureStatus } from '$lib/errors.ts';
   import { onMount, tick } from 'svelte';
   import { ui, persistCart } from '$lib/stores/ui.svelte.ts';
   import { auth, initAuth } from '$lib/stores/auth.svelte.ts';
-  import { catalog, variantFor } from '$lib/catalog.js';
-  import { api } from '$lib/api.js';
+  import { catalog, variantFor } from '$lib/catalog.ts';
+  import { api } from '$lib/api.ts';
   import { loadStripe } from '$lib/stripe.ts';
-  import { friendlyError, isUnavailable, watchRecovery } from '$lib/recovery.js';
-  import { readSaved, writeSaved, saveReceipt, receipts, money, shipmentLabel } from '$lib/checkout.js';
+  import { friendlyError, isUnavailable, watchRecovery } from '$lib/recovery.ts';
+  import { readSaved, writeSaved, saveReceipt, receipts, money, shipmentLabel } from '$lib/checkout.ts';
 
   const checkoutKey = 'moth-milk-pending-checkout';
   const draftKey = 'moth-milk-checkout-details';

@@ -1,8 +1,8 @@
+import type { ApiOptions, ApiResponseFor, ApiErrorResponse } from './types/api.ts';
 import { browser } from '$app/environment';
 
 const base = (import.meta.env.PUBLIC_API_URL || '').replace(/\/$/, '');
-/** @type {Promise<string> | undefined} */
-let shopPromise;
+let shopPromise: Promise<string> | undefined;
 export const configured = Boolean(import.meta.env.PUBLIC_API_URL || browser);
 
 export async function shopId() {
@@ -14,13 +14,7 @@ export async function shopId() {
   return shopPromise;
 }
 
-/**
- * @template {string} Path
- * @param {Path} path
- * @param {import('./types/api.js').ApiOptions} [options]
- * @returns {Promise<import('./types/api.js').ApiResponseFor<Path>>}
- */
-export async function api(path, options = {}) {
+export async function api<Path extends string>(path: Path, options: ApiOptions = {}): Promise<ApiResponseFor<Path>> {
   const { token, noShop, timeoutMs = 20000, ...request } = options;
   try {
     const headers = new Headers(request.headers);
@@ -29,12 +23,15 @@ export async function api(path, options = {}) {
     if (request.body) headers.set('Content-Type', 'application/json');
     const signal = request.signal ? AbortSignal.any([request.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs);
     const response = await fetch(`${browser && (path.startsWith('/v1/auth/') || path.endsWith('/checkout-status') || path === '/v1/orders/prepare' || path === '/v1/orders' || token) ? '/session' : base}${path}`, { ...request, headers, signal });
-    const result = response.status === 204 ? {} : await response.json().catch(() => {
+    const result: unknown = response.status === 204 ? {} : await response.json().catch(() => {
       if (response.ok) throw Object.assign(new Error('The shop response was incomplete.'), { retryable: true });
       return {};
     });
-    if (!response.ok) throw Object.assign(new Error(result.message || result.error || `Request failed (${response.status})`), { status: response.status, code: result.error, retryable: response.status >= 500 || [408, 429].includes(response.status) });
-    return result;
+    if (!response.ok) {
+      const failure = result as Partial<ApiErrorResponse>;
+      throw Object.assign(new Error(failure.message || failure.error || `Request failed (${response.status})`), { status: response.status, code: failure.error, retryable: response.status >= 500 || [408, 429].includes(response.status) });
+    }
+    return result as ApiResponseFor<Path>;
   } catch (error) {
     if (request.signal?.aborted) throw error;
     if (error instanceof TypeError || (error instanceof Error && error.name === 'TimeoutError')) throw Object.assign(new Error('Something’s wrong on our end. Please try again in a moment.'), { retryable: true });

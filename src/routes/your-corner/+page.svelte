@@ -1,18 +1,18 @@
 <script lang="ts">
-  import type { Receipt } from '$lib/types/checkout.js';
-  import type { LibraryBook } from '$lib/types/content.js';
-  import { libraryBooks } from '$lib/data/library.js';
+  import type { Receipt } from '$lib/types/checkout.ts';
+  import type { LibraryBook } from '$lib/types/content.ts';
+  import { libraryBooks } from '$lib/data/library.ts';
   import SofaBooks from '$lib/SofaBooks.svelte';
   import { onMount } from 'svelte';
   import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.ts';
   import { corner, loadCorner } from '$lib/stores/corner.svelte.ts';
-  import { receipts, money, forgetReceipts } from '$lib/checkout.js';
-  import { api } from '$lib/api.js';
+  import { receipts, money, forgetReceipts } from '$lib/checkout.ts';
+  import { api } from '$lib/api.ts';
   let savedReceipts = $state<Receipt[]>([]);
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
-  import { friendlyError, watchRecovery, accountError, accountValidation } from '$lib/recovery.js';
+  import { friendlyError, watchRecovery, accountError, accountValidation } from '$lib/recovery.ts';
   let sceneBusy = $state(false); let disposed = false;
-  import { catalog } from '$lib/catalog.js';
+  import { catalog } from '$lib/catalog.ts';
 
   const previewBooks = libraryBooks.filter((book) => ['static', 'hush', 'underbed'].includes(book.slug)).sort((a, b) => ['static', 'hush', 'underbed'].indexOf(a.slug) - ['static', 'hush', 'underbed'].indexOf(b.slug));
   const selectedBooks = $derived(auth.userId ? corner.slugs.map((slug) => libraryBooks.find((book) => book.slug === slug)).filter((book) => book !== undefined) : previewBooks);

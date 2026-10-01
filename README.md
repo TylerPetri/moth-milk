@@ -27,7 +27,7 @@ Physical surfaces are reusable rather than page-specific:
 - the shelf uses a single transparent dark-walnut frame (`static/images/empty-library-shelf-v2.webp`) with a plain wood top beam, side posts, and a lower lip around the interactive spines
 - all 22 independently interactive alpha-masked bindings live in `static/images/transparent-spines-v2/`
 - product photography uses WebP assets to keep the storefront and source archive small
-- book content and spine dimensions live in `src/lib/data/library.js`
+- book content and spine dimensions live in `src/lib/data/library.ts`
 - reusable cover/spine renderers live in `src/lib/components/BookCover.svelte` and `BookSpine.svelte`
 
 The homepage wordmark and subtitle are transparent image assets based on the printed reference, with accessible text alternatives. The header reuses the wordmark over a dark brocade image layer. Typography elsewhere is self-hosted through Fontsource: Bodoni Moda for the hero buttons, Cormorant Garamond for editorial display, IBM Plex Sans Condensed for interface text, and Courier Prime for printed metadata and controls.
@@ -43,7 +43,7 @@ npm run build
 
 ## Deploy on Vercel
 
-Import this project into Vercel with the **SvelteKit** framework preset. Keep the project root as this directory and use the default `npm run build` command. The Vercel adapter is configured in `svelte.config.js`; no output directory or rewrite rule is needed. Vercel installs dependencies from `package-lock.json`.
+Import this project into Vercel with the **SvelteKit** framework preset. Keep the project root as this directory and use the default `npm run build` command. The Vercel adapter is configured in `svelte.config.ts`; no output directory or rewrite rule is needed. Vercel installs dependencies from `package-lock.json`.
 
 Set these environment variables in the Vercel project for each deployment environment (Production and Preview as appropriate):
 
@@ -75,7 +75,7 @@ Status polling uses one cancellable loop, request timeouts and increasing delays
 
 Confirmed receipts remain accessible in Your Corner and at `/checkout?order=ORDER_ID`. For emailed guest tracking links, configure the shop's `order_tracking_path` as `/checkout`. The existing backend email fragment `#proof=TOKEN` is accepted, removed from the address bar, and retained with the receipt. Order-status reads stay credential protected. Shipping displays pending, packed, shipped, in transit and delivered states, carrier/tracking number, and service unavailability separately. Cross-device item details remain in the order email: the existing guest endpoint returns status/shipping rather than a complete receipt.
 
-Use explicit `PUBLIC_PAYMENT_MODE=stub` only with the test backend; other values use Stripe and require its publishable key. Check with `npm run check`, `node --test tests/checkout.test.js`, and `npm run build`. Run a Stripe test-mode checkout and delayed webhook/fulfillment exercise against the configured backend before release. Browser storage and guest receipt credentials are private to the device; clearing site data removes local receipts.
+Use explicit `PUBLIC_PAYMENT_MODE=stub` only with the test backend; other values use Stripe and require its publishable key. Check with `npm run check`, `npm test`, and `npm run build`. Run a Stripe test-mode checkout and delayed webhook/fulfillment exercise against the configured backend before release. Browser storage and guest receipt credentials are private to the device; clearing site data removes local receipts.
 
 
 ## Outage handling and browser tests
@@ -124,8 +124,10 @@ Security browser tests exercise the actual SvelteKit server against a disposable
 
 Because authenticated requests now originate at the storefront server, ensure gateway rate limiting handles that proxy topology deliberately. Do not broadly trust client-supplied forwarding headers. Use an authenticated, narrowly trusted ingress before relying on forwarded client identity. Also run the guarded live Stripe smoke test before the demo: mocked card tests cannot validate a real Stripe challenge against the CSP.
 
-### API type migration
+### TypeScript
 
-`src/lib/types/api.ts` defines the storefront's wire contracts for catalog, stock, accounts, checkout, order history, recovery and shipping. The JavaScript API client and authenticated wrapper expose route-based response types through JSDoc, so callers can adopt TypeScript incrementally. Catalog now has checked types without `@ts-nocheck`. Unknown routes return `unknown`; extend the response map when adding a contract. These types do not validate incoming JSON or replace the existing runtime checks. Monetary API amounts are in minor units (cents); browser display prices are separate. Checkout uses `<script lang="ts">`; auth, cart/UI and Corner stores use `.svelte.ts` modules without `@ts-nocheck`. Stripe types come from `@stripe/stripe-js`; the existing script loader and payment flow remain in place. Run `npm ci` after updating dependencies and `npm run check` for strict checking through `tsconfig.json`. All Svelte scripts now use TypeScript, with typed props, DOM events, route data and nullable state; no Svelte component uses `@ts-nocheck`. Script-free markup components need no migration. JavaScript utility, data and server modules still use checked JavaScript/JSDoc where applicable.
+All application modules, Svelte scripts, configuration and test files use TypeScript. `src/lib/types/api.ts` describes wire contracts; API calls infer responses by route, and unrecognized routes return `unknown`. API amounts are minor units (cents), separate from display prices. Types do not replace runtime validation. The session proxy preserves HttpOnly credential storage, request limits and origin checks.
 
-When applying this migration over an existing folder, remove the replaced `jsconfig.json`, `src/lib/stripe.js`, and `src/lib/stores/{auth,corner,ui}.svelte.js` files. The ZIP contains their TypeScript replacements. Keep your environment file and run `npm ci` to install the updated lockfile.
+Use Node **22.18 or newer** (Node 24 is supported), then run `npm ci`, `npm run check`, `npm test` and `npm run test:e2e`. The Node minimum supports native TypeScript execution for unit tests and the disposable fixture server. Configuration is in `svelte.config.ts`, `vite.config.ts` and `playwright.config.ts`. Stripe types come from `@stripe/stripe-js`; the script loader and payment flow are unchanged.
+
+When applying this ZIP over an existing folder, run `npm run cleanup:legacy` to remove the old `.js` source, configuration and test files that now have `.ts` counterparts, plus the replaced `jsconfig.json`. The script removes only files with an existing replacement; run `node scripts/remove-legacy-js.ts` for a preview. Keeping both versions can cause route/configuration conflicts. Keep your environment file.

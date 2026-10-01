@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { DisplayProduct } from '$lib/types/content.js';
+  import type { DisplayProduct } from '$lib/types/content.ts';
   let { product, number = '01' }: { product: DisplayProduct; number?: string } = $props();
 </script>
 

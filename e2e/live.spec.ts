@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { test, expect } from '@playwright/test';
-import { details } from './helpers.js';
+import { details } from './helpers.ts';
 // This suite creates one real test order. It never mocks API or Stripe results.
 test('live Stripe test order is confirmed by backend and remains recoverable', async ({ page }) => {
  const shop = process.env.E2E_SHOP_ID;

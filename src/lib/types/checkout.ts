@@ -1,4 +1,4 @@
-import type { CheckoutStatusRequest, Currency, OrderStatus, PrepareOrderRequest, Shipment } from './api.js';
+import type { CheckoutStatusRequest, Currency, OrderStatus, PrepareOrderRequest, Shipment } from './api.ts';
 
 export interface StoreProduct {
   slug: string;

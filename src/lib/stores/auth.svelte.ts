@@ -1,7 +1,7 @@
 import { failureStatus } from '$lib/errors.ts';
 import { browser } from '$app/environment';
-import type { SessionResponse, ApiOptions, ApiResponseFor } from '$lib/types/api.js';
-import { api, shopId } from '$lib/api.js';
+import type { SessionResponse, ApiOptions, ApiResponseFor } from '$lib/types/api.ts';
+import { api, shopId } from '$lib/api.ts';
 
 const key = 'moth-milk-session';
 let initPending: Promise<void> | undefined;

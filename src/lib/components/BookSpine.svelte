@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { LibraryBook } from '$lib/types/content.js';
+  import type { LibraryBook } from '$lib/types/content.ts';
   let { book, selected = false, onclick = undefined }: { book: LibraryBook; selected?: boolean; onclick?: (event: MouseEvent) => void } = $props();
 
   const spineStyle = $derived([
