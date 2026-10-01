@@ -1,6 +1,5 @@
-<script>
-  /** @type {{ message: string, busy?: boolean, retry: () => unknown }} */
-  let { message, busy = false, retry } = $props();
+<script lang="ts">
+  let { message, busy = false, retry }: { message: string; busy?: boolean; retry: () => unknown } = $props();
 </script>
 <div class="recovery-notice" aria-busy={busy}>
   <p role="status">{message}</p>

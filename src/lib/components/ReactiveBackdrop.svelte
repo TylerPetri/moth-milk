@@ -1,15 +1,13 @@
-<script>
+<script lang="ts">
   import { onMount } from 'svelte';
 
-  /** @type {HTMLDivElement | undefined} */
-  let field;
+  let field: HTMLDivElement | undefined;
 
   onMount(() => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (reduce) return;
 
-    /** @param {PointerEvent} event */
-    const move = (event) => {
+    const move = (event: PointerEvent) => {
       const x = (event.clientX / window.innerWidth) * 100;
       const y = (event.clientY / window.innerHeight) * 100;
       field?.style.setProperty('--mx', `${x}%`);

@@ -1,6 +1,6 @@
-<script>
-  // @ts-nocheck
-  import { addToCart } from '$lib/stores/ui.svelte.js';
+<script lang="ts">
+  import type { Product } from '$lib/types/api.js';
+  import { addToCart } from '$lib/stores/ui.svelte.ts';
   import { catalog, variantFor } from '$lib/catalog.js';
   import { api } from '$lib/api.js';
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
@@ -8,7 +8,7 @@
   import { onMount } from 'svelte';
   import { page } from '$app/state';
   const fromCorner = $derived(page.url.searchParams.get('from') === 'your-corner');
-  let listings = $state([]);
+  let listings = $state<Product[]>([]);
   let catalogNotice = $state('');
   let loading = $state(true); let retrying = $state(false); let stockNotice = $state(''); let stockRevision = $state(0); let disposed = false;
   async function loadProduct() {
@@ -20,11 +20,11 @@
   }
   async function retryProduct() { if (catalogNotice) await loadProduct(); else if (!retrying) stockRevision++; }
   onMount(() => { void loadProduct(); const stop = watchRecovery(() => { if (catalogNotice || stockNotice) return retryProduct(); }); return () => { disposed = true; stop(); }; });
-  let { data } = $props();
+  let { data }: import('./$types').PageProps = $props();
   let size = $state('');
   const variant = $derived(variantFor(listings, data.product.slug, size));
   const price = $derived(variant ? (variant.amount / 100).toFixed(2) : null);
-  let stock = $state(null);
+  let stock = $state<number | null>(null);
   $effect(() => {
     const id = variant?.id; const revision = stockRevision; stock = null; stockNotice = ''; if (!id) return;
     let active = true; const controller = new AbortController();
@@ -57,7 +57,7 @@
         <div>{#each data.product.sizes as item}<button class:active={size === item} type="button" onclick={() => (size = item)}>{item}</button>{/each}</div>
       </div>
 
-      <button class="add-button" type="button" disabled={!variant || stock === null || stock <= 0} onclick={() => variant && stock > 0 && addToCart({ ...data.product, price: variant.amount / 100 }, size)}><span>{variant ? stockNotice ? "stock unavailable" : stock === null ? "checking stock" : stock > 0 ? "add to bag" : "sold out" : "unavailable"}</span><strong>{price === null ? "" : `$${price}`}</strong></button>
+      <button class="add-button" type="button" disabled={!variant || stock === null || stock <= 0} onclick={() => variant && stock !== null && stock > 0 && addToCart({ ...data.product, price: variant.amount / 100 }, size)}><span>{variant ? stockNotice ? "stock unavailable" : stock === null ? "checking stock" : stock > 0 ? "add to bag" : "sold out" : "unavailable"}</span><strong>{price === null ? "" : `$${price}`}</strong></button>
       {#if catalogNotice || stockNotice}<RecoveryNotice message={catalogNotice || stockNotice} busy={loading || (Boolean(variant) && stock === null && !stockNotice)} retry={retryProduct} />{:else if loading}<p role="status">Finding your things…</p>{:else if !variant}<p role="status">This size is unavailable right now. Try another size.</p>{/if}
 
       <dl class="product-specs">

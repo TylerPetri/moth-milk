@@ -1,6 +1,6 @@
 // Receipt keys authorize guest status reads. Keep them out of URLs and logs.
 const receiptKey = 'moth-milk-receipts';
-/** @param {string} key @returns {any} */
+/** @template [T=unknown] @param {string} key @returns {T | null} */
 export function readSaved(key) {
   for (const name of /** @type {const} */ (['localStorage', 'sessionStorage'])) {
     try {
@@ -9,7 +9,7 @@ export function readSaved(key) {
       if (value && typeof value === 'object') {
         if (key === 'moth-milk-checkout-details' && (!value.savedAt || Date.now() - value.savedAt > 86400000)) { globalThis[name].removeItem(key); continue; }
         if (['moth-milk-pending-checkout', 'moth-milk-stub-checkout'].includes(key)) { try { const privateBody = JSON.parse(sessionStorage.getItem(`${key}-contact`) || 'null'); if (privateBody?.idempotency_key === value.idempotency_key) value.body = privateBody; } catch {} }
-        return value;
+        return /** @type {T} */ (value);
       }
     } catch { /* Try session storage if persistent storage is unavailable. */ }
   }
@@ -30,11 +30,12 @@ export function writeSaved(key, value) {
   try { sessionStorage.removeItem(key); } catch { /* Storage may be restricted. */ }
   return true;
 }
+/** @returns {import('./types/checkout.js').Receipt[]} */
 export function receipts() {
   const saved = readSaved(receiptKey);
   return Array.isArray(saved) ? saved.filter(item => item?.id && (!item.confirmedAt || Date.now() - Date.parse(item.confirmedAt) < 30 * 86400000)) : [];
 }
-/** @param {any} receipt */
+/** @template {import('./types/checkout.js').Receipt} T @param {T} receipt @returns {T} */
 export function saveReceipt(receipt) {
   const { body, idempotency_key, tracking_proof, ...safe } = receipt;
   // A new email proof remains in memory until the first successful server status read.

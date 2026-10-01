@@ -1,5 +1,6 @@
-<script>
-  let { product, number = '01' } = $props();
+<script lang="ts">
+  import type { DisplayProduct } from '$lib/types/content.js';
+  let { product, number = '01' }: { product: DisplayProduct; number?: string } = $props();
 </script>
 
 <article class="product-card" data-product={product.slug}>

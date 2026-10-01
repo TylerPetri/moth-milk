@@ -132,6 +132,7 @@ export interface ApiResponses {
   '/v1/auth/me/books': BooksResponse;
   '/v1/auth/recovery': RecoveryResponse;
   '/v1/orders/prepare': PrepareOrderResponse;
+  '/v1/orders': Pick<Order, 'id' | 'status' | 'total'>;
 }
 export type ApiResponseFor<Path extends string> =
   Path extends keyof ApiResponses ? ApiResponses[Path] :

@@ -1,5 +1,5 @@
-<script>
-  import { ui } from '$lib/stores/ui.svelte.js';
+<script lang="ts">
+  import { ui } from '$lib/stores/ui.svelte.ts';
 
   function toggleMood() {
     ui.mood = ui.mood === 'soft' ? 'feral' : 'soft';

@@ -40,16 +40,17 @@ test('document headers restrict scripts, embedding and referrers', async ({ page
  expect(headers['cache-control']).toContain('no-store');
 });
 
-test('emailed receipt persists through upstream outage without storing proof in browser storage', async ({ page }) => {
- await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: true } });
+test('emailed receipt persists through upstream outage without storing proof in browser storage', async ({ page }, testInfo) => {
+ const orderId = testInfo.project.name === 'desktop' ? '44444444-4444-4444-8444-444444444444' : '55555555-5555-4555-8555-555555555555';
+ await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: true, order_id: orderId } });
  try {
-  await page.goto('/checkout?order=22222222-2222-4222-8222-222222222222#proof=VALID_EMAIL_PROOF');
+  await page.goto(`/checkout?order=${orderId}#proof=VALID_EMAIL_PROOF`);
   await expect(page.getByRole('alert')).toContainText('Please don’t pay again');
   expect(new URL(page.url()).hash).toBe('');
   expect(await page.evaluate(() => localStorage.getItem('moth-milk-receipts'))).not.toContain('VALID_EMAIL_PROOF');
-  await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: false } });
+  await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: false, order_id: orderId } });
   await page.reload(); await expect(page.getByRole('status')).toContainText('Your order is confirmed');
- } finally { await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: false } }); }
+ } finally { await page.request.post('http://127.0.0.1:4174/_fixture/status', { data: { down: false, order_id: orderId } }); }
 });
 
 test('pending contact recovery is cookie backed and never forwarded to public browser storage', async ({ page, context }) => {

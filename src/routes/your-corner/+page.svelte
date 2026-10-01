@@ -1,22 +1,23 @@
-<script>
-  // @ts-nocheck
+<script lang="ts">
+  import type { Receipt } from '$lib/types/checkout.js';
+  import type { LibraryBook } from '$lib/types/content.js';
   import { libraryBooks } from '$lib/data/library.js';
   import SofaBooks from '$lib/SofaBooks.svelte';
   import { onMount } from 'svelte';
-  import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.js';
-  import { corner, loadCorner } from '$lib/stores/corner.svelte.js';
+  import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.ts';
+  import { corner, loadCorner } from '$lib/stores/corner.svelte.ts';
   import { receipts, money, forgetReceipts } from '$lib/checkout.js';
   import { api } from '$lib/api.js';
-  let savedReceipts = $state([]);
+  let savedReceipts = $state<Receipt[]>([]);
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
   import { friendlyError, watchRecovery, accountError, accountValidation } from '$lib/recovery.js';
   let sceneBusy = $state(false); let disposed = false;
   import { catalog } from '$lib/catalog.js';
 
   const previewBooks = libraryBooks.filter((book) => ['static', 'hush', 'underbed'].includes(book.slug)).sort((a, b) => ['static', 'hush', 'underbed'].indexOf(a.slug) - ['static', 'hush', 'underbed'].indexOf(b.slug));
-  const selectedBooks = $derived(auth.userId ? corner.slugs.map((slug) => libraryBooks.find((book) => book.slug === slug)).filter(Boolean) : previewBooks);
+  const selectedBooks = $derived(auth.userId ? corner.slugs.map((slug) => libraryBooks.find((book) => book.slug === slug)).filter((book) => book !== undefined) : previewBooks);
   const couchBooks = $derived(selectedBooks.slice(0, 3));
-  let owned = $state([]);
+  let owned = $state<string[]>([]);
   let sceneNotice = $state('');
   let busy = $state(false);
   let registryMode = $state('sign-in');
@@ -36,7 +37,7 @@
       await withAuth('/v1/orders/claim', { method: 'POST' });
       const [history, items] = await Promise.all([withAuth(`/v1/users/${auth.userId}/orders?limit=100`), catalog()]);
       if (!disposed) {
-        owned = [...new Set(history.orders.filter((order) => order.status === 'confirmed').flatMap((order) => order.items).map((item) => items.find((product) => product.id === item.product_id)?.attributes?.style_slug).filter(Boolean))];
+        owned = [...new Set(history.orders.filter((order) => order.status === 'confirmed').flatMap((order) => order.items).map((item) => items.find((product) => product.id === item.product_id)?.attributes?.style_slug).filter((slug): slug is string => Boolean(slug)))];
         sceneNotice = '';
       }
     } catch (error) { if (!disposed) sceneNotice = friendlyError(error, 'Something’s wrong on our end. Your room could not be updated. Try again or come back later.'); }
@@ -56,29 +57,23 @@
   });
   async function leaveRoom() { try { await signOut(); owned = []; await loadCorner(); } catch (error) { sceneNotice = friendlyError(error); } }
   let listOpen = $state(false);
-  /** @type {HTMLDialogElement} */
-  let registryDialog;
-  /** @type {(typeof libraryBooks)[number] | null} */
-  let selectedBook = $state(null);
+  let registryDialog: HTMLDialogElement;
+  let selectedBook = $state<LibraryBook | null>(null);
 
   function closeReader() { selectedBook = null; }
-  /** @param {PointerEvent & { currentTarget: HTMLElement }} event */
-  function trackCornerCursor(event) {
+  function trackCornerCursor(event: PointerEvent & { currentTarget: HTMLElement }) {
     if (event.pointerType === 'touch') return;
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--cursor-x', `${event.clientX - rect.left}px`);
     event.currentTarget.style.setProperty('--cursor-y', `${event.clientY - rect.top}px`);
   }
-  /** @param {KeyboardEvent} event */
-  function handleKeydown(event) { if (event.key === 'Escape') closeReader(); }
+  function handleKeydown(event: KeyboardEvent) { if (event.key === 'Escape') closeReader(); }
 
   function openRegistry() { registryNotice = ''; registryDialog.showModal(); }
   function closeRegistry() { registryDialog.close(); registryPassword = ''; }
-  /** @param {MouseEvent} event */
-  function handleRegistryClick(event) { if (event.target === registryDialog) closeRegistry(); }
+  function handleRegistryClick(event: MouseEvent) { if (event.target === registryDialog) closeRegistry(); }
   function handleRegistryClose() { registryPassword = ''; }
-  /** @param {SubmitEvent} event */
-  async function submitRegistry(event) {
+  async function submitRegistry(event: SubmitEvent) {
     event.preventDefault();
     if (busy) return;
     registryNotice = accountValidation(registryEmail, registryPassword, registryMode);

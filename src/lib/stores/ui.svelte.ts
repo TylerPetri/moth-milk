@@ -1,16 +1,6 @@
 import { readSaved, writeSaved } from '$lib/checkout.js';
-/**
- * @typedef {Object} StoreProduct
- * @property {string} slug
- * @property {string} name
- * @property {number} price
- * @property {string} image
- * @property {string} color
- * @property {string[]} sizes
- */
-
-/** @type {Array<StoreProduct & { selectedSize: string, lineId: string }>} */
-const initialCart = [];
+import type { CartLine, StoreProduct } from '$lib/types/checkout.js';
+const initialCart: CartLine[] = [];
 const cartKey = 'moth-milk-bag';
 export function initCart() {
   if (typeof sessionStorage === 'undefined') return;
@@ -28,15 +18,13 @@ export const ui = $state({
   menuOpen: false
 });
 
-/** @param {StoreProduct} product @param {string} [size] */
-export function addToCart(product, size = product.sizes[0]) {
+export function addToCart(product: StoreProduct, size = product.sizes[0]) {
   ui.cart.push({ ...product, selectedSize: size, lineId: crypto.randomUUID() });
   ui.cartOpen = true;
   persistCart();
 }
 
-/** @param {string} lineId */
-export function removeFromCart(lineId) {
+export function removeFromCart(lineId: string) {
   const index = ui.cart.findIndex((item) => item.lineId === lineId);
   if (index !== -1) ui.cart.splice(index, 1);
   persistCart();

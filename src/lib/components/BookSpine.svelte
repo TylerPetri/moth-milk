@@ -1,5 +1,6 @@
-<script>
-  let { book, selected = false, onclick = undefined } = $props();
+<script lang="ts">
+  import type { LibraryBook } from '$lib/types/content.js';
+  let { book, selected = false, onclick = undefined }: { book: LibraryBook; selected?: boolean; onclick?: (event: MouseEvent) => void } = $props();
 
   const spineStyle = $derived([
     `--spine-width:${book.spine.width}rem`,

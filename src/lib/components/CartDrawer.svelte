@@ -1,5 +1,5 @@
-<script>
-  import { ui, removeFromCart } from '$lib/stores/ui.svelte.js';
+<script lang="ts">
+  import { ui, removeFromCart } from '$lib/stores/ui.svelte.ts';
   const total = $derived(ui.cart.reduce((sum, item) => sum + item.price, 0));
 </script>
 

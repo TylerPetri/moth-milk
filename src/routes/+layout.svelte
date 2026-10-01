@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
   import '@fontsource/ibm-plex-sans-condensed/latin-400.css';
   import '@fontsource/ibm-plex-sans-condensed/latin-500.css';
   import '@fontsource/ibm-plex-sans-condensed/latin-600.css';
@@ -14,14 +14,14 @@
   import SiteFooter from '$lib/components/SiteFooter.svelte';
   import ReactiveBackdrop from '$lib/components/ReactiveBackdrop.svelte';
   import CartDrawer from '$lib/components/CartDrawer.svelte';
-  import { ui, initCart } from '$lib/stores/ui.svelte.js';
-  import { auth, initAuth } from '$lib/stores/auth.svelte.js';
-  import { loadCorner } from '$lib/stores/corner.svelte.js';
+  import { ui, initCart } from '$lib/stores/ui.svelte.ts';
+  import { auth, initAuth } from '$lib/stores/auth.svelte.ts';
+  import { loadCorner } from '$lib/stores/corner.svelte.ts';
   import { onMount } from 'svelte';
   onMount(() => { initCart(); void initAuth().then(() => { if (auth.userId) return loadCorner(); }).catch(() => { /* Pages expose their own retry states. */ }); });
   import { page } from '$app/state';
 
-  let { children } = $props();
+  let { children }: import('./$types').LayoutProps = $props();
   import { api } from '$lib/api.js';
   import { receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.js';
   onMount(() => { void (async () => {

@@ -1,25 +1,23 @@
-<script>
-  // @ts-nocheck
+<script lang="ts">
+  import { friendlyError } from '$lib/recovery.js';
   import BookCover from './BookCover.svelte';
   import BookSpine from './BookSpine.svelte';
   import { libraryBooks } from '$lib/data/library.js';
-  import { corner, toggleCornerBook } from '$lib/stores/corner.svelte.js';
-  import { auth } from '$lib/stores/auth.svelte.js';
+  import { corner, toggleCornerBook } from '$lib/stores/corner.svelte.ts';
+  import { auth } from '$lib/stores/auth.svelte.ts';
   let keepNotice = $state('');
-  async function keepBook() { try { await toggleCornerBook(selectedBook.slug); keepNotice = corner.slugs.includes(selectedBook.slug) ? 'Waiting in your corner.' : 'Taken from your corner.'; } catch (error) { keepNotice = error.message; } }
+  async function keepBook() { try { await toggleCornerBook(selectedBook.slug); keepNotice = corner.slugs.includes(selectedBook.slug) ? 'Waiting in your corner.' : 'Taken from your corner.'; } catch (error) { keepNotice = friendlyError(error); } }
 
   let view = $state('shelf');
   let selectedIndex = $state(3);
   let readerOpen = $state(false);
   const selectedBook = $derived(libraryBooks[selectedIndex]);
 
-  /** @param {number} index */
-  function selectBook(index) {
+  function selectBook(index: number) {
     selectedIndex = index;
   }
 
-  /** @param {KeyboardEvent} event */
-  function handleKeydown(event) {
+  function handleKeydown(event: KeyboardEvent) {
     if (event.key === 'Escape') readerOpen = false;
   }
 </script>

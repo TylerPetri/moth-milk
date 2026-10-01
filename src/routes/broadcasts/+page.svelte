@@ -1,4 +1,4 @@
-<script>import { broadcasts } from '$lib/data/products.js';</script>
+<script lang="ts">import { broadcasts } from '$lib/data/products.js';</script>
 
 <svelte:head><title>Broadcasts — MOTH MILK</title><meta name="description" content="Notes, fittings and small transmissions from Moth Milk." /></svelte:head>
 

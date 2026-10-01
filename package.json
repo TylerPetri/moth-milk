@@ -7,7 +7,7 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "node --test tests/*.test.js",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
@@ -22,6 +22,7 @@
     "@sveltejs/adapter-vercel": "^6.3.4",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "@types/node": "^22.20.4",
     "sass": "^1.93.0",
     "svelte": "^5.0.0",
     "svelte-check": "^4.0.0",
@@ -30,5 +31,8 @@
   },
   "overrides": {
     "cookie": "^0.7.2"
+  },
+  "dependencies": {
+    "@stripe/stripe-js": "^9.17.0"
   }
 }

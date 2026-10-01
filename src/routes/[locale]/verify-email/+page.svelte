@@ -1,10 +1,9 @@
-<script>
-  // @ts-nocheck
+<script lang="ts">
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
   import { accountError } from '$lib/recovery.js';
   import { api } from '$lib/api.js';
-  import { auth, refreshSession, initAuth } from '$lib/stores/auth.svelte.js';
+  import { auth, refreshSession, initAuth } from '$lib/stores/auth.svelte.ts';
   let message = $state('Opening the note…');
   onMount(() => { void (async () => {
     const token = new URL(location.href).searchParams.get('token');

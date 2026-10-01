@@ -1,6 +1,6 @@
-<script>
+<script lang="ts">
   import { page } from '$app/state';
-  import { ui } from '$lib/stores/ui.svelte.js';
+  import { ui } from '$lib/stores/ui.svelte.ts';
 
   const links = [
     { href: '/#library', label: 'library', path: '/' },

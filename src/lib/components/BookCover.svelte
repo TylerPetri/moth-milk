@@ -1,5 +1,6 @@
-<script>
-  let { book, compact = false } = $props();
+<script lang="ts">
+  import type { LibraryBook } from '$lib/types/content.js';
+  let { book, compact = false }: { book: LibraryBook; compact?: boolean } = $props();
 </script>
 
 <div

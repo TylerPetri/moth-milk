@@ -1,8 +1,8 @@
-<script>
-  // @ts-nocheck
+<script lang="ts">
+  import type { LibraryBook } from '$lib/types/content.js';
   import sofaPositions from '$lib/data/sofa-positions.json';
-  let { books = [] } = $props();
-  function position(index) {
+  let { books = [] }: { books?: LibraryBook[] } = $props();
+  function position(index: number) {
     const [x, y, width, height] = sofaPositions.desktop[index];
     const [mx, my, mw, mh] = sofaPositions.mobile[index];
     return `--book-x:${x / 1670 * 100}%;--book-y:${y / 942 * 100}%;--book-width:${width / 1670 * 100}%;--book-height:${height / 942 * 100}%;--mobile-book-x:${mx / 1024 * 100}%;--mobile-book-y:${my / 1536 * 100}%;--mobile-book-width:${mw / 1024 * 100}%;--mobile-book-height:${mh / 1536 * 100}%`;

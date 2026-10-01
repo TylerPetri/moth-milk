@@ -1,12 +1,12 @@
-<script>
-  // @ts-nocheck
+<script lang="ts">
+  import type { Product } from '$lib/types/api.js';
   import ProductCard from '$lib/components/ProductCard.svelte';
   import { products } from '$lib/data/products.js';
   import { catalog, variantFor } from '$lib/catalog.js';
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
   import { friendlyError, watchRecovery } from '$lib/recovery.js';
   import { onMount } from 'svelte';
-  let listings = $state([]); let catalogNotice = $state(''); let loading = $state(true); let refreshing = false; let disposed = false;
+  let listings = $state<Product[]>([]); let catalogNotice = $state(''); let loading = $state(true); let refreshing = false; let disposed = false;
   async function loadShop() {
     if (refreshing || disposed) return;
     refreshing = true; loading = true;
@@ -16,7 +16,7 @@
   }
   onMount(() => { void loadShop(); const stop = watchRecovery(() => { if (catalogNotice) return loadShop(); }); return () => { disposed = true; stop(); }; });
   let filter = $state('all');
-  const availableProducts = $derived(products.map((product) => { const variant = variantFor(listings, product.slug, product.sizes[0]); return variant ? { ...product, price: variant.amount / 100 } : null; }).filter(Boolean));
+  const availableProducts = $derived(products.map((product) => { const variant = variantFor(listings, product.slug, product.sizes[0]); return variant ? { ...product, price: variant.amount / 100 } : null; }).filter((product) => product !== null));
   const visibleProducts = $derived(filter === 'all' ? availableProducts : availableProducts.filter((product) => product.category === filter));
 </script>
 
