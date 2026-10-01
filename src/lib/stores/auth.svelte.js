@@ -31,6 +31,12 @@ export async function initAuth() {
   })().finally(() => { initPending = null; });
   return initPending;
 }
+/**
+ * @template {string} Path
+ * @param {Path} path
+ * @param {import('../types/api.js').ApiOptions} [options]
+ * @returns {Promise<import('../types/api.js').ApiResponseFor<Path>>}
+ */
 export async function withAuth(path, options = {}) {
   if (!auth.refresh) throw new Error('Open the book to sign in.');
   if (!auth.access) await refreshSession();

@@ -1,6 +1,7 @@
 import { browser } from '$app/environment';
 
 const base = (import.meta.env.PUBLIC_API_URL || '').replace(/\/$/, '');
+/** @type {Promise<string> | undefined} */
 let shopPromise;
 export const configured = Boolean(import.meta.env.PUBLIC_API_URL || browser);
 
@@ -13,7 +14,12 @@ export async function shopId() {
   return shopPromise;
 }
 
-/** @param {string} path @param {RequestInit & { token?: string, noShop?: boolean, timeoutMs?: number }} [options] */
+/**
+ * @template {string} Path
+ * @param {Path} path
+ * @param {import('./types/api.js').ApiOptions} [options]
+ * @returns {Promise<import('./types/api.js').ApiResponseFor<Path>>}
+ */
 export async function api(path, options = {}) {
   const { token, noShop, timeoutMs = 20000, ...request } = options;
   try {
