@@ -28,3 +28,17 @@ test('both blocked storage implementations report persistence failure', () => {
  assert.equal(writeSaved('checkout', { id: 'one' }), false);
  assert.throws(() => saveReceipt({ id: 'one', idempotency_key: 'key' }), /could not save the receipt/);
 });
+
+test('confirmed receipt storage excludes contact data and bearer credentials', () => {
+ saveReceipt({ id: 'one', idempotency_key: 'SECRET_KEY', tracking_proof: 'SECRET_PROOF', body: { shipping: { line1: 'PRIVATE_ADDRESS' }, customer_email: 'PRIVATE_EMAIL' }, customer_email: 'PRIVATE_EMAIL', items: [{ name: 'Mimi' }] });
+ const stored = localStorage.getItem('moth-milk-receipts');
+ for (const secret of ['SECRET_KEY', 'SECRET_PROOF', 'PRIVATE_ADDRESS', 'PRIVATE_EMAIL']) assert.equal(stored.includes(secret), false);
+});
+test('drafts expire but uncertain payments retain their recovery marker', () => {
+ localStorage.setItem('moth-milk-checkout-details', JSON.stringify({ savedAt: Date.now() - 90000000, customer_email: 'private@example.test' }));
+ assert.equal(readSaved('moth-milk-checkout-details'), null);
+ writeSaved('moth-milk-pending-checkout', { id: 'one', idempotency_key: 'key', paymentSubmitted: true, body: { customer_email: 'private@example.test', shipping: { line1: 'PRIVATE_ADDRESS' } } });
+ assert.equal(localStorage.getItem('moth-milk-pending-checkout').includes('PRIVATE_ADDRESS'), false);
+ assert.equal(readSaved('moth-milk-pending-checkout').paymentSubmitted, true);
+ assert.equal(readSaved('moth-milk-pending-checkout').body.shipping.line1, 'PRIVATE_ADDRESS');
+});

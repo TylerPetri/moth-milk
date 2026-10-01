@@ -22,6 +22,16 @@
   import { page } from '$app/state';
 
   let { children } = $props();
+  import { api } from '$lib/api.js';
+  import { receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.js';
+  onMount(() => { void (async () => {
+    // Migrate older saved receipts without losing recovery during an outage.
+    for (const receipt of receipts().slice(0, 10)) {
+      if (!receipt.idempotency_key && !receipt.tracking_proof) continue;
+      try { await api('/v1/auth/receipt', { method: 'POST', body: JSON.stringify({ id: receipt.id, idempotency_key: receipt.idempotency_key, tracking_proof: receipt.tracking_proof }) }); if (receipts().some(saved => saved.id === receipt.id)) saveReceipt(receipt); } catch { /* Keep legacy recovery until the server is reachable. */ }
+    }
+    for (const key of ['moth-milk-pending-checkout', 'moth-milk-stub-checkout', 'moth-milk-checkout-details']) { const saved = readSaved(key); if (saved) writeSaved(key, saved); }
+  })(); });
 </script>
 
 <svelte:head>

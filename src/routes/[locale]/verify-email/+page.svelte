@@ -2,6 +2,7 @@
   // @ts-nocheck
   import { onMount } from 'svelte';
   import { goto } from '$app/navigation';
+  import { accountError } from '$lib/recovery.js';
   import { api } from '$lib/api.js';
   import { auth, refreshSession, initAuth } from '$lib/stores/auth.svelte.js';
   let message = $state('Opening the note…');
@@ -14,7 +15,7 @@
       await initAuth();
       if (auth.refresh) await refreshSession();
       await goto('/your-corner', { replaceState: true });
-    } catch (error) { message = error.message; }
+    } catch (error) { message = accountError(error, 'verify'); }
   })(); });
 </script>
 <svelte:head><title>A note from Moth Milk</title></svelte:head>

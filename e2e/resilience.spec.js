@@ -67,7 +67,8 @@ test('private guest link recovers after outage and removes credential from URL',
  expect(new URL(page.url()).hash).toBe('');
  app.statusDown = false; app.status = 'confirmed'; await page.reload();
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
- expect(app.statusReads.every(r => r.tracking_proof === 'private-fixture-proof')).toBe(true);
+ expect(app.statusReads.some(r => r.tracking_proof === 'private-fixture-proof')).toBe(true);
+ expect(await page.evaluate(() => localStorage.getItem('moth-milk-receipts'))).not.toContain('private-fixture-proof');
 });
 test('checkout before payment preserves bag and contact details through API outage and reload', async ({ page, app }) => {
  app.catalogDown = true; await seed(page, { 'moth-milk-bag': [item] }); await page.goto('/checkout');
@@ -97,9 +98,9 @@ test('pay waits for backend confirmation, and refresh never submits a second pay
 });
 test('Your Corner preserves login during outage and recovers on return', async ({ page, app }) => {
  app.authDown = true;
- await page.addInitScript(() => sessionStorage.setItem('moth-milk-session', JSON.stringify({ access: 'access', refresh: 'refresh', expires: 4070908800000, userId: 'reader', email: 'reader@example.test', verified: true })));
+ app.signedIn = true;
  await page.goto('/your-corner'); await expect(page.getByRole('status')).toContainText('Something’s wrong on our end');
- expect(await page.evaluate(() => JSON.parse(sessionStorage.getItem('moth-milk-session')).refresh)).toBe('refresh');
+ expect(await page.evaluate(() => sessionStorage.getItem('moth-milk-session'))).toBeNull();
  app.authDown = false; await page.evaluate(() => window.dispatchEvent(new Event('focus')));
  await expect(page.locator('.recovery-notice')).toHaveCount(0);
  await expect(page.getByText('reader@example.test', { exact: true })).toBeVisible();
@@ -141,4 +142,17 @@ test('prepare and pay are guarded; an uncertain Stripe result cannot invite anot
  await expect(page.getByRole('button', { name: /Place order/ })).toHaveCount(0);
  expect(await page.evaluate(() => window.__confirms)).toBe(1);
  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('moth-milk-pending-checkout')).paymentSubmitted)).toBe(true);
+});
+
+test('reserved checkout conflict stops checking, hides internals and later confirms the same order', async ({ page, app }) => {
+ app.status = 'reserved'; app.prepareConflict = true;
+ await seed(page, { 'moth-milk-pending-checkout': { ...pending, paymentSubmitted: false } });
+ await page.goto('/checkout');
+ await expect(page.getByRole('alert')).toContainText('Please don’t pay again');
+ await expect(page.getByRole('button', { name: 'Check again ↗' })).toBeEnabled();
+ await expect(page.getByRole('button', { name: 'Checking…' })).toHaveCount(0);
+ await expect(page.locator('body')).not.toContainText('PRIVATE');
+ app.status = 'confirmed'; await page.getByRole('button', { name: 'Check again ↗' }).click();
+ await expect(page.getByRole('status')).toContainText('Your order is confirmed');
+ expect(app.prepares).toHaveLength(1);
 });

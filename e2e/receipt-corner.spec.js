@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { test, expect, seed, receipt, orderId } from './helpers.js';
+import { test, expect, seed, receipt, orderId, item, details } from './helpers.js';
 async function checkBooks(page, slugs = ['static', 'hush', 'underbed']) {
  await expect(page.locator('.sofa-books img')).toHaveCount(slugs.length);
  const mode = page.viewportSize().width <= 900 ? 'mobile' : 'desktop';
@@ -36,7 +36,77 @@ test('confirmed receipt actions match, and navigation/reload/resize keep all sof
  await page.setViewportSize(page.viewportSize().width > 900 ? { width: 390, height: 844 } : { width: 1280, height: 800 }); await checkBooks(page);
 });
 test('signed-in saved stories render their own responsive artwork', async ({ page, app }) => {
- await page.addInitScript(() => sessionStorage.setItem('moth-milk-session', JSON.stringify({ access: 'access', refresh: 'refresh', expires: 4070908800000, userId: 'reader', email: 'reader@example.test', verified: true })));
+ app.signedIn = true;
  await page.goto('/your-corner'); await expect(page.locator('.corner-books button')).toHaveCount(1);
  await checkBooks(page, ['static']);
+});
+
+test('signed-in reader can forget device receipts without signing out', async ({ page, app }) => {
+ app.signedIn = true; app.status = 'confirmed';
+ await seed(page, { 'moth-milk-receipts': [receipt] });
+ await page.goto('/your-corner');
+ await expect(page.getByText('reader@example.test', { exact: true })).toBeVisible();
+ await page.getByRole('button', { name: 'forget this device’s receipts ↗' }).click();
+ await expect(page.getByRole('region', { name: 'Your receipts' })).toHaveCount(0);
+ expect(await page.evaluate(() => localStorage.getItem('moth-milk-receipts'))).toBeNull();
+ await expect(page.getByText('reader@example.test', { exact: true })).toBeVisible();
+ await expect(page.locator('.recovery-notice')).toHaveCount(0);
+});
+
+test('account book explains validation, duplicate registration and incorrect login', async ({ page, app }) => {
+ await page.goto('/your-corner');
+ await page.getByRole('button', { name: 'Open the sign-in and registration book' }).click();
+ const book = page.getByRole('dialog');
+ await book.getByRole('button', { name: 'register', exact: true }).click();
+ await book.getByLabel('Email', { exact: true }).fill('reader@example.test');
+ await book.getByLabel('Password', { exact: true }).fill('short');
+ await book.locator('button[type="submit"]').click();
+ await expect(book.getByRole('status')).toContainText('at least 8 characters');
+ await book.getByLabel('Password', { exact: true }).fill('long-enough-password');
+ await book.locator('button[type="submit"]').click();
+ await expect(book.getByRole('status')).toContainText('Already in the books');
+ await book.getByRole('button', { name: 'sign in', exact: true }).click();
+ await book.locator('button[type="submit"]').click();
+ await expect(book.getByRole('status')).toContainText('email and password don’t match');
+ await expect(book).not.toContainText('PRIVATE');
+});
+
+ test('card payment can leave confirmation and display purchased clothes on the rack', async ({ page, app }) => {
+ app.signedIn = true;
+ app.orderItems = [{ product_id: 'hoodie-id' }, { product_id: 'tee-id' }];
+ const clothes = [
+  { ...item, slug: 'night-shift-hoodie', name: 'Night Shift Hoodie', selectedSize: 'XS', price: 118, lineId: 'hoodie-line' },
+  { ...item, slug: 'after-hours-baby-tee', name: 'After Hours Baby Tee', selectedSize: 'XS', price: 54, lineId: 'tee-line' }
+ ];
+ await seed(page, { 'moth-milk-bag': clothes });
+ await page.goto('/checkout');
+ await details(page);
+ await page.getByRole('button', { name: /Continue to payment/ }).click();
+ await expect(page.getByText('Secure card fixture')).toBeVisible();
+ app.status = 'confirmed';
+ await page.getByRole('button', { name: /Place order/ }).click();
+ await expect(page.getByRole('heading', { name: 'All yours.' })).toBeVisible();
+ await page.getByRole('link', { name: 'Your corner ↗' }).click();
+ for (const slug of ['night-shift-hoodie', 'after-hours-baby-tee']) {
+  const image = page.locator(`.corner-belonging--${slug} img`);
+  await expect(image).toBeVisible();
+  await expect.poll(() => image.evaluate(img => img.complete && img.naturalWidth > 0)).toBe(true);
+ }
+ await page.reload();
+ await expect(page.locator('.corner-belonging--night-shift-hoodie img')).toBeVisible();
+ await expect(page.locator('.corner-belonging--after-hours-baby-tee img')).toBeVisible();
+});
+
+test('Corner items return to the room after reload; direct products return to shop', async ({ page, app }) => {
+ app.signedIn = true;
+ await page.goto('/your-corner');
+ await page.getByRole('link', { name: 'Meet Mimi Moth Plush', exact: true }).click();
+ const back = page.getByRole('link', { name: '← back to your corner' });
+ await expect(back).toHaveAttribute('href', '/your-corner');
+ await page.reload();
+ await expect(back).toBeVisible();
+ await back.click();
+ await expect(page).toHaveURL(/\/your-corner$/);
+ await page.goto('/product/mimi-plush');
+ await expect(page.getByRole('link', { name: '← back to shop' })).toHaveAttribute('href', '/shop');
 });

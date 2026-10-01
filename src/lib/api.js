@@ -22,7 +22,7 @@ export async function api(path, options = {}) {
     if (token) headers.set('Authorization', `Bearer ${token}`);
     if (request.body) headers.set('Content-Type', 'application/json');
     const signal = request.signal ? AbortSignal.any([request.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs);
-    const response = await fetch(`${base}${path}`, { ...request, headers, signal });
+    const response = await fetch(`${browser && (path.startsWith('/v1/auth/') || path.endsWith('/checkout-status') || path === '/v1/orders/prepare' || path === '/v1/orders' || token) ? '/session' : base}${path}`, { ...request, headers, signal });
     const result = response.status === 204 ? {} : await response.json().catch(() => {
       if (response.ok) throw Object.assign(new Error('The shop response was incomplete.'), { retryable: true });
       return {};

@@ -7,12 +7,10 @@ let initPending;
 let refreshPending;
 export const auth = $state({ ready: false, access: '', refresh: '', expires: 0, userId: '', email: '', verified: false });
 
-function persist() {
-  if (browser) sessionStorage.setItem(key, JSON.stringify({ access: auth.access, refresh: auth.refresh, expires: auth.expires, userId: auth.userId, email: auth.email, verified: auth.verified }));
-}
+function persist() { /* Tokens are held only in HttpOnly cookies. */ }
 export function clearSession() {
   Object.assign(auth, { access: '', refresh: '', expires: 0, userId: '', email: '', verified: false, ready: true });
-  if (browser) sessionStorage.removeItem(key);
+  if (browser) { try { sessionStorage.removeItem(key); } catch {} }
 }
 function accept(tokens, email = auth.email) {
   Object.assign(auth, { access: tokens.access_token, refresh: tokens.refresh_token, expires: new Date(tokens.access_expires_at).getTime(), userId: tokens.user_id, email, verified: tokens.email_verified, ready: true });
@@ -22,21 +20,20 @@ export async function initAuth() {
   if (auth.ready || !browser) return;
   initPending ||= (async () => {
     try {
-      const saved = JSON.parse(sessionStorage.getItem(key) || 'null');
-      if (saved?.refresh) {
-        Object.assign(auth, saved);
-        const me = await withAuth('/v1/auth/me', { noShop: true });
-        auth.verified = Boolean(me.email_verified); auth.email = me.email; persist();
-        return;
-      }
-    } catch (error) { if (!auth.refresh || [401, 403].includes(error.status)) clearSession(); else { auth.ready = true; throw error; } }
+      try { sessionStorage.removeItem(key); } catch {} // Remove legacy browser-readable tokens.
+      let me;
+      try { me = await api('/v1/auth/me', { noShop: true }); }
+      catch (error) { if (error.status !== 401) throw error; await refreshSession(); me = await api('/v1/auth/me', { noShop: true }); }
+      Object.assign(auth, { access: 'cookie-session', refresh: 'cookie-session', expires: Date.now() + 60000, userId: me.user_id || auth.userId, verified: Boolean(me.email_verified), email: me.email, ready: true });
+      return;
+    } catch (error) { if ([400, 401, 403].includes(error.status)) clearSession(); else { auth.ready = false; throw error; } }
     auth.ready = true;
   })().finally(() => { initPending = null; });
   return initPending;
 }
 export async function withAuth(path, options = {}) {
   if (!auth.refresh) throw new Error('Open the book to sign in.');
-  if (!auth.access || auth.expires - Date.now() < 60_000) await refreshSession();
+  if (!auth.access) await refreshSession();
   const used = auth.access;
   try { return await api(path, { ...options, token: used }); }
   catch (error) {
@@ -46,13 +43,13 @@ export async function withAuth(path, options = {}) {
   }
 }
 export async function refreshSession() {
-  if (!auth.refresh) throw new Error('Open the book to sign in.');
-  refreshPending ||= (async () => {
+  const renew = async () => {
     try {
       const tokens = await api('/v1/auth/refresh', { method: 'POST', noShop: true, body: JSON.stringify({ refresh_token: auth.refresh }) });
       accept(tokens);
     } catch (error) { if ([400, 401, 403].includes(error.status)) clearSession(); throw error; }
-  })().finally(() => { refreshPending = null; });
+  };
+  refreshPending ||= (browser && navigator.locks ? navigator.locks.request('moth-milk-session-refresh', renew) : renew()).finally(() => { refreshPending = null; });
   return refreshPending;
 }
 // Verification can finish in another tab while this tab still holds an older access token.
@@ -76,9 +73,10 @@ export async function register(email, password, proof = '') {
   accept(tokens, email);
 }
 export async function signOut() {
+  if (refreshPending) await refreshPending.catch(() => {});
   const refresh = auth.refresh;
   clearSession();
-  if (refresh) await api('/v1/auth/logout', { method: 'POST', noShop: true, body: JSON.stringify({ refresh_token: refresh }) });
+  await api('/v1/auth/logout', { method: 'POST', noShop: true, body: JSON.stringify({ refresh_token: refresh }) });
 }
 export async function requestReset(email) { return api('/v1/auth/password/reset/request', { method: 'POST', body: JSON.stringify({ email, locale: 'en' }) }); }
 export async function confirmReset(token, newPassword) { return api('/v1/auth/password/reset/confirm', { method: 'POST', noShop: true, body: JSON.stringify({ token, new_password: newPassword }) }); }

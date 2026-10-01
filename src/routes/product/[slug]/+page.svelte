@@ -6,6 +6,8 @@
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
   import { friendlyError, watchRecovery } from '$lib/recovery.js';
   import { onMount } from 'svelte';
+  import { page } from '$app/state';
+  const fromCorner = $derived(page.url.searchParams.get('from') === 'your-corner');
   let listings = $state([]);
   let catalogNotice = $state('');
   let loading = $state(true); let retrying = $state(false); let stockNotice = $state(''); let stockRevision = $state(0); let disposed = false;
@@ -37,7 +39,7 @@
 <svelte:head><title>{data.product.name} — MOTH MILK</title><meta name="description" content={`${data.product.name}. ${data.product.note}`} /></svelte:head>
 
 <main class="product-page page-shell" data-product={data.product.slug}>
-  <a class="product-page__back" href="/shop">← back to shop</a>
+  <a class="product-page__back" href={fromCorner ? "/your-corner" : "/shop"}>← back to {fromCorner ? "your corner" : "shop"}</a>
   <section class="product-detail">
     <div class="product-detail__gallery">
       <figure><img src={data.product.image} alt={data.product.imageAlt} /><figcaption>Moth Milk / {data.product.shortName}</figcaption></figure>

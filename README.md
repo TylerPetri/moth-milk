@@ -105,3 +105,21 @@ Optional settings: `E2E_PRODUCT_SLUG` (default `mimi-plush`), `E2E_CUSTOMER_EMAI
 
 
 The confirmed checkout uses matching textured shipping/corner actions and an “All yours” heading. Sofa books use native responsive pictures rather than a canvas; their original artwork, positions and story hotspots are preserved. The receipt-to-corner regression checks image decoding/current sources after navigation, reload and viewport changes, plus signed-in selected stories.
+
+## Storefront security and deployment
+
+Authentication now goes through the SvelteKit `/session` server boundary. Access and refresh tokens are host-only HttpOnly cookies (Secure over HTTPS, SameSite Strict), never browser storage. POST/PUT requests require an exact same-origin Origin header. Only the storefront's required endpoints are forwarded; browser Authorization, cookies and proxy headers are not forwarded to the gateway. The backend still performs tenant and ownership authorization.
+
+Deploy with the existing Vercel server adapter, not a static export. Set `API_ORIGIN` to the gateway's HTTPS URL reachable from the Vercel server, and `PUBLIC_API_URL` to its browser-reachable HTTPS URL. `PUBLIC_SHOP_ID` binds this storefront to its shop; without it the server resolves the storefront host itself. The private origin must not contain credentials or query parameters. Restart/rebuild after changing environment settings. Public API origin allowlisting for CSP is generated at build time. Use local HTTP only for local development.
+
+Receipt status credentials live in bounded HttpOnly cookies (10 receipts, 30 days). Browser receipt summaries exclude address/contact details and credentials. The Your Corner forget action deletes receipt cookies and summaries. Older summaries are migrated on return; if the storefront server is unreachable, legacy credentials are preserved until migration can complete rather than silently losing an uncertain payment. Existing users must sign in once after legacy session tokens are removed.
+
+Unsubmitted address drafts stay in session storage for at most 24 hours. Pending checkout contact details are kept in the current tab and an HttpOnly recovery cookie, while a minimal persistent recovery marker remains until payment status is resolved. Never expire or clear an unresolved payment marker automatically: that could invite a second payment. Completing an order clears the contact recovery cookie and pending details. An emailed order link can restore access after receipt cookies expire or are forgotten.
+
+CSP allows Svelte's generated scripts and Stripe.js/3DS/Link frames, with inline styles retained for the site's position-based artwork. Other headers prohibit embedding, suppress referrers, disable unused device permissions and prevent MIME sniffing. Checkout, recovery, verification and reset responses are not cacheable. These are defense-in-depth measures; HttpOnly cookies do not prevent a script already running on the page from performing actions.
+
+`npm audit` is clean at this pass. A compatible `cookie` 0.7.x override addresses the transitive advisory without forcing a SvelteKit downgrade; the unused static adapter was removed. Recheck advisories routinely.
+
+Security browser tests exercise the actual SvelteKit server against a disposable local gateway fixture, including cookie-only tokens, logout, forged Origin rejection, restricted proxy endpoints, guest receipt recovery and security headers. Other resilience tests retain browser boundary fixtures. They do not certify a deployed gateway, reverse-proxy configuration, live Stripe payment or test/live isolation. The attached backend uses atomic session/bootstrap locking, trusted proxy resolution and durable payment webhook commits; production configuration and live tenant/payment checks still require the backend's own security suite.
+
+Because authenticated requests now originate at the storefront server, ensure gateway rate limiting handles that proxy topology deliberately. Do not broadly trust client-supplied forwarding headers. Use an authenticated, narrowly trusted ingress before relying on forwarded client identity. Also run the guarded live Stripe smoke test before the demo: mocked card tests cannot validate a real Stripe challenge against the CSP.

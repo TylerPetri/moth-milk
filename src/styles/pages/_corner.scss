@@ -139,3 +139,7 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 .account-note label { display: grid; gap: .6rem; }
 .account-note input { padding: .8rem; border: 1px solid #80604e; background: #261715; color: #fff4e8; }
 .account-note button, .account-note a { width: fit-content; padding: .4rem 0; border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: #eadccd; cursor: pointer; font: .9rem 'Courier Prime', monospace; }
+
+.corner-list button { display: block; margin-top: .8rem; padding: .35rem 0; border: 0; background: transparent; color: #cfb3a5; font: .7rem/1.5 'Courier Prime', monospace; cursor: pointer; }
+.corner-list button:hover { color: #eed8c8; text-decoration: underline; }
+.corner-list button:focus-visible { outline: 2px solid #d8b9a2; outline-offset: 3px; }
