@@ -393,15 +393,15 @@
             <div class="checkout-receipt__actions">
               {#if receipt}
                 {#if trackingView}
-                  <button class="checkout-receipt__action" type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Refresh update ↗'}</button>
+                  <button class="checkout-receipt__action" type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Refresh update'}</button>
                   <button class="checkout-receipt__back" type="button" onclick={() => showTracking(false)}>← Your receipt</button>
-                {:else}<button class="checkout-receipt__action" type="button" onclick={() => showTracking(true)}>Track your things ↗</button>{/if}
+                {:else}<button class="checkout-receipt__action" type="button" onclick={() => showTracking(true)}>Track your things</button>{/if}
               {/if}
-              <a class="checkout-receipt__action" href="/your-corner">Your corner ↗</a>
+              <a class="checkout-receipt__action" href="/your-corner">Your corner</a>
             </div>
           </div>
         {:else if ui.cart.length === 0 && phase === 'details'}<div class="checkout-tv__empty"><p>Your bag is empty.</p><a href="/shop">Find something to take home →</a></div>
-        {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<div class="checkout-receipt__actions">{#if verifiedClosed}<button class="checkout-receipt__action" type="button" onclick={resetClosedCheckout}>Start again ↗</button>{:else}{#if canCancel}<button class="checkout-receipt__action" type="button" disabled={!canCancel || processing || recovering} onclick={cancelPending}>{cancelling ? 'Closing…' : 'Close checkout & try again ↗'}</button>{/if}<button class="checkout-receipt__action" type="button" disabled={recovering || cancelling} onclick={recover}>{recovering ? 'Checking…' : 'Check on it ↗'}</button>{/if}</div>{:else}<div class="checkout-receipt__actions"><button class="checkout-receipt__action" type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check again ↗'}</button>{#if currentCheckoutStatus === 'reserved' && (serverActions?.resume ?? true) && !polling && !recovering && !checkout?.paymentSubmitted}<button class="checkout-receipt__action" type="button" disabled={recovering || processing} onclick={resume}>Return to saved card entry ↗</button>{/if}</div>{/if}</div>
+        {:else if phase === 'waiting' || phase === 'failed'}<div class="checkout-tv__empty"><p role="status">{notice}</p>{#if phase === 'failed'}<div class="checkout-receipt__actions">{#if verifiedClosed}<button class="checkout-receipt__action" type="button" onclick={resetClosedCheckout}>Start again</button>{:else}{#if canCancel}<button class="checkout-receipt__action" type="button" disabled={!canCancel || processing || recovering} onclick={cancelPending}>{cancelling ? 'Closing…' : 'Close checkout & try again'}</button>{/if}<button class="checkout-receipt__action" type="button" disabled={recovering || cancelling} onclick={recover}>{recovering ? 'Checking…' : 'Check on it'}</button>{/if}</div>{:else}<div class="checkout-receipt__actions"><button class="checkout-receipt__action" type="button" disabled={polling || recovering || processing} onclick={recover}>{polling || recovering ? 'Checking…' : 'Check again'}</button>{#if currentCheckoutStatus === 'reserved' && (serverActions?.resume ?? true) && !polling && !recovering && !checkout?.paymentSubmitted}<button class="checkout-receipt__action" type="button" disabled={recovering || processing} onclick={resume}>Return to saved card entry</button>{/if}</div>{/if}</div>
         {:else if phase === 'payment'}
           <p class="checkout-tv__intro">One last thing.</p>
           <div class="checkout-form"><fieldset class="checkout-form__payment"><legend>03 / Payment</legend>
@@ -429,7 +429,7 @@
             <button type="submit" disabled={processing}>{processing ? 'A moment…' : 'Continue to payment'} <span aria-hidden="true">→</span></button>
           </form>
         {/if}
-        {#if canCancel && phase !== 'failed'}<div class="checkout-receipt__actions"><button class="checkout-receipt__action" type="button" disabled={processing || recovering} onclick={cancelPending}>{cancelling ? 'Closing…' : 'Cancel this checkout ↗'}</button></div>{/if}
+        {#if canCancel && phase !== 'failed'}<div class="checkout-receipt__actions"><button class="checkout-receipt__action" type="button" disabled={processing || recovering} onclick={cancelPending}>{cancelling ? 'Closing…' : 'Cancel this checkout'}</button></div>{/if}
         {#if phase === 'details' && notice}<p role="status">{notice}</p>{/if}
         {#if error}<p class="checkout-form__notice" role="alert">{error}</p>{/if}
         {#if closureBlocked && checkout?.id}<div class="checkout-receipt__reference"><span>Saved order</span><span>{checkout.id}</span></div>{/if}
@@ -438,7 +438,7 @@
       <div class="checkout-tv__controls" aria-hidden="true"><span class="checkout-tv__brand">MM</span><span class="checkout-tv__dial"></span><span class="checkout-tv__dial checkout-tv__dial--small"></span><span class="checkout-tv__power"></span></div><div class="checkout-tv__foot" aria-hidden="true"><span></span><span></span></div>
     </section>
     <aside class="checkout-summary" aria-label="Order summary"><span class="checkout-summary__eyebrow">Your things</span><h2>{receipt ? 'Yours.' : checkout || stubCheckout ? 'This checkout.' : 'In your bag.'}</h2>
-      {#if summaryItems.length === 0}<p>{receipt ? 'See your order email for the item details.' : 'Nothing here yet.'}</p>{:else}<ul>{#each summaryItems as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>{total !== null ? 'Shop total' : 'Estimated subtotal / CAD'}</span><strong>{total !== null ? money(total, currency) : `$${subtotal}`}</strong></div>{#if !receipt}<p>Final amount appears on the TV before payment.</p>{/if}{/if}<a href="/shop">Keep looking ↗</a>
+      {#if summaryItems.length === 0}<p>{receipt ? 'See your order email for the item details.' : 'Nothing here yet.'}</p>{:else}<ul>{#each summaryItems as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>{total !== null ? 'Shop total' : 'Estimated subtotal / CAD'}</span><strong>{total !== null ? money(total, currency) : `$${subtotal}`}</strong></div>{#if !receipt}<p>Final amount appears on the TV before payment.</p>{/if}{/if}<a href="/shop">Keep looking</a>
     </aside>
   </div>
 </main>

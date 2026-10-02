@@ -12,6 +12,6 @@
 </script>
 <svelte:head><title>Find your way back — Moth Milk</title></svelte:head>
 <main class="account-note page-shell"><p class="account-note__eyebrow">Moth Milk / After hours</p><h1>A way back in.</h1>
-  {#if !done && token}<form novalidate onsubmit={submit}><label>New password<input type="password" autocomplete="new-password" bind:value={password} required /></label><button disabled={busy} type="submit">{busy ? 'One moment…' : 'Turn the page ↗'}</button></form>{/if}
-  {#if notice}<p role="status">{notice}</p>{/if}<a href="/your-corner">Back to your corner ↗</a>
+  {#if !done && token}<form novalidate onsubmit={submit}><label>New password<input type="password" autocomplete="new-password" bind:value={password} required /></label><button disabled={busy} type="submit">{busy ? 'One moment…' : 'Turn the page'}</button></form>{/if}
+  {#if notice}<p role="status">{notice}</p>{/if}<a href="/your-corner">Back to your corner</a>
 </main>

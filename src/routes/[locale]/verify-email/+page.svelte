@@ -18,4 +18,4 @@
   })(); });
 </script>
 <svelte:head><title>A note from Moth Milk</title></svelte:head>
-<main class="account-note page-shell"><p class="account-note__eyebrow">Moth Milk / After hours</p><h1>{message}</h1><a href="/your-corner">Back to your corner ↗</a></main>
+<main class="account-note page-shell"><p class="account-note__eyebrow">Moth Milk / After hours</p><h1>{message}</h1><a href="/your-corner">Back to your corner</a></main>

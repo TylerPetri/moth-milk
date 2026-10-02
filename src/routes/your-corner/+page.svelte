@@ -1,5 +1,4 @@
 <script lang="ts">
-  import type { Receipt } from '$lib/types/checkout.ts';
   import type { LibraryBook } from '$lib/types/content.ts';
   import { libraryBooks } from '$lib/data/library.ts';
   import CheckoutAttempts from '$lib/components/CheckoutAttempts.svelte';
@@ -7,9 +6,6 @@
   import { onMount } from 'svelte';
   import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.ts';
   import { corner, loadCorner } from '$lib/stores/corner.svelte.ts';
-  import { receipts, money, forgetReceipts } from '$lib/checkout.ts';
-  import { api } from '$lib/api.ts';
-  let savedReceipts = $state<Receipt[]>([]);
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
   import { friendlyError, watchRecovery, accountError, accountValidation } from '$lib/recovery.ts';
   let sceneBusy = $state(false); let disposed = false;
@@ -45,7 +41,7 @@
     finally { sceneBusy = false; }
   }
   onMount(() => {
-    savedReceipts = receipts(); void loadScene();
+    void loadScene();
     try {
       const pending = JSON.parse(sessionStorage.getItem('moth-milk-proof') || 'null');
       if (pending?.proof && pending?.email && pending?.mode) {
@@ -130,26 +126,25 @@
     </div>
 
     <div class="corner-rack" aria-label="Clothes on the rack">
-      {#if !auth.userId || owned.includes('night-shift-hoodie')}<a class="corner-hotspot corner-hotspot--hoodie" href="/product/night-shift-hoodie?from=your-corner" aria-label="View Night Shift Hoodie"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">Night Shift Hoodie {owned.includes('night-shift-hoodie') ? '· yours' : '↗'}</span></a>{/if}
-      {#if !auth.userId || owned.includes('after-hours-baby-tee')}<a class="corner-hotspot corner-hotspot--tee" href="/product/after-hours-baby-tee?from=your-corner" aria-label="View After Hours Baby Tee"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">After Hours Tee {owned.includes('after-hours-baby-tee') ? '· yours' : '↗'}</span></a>{/if}
+      {#if !auth.userId || owned.includes('night-shift-hoodie')}<a class="corner-hotspot corner-hotspot--hoodie" href="/product/night-shift-hoodie?from=your-corner" aria-label="View Night Shift Hoodie"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">Night Shift Hoodie </span></a>{/if}
+      {#if !auth.userId || owned.includes('after-hours-baby-tee')}<a class="corner-hotspot corner-hotspot--tee" href="/product/after-hours-baby-tee?from=your-corner" aria-label="View After Hours Baby Tee"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">After Hours Tee </span></a>{/if}
     </div>
-    {#if !auth.userId || owned.includes('mimi-plush')}<a class="corner-hotspot corner-hotspot--mimi" href="/product/mimi-plush?from=your-corner" aria-label="Meet Mimi Moth Plush"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">{owned.includes('mimi-plush') ? 'Mimi · yours' : 'meet Mimi ↗'}</span></a>{/if}
+    {#if !auth.userId || owned.includes('mimi-plush')}<a class="corner-hotspot corner-hotspot--mimi" href="/product/mimi-plush?from=your-corner" aria-label="Meet Mimi Moth Plush"><span class="corner-hotspot__target" aria-hidden="true"></span><span class="corner-hotspot__label">{owned.includes('mimi-plush') ? 'Mimi' : 'meet Mimi'}</span></a>{/if}
     <button class="corner-list-toggle" type="button" aria-expanded={listOpen} aria-controls="corner-list" onclick={() => (listOpen = !listOpen)}>{listOpen ? 'hide list' : 'view as list'} <span aria-hidden="true">{listOpen ? '×' : '☰'}</span></button>
   </section>
 
-  <CheckoutAttempts />
-  {#if savedReceipts.length}<section class="corner-list" aria-label="Your receipts"><div><h2>Your things</h2><p>Receipts saved on this device.</p><button type="button" onclick={async () => { try { await api('/v1/auth/receipts/forget', { method: 'POST' }); forgetReceipts(); savedReceipts = []; } catch (error) { sceneNotice = friendlyError(error, 'We could not forget this device yet. Please try again.'); } }}>forget this device’s receipts ↗</button>{#each savedReceipts as receipt (receipt.id)}<a href={`/checkout?order=${encodeURIComponent(receipt.id)}`}>Order {receipt.id.slice(0, 8)} <span>{receipt.total != null ? money(receipt.total, receipt.currency) : 'View receipt'} · shipping ↗</span></a>{/each}</div></section>{/if}
+
   {#if sceneNotice}<RecoveryNotice message={sceneNotice} busy={sceneBusy} retry={loadScene} />{/if}
-  {#if auth.userId}<div class="corner-personal-note"><span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = friendlyError(error); } }}>resend note ↗</button>{/if}<button type="button" onclick={leaveRoom}>leave the room ↗</button></div>{/if}
+  <div class="corner-personal-note">{#if auth.userId}<span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = friendlyError(error); } }}>resend note</button>{/if}{/if}<CheckoutAttempts />{#if auth.userId}<button type="button" onclick={leaveRoom}>leave the room</button>{/if}</div>
   {#if listOpen}
     <section class="corner-list" id="corner-list" aria-label="Books and clothing in this corner">
       <div><h2>On the sofa</h2>{#each selectedBooks as book}<button class="corner-list-book" type="button" onclick={() => (selectedBook = book)}>
         <span class="corner-list-cover" aria-hidden="true" style={`--cover-art:url('/images/sofa-books/${book.slug}-cover.webp')`}></span>
-        <span class="corner-list-book__title">{book.title}</span><span class="corner-list-book__time">{book.minutes} min read ↗</span>
+        <span class="corner-list-book__title">{book.title}</span><span class="corner-list-book__time">{book.minutes} min read</span>
       </button>{/each}
       {#if auth.userId && selectedBooks.length === 0}<p>Choose a story from the library and it will find its place here.</p>{/if}
       {#if selectedBooks.length > 3}<p>{selectedBooks.length - 3} more stories are here in the list.</p>{/if}</div>
-      <div><h2>On the rack</h2>{#if !auth.userId || owned.includes('night-shift-hoodie')}<a href="/product/night-shift-hoodie?from=your-corner">Night Shift Hoodie <span>{owned.includes('night-shift-hoodie') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('after-hours-baby-tee')}<a href="/product/after-hours-baby-tee?from=your-corner">After Hours Tee <span>{owned.includes('after-hours-baby-tee') ? 'yours ↗' : 'view ↗'}</span></a>{/if}{#if !auth.userId || owned.includes('mimi-plush')}<a href="/product/mimi-plush?from=your-corner">Mimi Moth Plush <span>{owned.includes('mimi-plush') ? 'yours ↗' : 'meet Mimi ↗'}</span></a>{/if}</div>
+      <div><h2>On the rack</h2>{#if !auth.userId || owned.includes('night-shift-hoodie')}<a href="/product/night-shift-hoodie?from=your-corner">Night Shift Hoodie <span>{auth.userId ? '' : 'view'}</span></a>{/if}{#if !auth.userId || owned.includes('after-hours-baby-tee')}<a href="/product/after-hours-baby-tee?from=your-corner">After Hours Tee <span>{auth.userId ? '' : 'view'}</span></a>{/if}{#if !auth.userId || owned.includes('mimi-plush')}<a href="/product/mimi-plush?from=your-corner">Mimi Moth Plush <span>{auth.userId ? '' : 'meet Mimi'}</span></a>{/if}</div>
     </section>
   {/if}
 </main>
@@ -166,7 +161,7 @@
       <input id="registry-email" type="email" name="email" autocomplete="email" bind:value={registryEmail} required />
       {#if registryMode !== 'recover'}<label for="registry-password">Password</label>
       <input id="registry-password" type="password" name="password" autocomplete={registryMode === 'register' ? 'new-password' : 'current-password'} bind:value={registryPassword} required />{/if}
-      <button class="registry-continue" type="submit" disabled={busy}>{registryMode === 'recover' ? 'send a note' : registryMode === 'register' ? 'register' : 'enter'} <span aria-hidden="true">↗</span></button>
+      <button class="registry-continue" type="submit" disabled={busy}>{registryMode === 'recover' ? 'send a note' : registryMode === 'register' ? 'register' : 'enter'} </button>
       <button class="registry-recover" type="button" onclick={() => { registryMode = registryMode === 'recover' ? 'sign-in' : 'recover'; registryNotice = ''; }}>{registryMode === 'recover' ? 'back to the book' : 'lost your way in?'}</button>
       {#if registryNotice}<p class="registry-notice" role="status">{registryNotice}</p>{/if}
     </form>

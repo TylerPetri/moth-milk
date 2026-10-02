@@ -9,9 +9,9 @@
   </header>
 
   <div class="lookbook-board">
-    <figure class="lookbook-shot lookbook-shot--one"><a href="/product/night-shift-hoodie"><img src="/images/night-shift-hoodie.webp" alt="Night Shift Hoodie in the bedroom" /></a><figcaption><a href="/product/night-shift-hoodie">Night Shift Hoodie <span aria-hidden="true">↗</span></a></figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--two"><a href="/product/after-hours-baby-tee"><img src="/images/after-hours-tee.webp" alt="After Hours Baby Tee on rumpled bedding" /></a><figcaption><a href="/product/after-hours-baby-tee">After Hours Tee <span aria-hidden="true">↗</span></a></figcaption></figure>
-    <figure class="lookbook-shot lookbook-shot--three"><a href="/product/mimi-plush"><img src="/images/mimi-plush.webp" alt="Mimi Moth Plush" /></a><figcaption><a href="/product/mimi-plush">Mimi <span aria-hidden="true">↗</span></a></figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--one"><a href="/product/night-shift-hoodie"><img src="/images/night-shift-hoodie.webp" alt="Night Shift Hoodie in the bedroom" /></a><figcaption><a href="/product/night-shift-hoodie">Night Shift Hoodie </a></figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--two"><a href="/product/after-hours-baby-tee"><img src="/images/after-hours-tee.webp" alt="After Hours Baby Tee on rumpled bedding" /></a><figcaption><a href="/product/after-hours-baby-tee">After Hours Tee </a></figcaption></figure>
+    <figure class="lookbook-shot lookbook-shot--three"><a href="/product/mimi-plush"><img src="/images/mimi-plush.webp" alt="Mimi Moth Plush" /></a><figcaption><a href="/product/mimi-plush">Mimi </a></figcaption></figure>
     <div class="lookbook-marks" aria-hidden="true"><span>02:14 AM</span><p><i>soft is not</i> <strong>harmless</strong></p><span>MM-001</span></div>
   </div>
 </main>

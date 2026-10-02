@@ -75,6 +75,7 @@ export interface Shipment {
   tracking_number?: string;
 }
 export interface CheckoutStatusResponse {
+  created_at?: string;
   id: UUID;
   status: OrderStatus;
   success?: boolean;

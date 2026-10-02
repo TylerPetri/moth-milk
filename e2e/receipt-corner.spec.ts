@@ -14,8 +14,8 @@ test('confirmed receipt actions match, and navigation/reload/resize keep all sof
  await page.goto(`/checkout?order=${orderId}`);
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
  await expect(page.getByRole('heading', { name: 'All yours.' })).toBeVisible();
- const shipping = page.getByRole('button', { name: 'Track your things ↗' });
- const corner = page.getByRole('link', { name: 'Your corner ↗' });
+ const shipping = page.getByRole('button', { name: 'Track your things' });
+ const corner = page.locator('.checkout-receipt__actions').getByRole('link', { name: 'Your corner', exact: true });
  await expect(shipping).toBeEnabled(); await expect(corner).toBeVisible();
  const style = node => { const css = getComputedStyle(node); return [css.fontFamily, css.fontSize, css.color, css.padding, css.border, css.backgroundImage]; };
  expect(await shipping.evaluate(style)).toEqual(await corner.evaluate(style));
@@ -46,8 +46,11 @@ test('signed-in reader can forget device receipts without signing out', async ({
  await seed(page, { 'moth-milk-receipts': [receipt] });
  await page.goto('/your-corner');
  await expect(page.getByText('reader@example.test', { exact: true })).toBeVisible();
- await page.getByRole('button', { name: 'forget this device’s receipts ↗' }).click();
- await expect(page.getByRole('region', { name: 'Your receipts' })).toHaveCount(0);
+ await page.getByRole('button', { name: 'Your receipts', exact: true }).click();
+ await page.getByRole('button', { name: 'Forget this device’s receipts' }).click();
+ await page.getByRole('button', { name: 'History', exact: true }).click();
+ await expect(page.getByRole('region', { name: 'Your receipt history' }).getByRole('article')).toHaveCount(0);
+ await page.getByRole('button', { name: 'Back to the room' }).click();
  expect(await page.evaluate(() => localStorage.getItem('moth-milk-receipts'))).toBeNull();
  await expect(page.getByText('reader@example.test', { exact: true })).toBeVisible();
  await expect(page.locator('.recovery-notice')).toHaveCount(0);
@@ -86,7 +89,7 @@ test('account book explains validation, duplicate registration and incorrect log
  app.status = 'confirmed';
  await page.getByRole('button', { name: /Place order/ }).click();
  await expect(page.getByRole('heading', { name: 'All yours.' })).toBeVisible();
- await page.getByRole('link', { name: 'Your corner ↗' }).click();
+ await page.locator('.checkout-receipt__actions').getByRole('link', { name: 'Your corner', exact: true }).click();
  for (const slug of ['night-shift-hoodie', 'after-hours-baby-tee']) {
   const image = page.locator(`.corner-belonging--${slug} img`);
   await expect(image).toBeVisible();

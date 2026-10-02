@@ -12,7 +12,7 @@ test('product stock failure is not sold out; manual retry enables bag', async ({
  await expect(page.getByRole('button', { name: /stock unavailable/ })).toBeDisabled();
  await expect(page.getByRole('status')).toContainText('could not check stock');
  await expect(page.getByRole('button', { name: /sold out/ })).toHaveCount(0);
- app.stockDown = false; await page.getByRole('button', { name: 'Try again ↗' }).click();
+ app.stockDown = false; await page.getByRole('button', { name: 'Try again' }).click();
  await expect(page.getByRole('button', { name: /add to bag/ })).toBeEnabled();
  await page.getByRole('button', { name: /add to bag/ }).click();
  await expect(page.getByRole('complementary', { name: 'Shopping bag' })).toContainText('Mimi Moth Plush');
@@ -41,24 +41,24 @@ test('saved payment outage retains checkout and reconnect confirms only purchase
 test('receipt remains visible while shipping service is unavailable', async ({ page, app }) => {
  app.status = 'confirmed'; app.shipmentUnavailable = true;
  await seed(page, { 'moth-milk-receipts': [receipt] }); await page.goto(`/checkout?order=${orderId}`);
- await page.getByRole('button', { name: 'Track your things ↗' }).click();
+ await page.getByRole('button', { name: 'Track your things' }).click();
  await expect(page.getByText('Shipping updates are temporarily unavailable. Your order is still confirmed.', { exact: true })).toBeVisible();
  await expect(page.getByRole('complementary', { name: 'Order summary' })).toContainText('Mimi Moth Plush');
  app.shipmentUnavailable = false; app.shipment = { status: 'in_transit', carrier: 'Canada Post', tracking_number: 'TEST123' };
- await page.getByRole('button', { name: 'Refresh update ↗' }).click();
+ await page.getByRole('button', { name: 'Refresh update' }).click();
  await expect(page.getByText('Your things are on their way.', { exact: true })).toBeVisible();
  await expect(page.getByText('Canada Post · TEST123', { exact: true })).toBeVisible();
- app.statusDown = true; await page.getByRole('button', { name: 'Refresh update ↗' }).click();
+ app.statusDown = true; await page.getByRole('button', { name: 'Refresh update' }).click();
  await expect(page.getByRole('alert')).toContainText('Shipping updates are temporarily unavailable');
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
 });
 test('status polling cannot overlap when return events fire repeatedly', async ({ page, app }) => {
  app.status = 'confirmed'; app.statusDelay = 1200;
  await seed(page, { 'moth-milk-receipts': [receipt] }); await page.goto(`/checkout?order=${orderId}`);
- await page.getByRole('button', { name: 'Track your things ↗' }).click();
+ await page.getByRole('button', { name: 'Track your things' }).click();
  await expect(page.getByRole('button', { name: 'Checking…' })).toBeDisabled();
  await page.evaluate(() => { for (let i = 0; i < 10; i++) { window.dispatchEvent(new Event('focus')); window.dispatchEvent(new Event('online')); } });
- await expect(page.getByRole('button', { name: 'Refresh update ↗' })).toBeEnabled();
+ await expect(page.getByRole('button', { name: 'Refresh update' })).toBeEnabled();
  expect(app.maxActiveReads).toBe(1);
 });
 test('private guest link recovers after outage and removes credential from URL', async ({ page, app }) => {
@@ -99,7 +99,7 @@ test('pay waits for backend confirmation, and refresh never submits a second pay
 test('Your Corner preserves login during outage and recovers on return', async ({ page, app }) => {
  app.authDown = true;
  app.signedIn = true;
- await page.goto('/your-corner'); await expect(page.getByRole('status')).toContainText('Something’s wrong on our end');
+ await page.goto('/your-corner'); await expect(page.locator('.recovery-notice').getByRole('status')).toContainText('Something’s wrong on our end');
  expect(await page.evaluate(() => sessionStorage.getItem('moth-milk-session'))).toBeNull();
  app.authDown = false; await page.evaluate(() => window.dispatchEvent(new Event('focus')));
  await expect(page.locator('.recovery-notice')).toHaveCount(0);
@@ -150,7 +150,7 @@ test('reserved checkout conflict keeps checking, hides internals and confirms th
  await page.goto('/checkout');
  await expect(page.getByRole('alert')).toContainText('Please don’t pay again');
  await expect(page.getByRole('button', { name: 'Checking…' })).toBeDisabled();
- await expect(page.getByRole('button', { name: 'Cancel this checkout ↗' })).toBeEnabled();
+ await expect(page.getByRole('button', { name: 'Cancel this checkout' })).toBeEnabled();
  await expect(page.locator('body')).not.toContainText('PRIVATE');
  app.status = 'confirmed';
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');

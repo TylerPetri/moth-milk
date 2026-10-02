@@ -130,7 +130,7 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 .registry-recover { padding: .25rem 0; border: 0; background: transparent; color: #685247; text-align: right; cursor: pointer; font: italic 600 .78rem/1.2 'Cormorant Garamond', Georgia, serif; }
 .registry-recover:hover { text-decoration: underline; }
 .corner-personal-note { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem; padding: 1.2rem 5vw; background: #201310; color: #dfc6a8; font: .75rem 'Courier Prime', monospace; }
-.corner-personal-note button { border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: inherit; cursor: pointer; font: inherit; }
+.corner-personal-note > button { border: 0; border-bottom: 1px solid #a37b62; background: transparent; color: inherit; cursor: pointer; font: inherit; }
 .corner-scene-notice { margin: 0; padding: 1rem 5vw; color: #edc1ab; font: .8rem 'Courier Prime', monospace; }
 .account-note { min-height: 75vh; padding: 10rem max(6vw, 1.5rem) 5rem; color: #eadccd; background: #160d0c url('/textures/archive-paper.svg') center / 24rem; }
 .account-note__eyebrow { color: #b89382; font: .8rem 'Courier Prime', monospace; }
@@ -143,3 +143,30 @@ body:has(.registry-dialog[open]) { overflow: hidden; }
 .corner-list button { display: block; margin-top: .8rem; padding: .35rem 0; border: 0; background: transparent; color: #cfb3a5; font: .7rem/1.5 'Courier Prime', monospace; cursor: pointer; }
 .corner-list button:hover { color: #eed8c8; text-decoration: underline; }
 .corner-list button:focus-visible { outline: 2px solid #d8b9a2; outline-offset: 3px; }
+
+.corner-receipts-launcher { margin-left: auto; }
+.corner-receipts-launcher p { margin: 0; padding: .3rem .5rem; color: #eed8c8; background: rgba(#170f12,.86); font: italic .95rem $font-display; }
+.corner-receipts-drawer { position: fixed; inset: 0 0 0 auto; width: min(100%, 34rem); max-width: 100%; height: 100dvh; max-height: 100dvh; margin: 0; padding: 0; border: 0; color: #eed8c8; background: #211619 url('/images/checkout-oxblood.webp') center / cover; box-shadow: -1rem 0 4rem rgba(#000,.4); }
+.corner-receipts-drawer::backdrop { background: rgba(#10090d,.75); backdrop-filter: blur(4px); }
+.corner-receipts-drawer__content { min-height: 100%; padding: clamp(1.25rem, 5vw, 2.4rem); background: rgba(#170f12,.9); }
+.corner-receipts-drawer header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.corner-receipts-drawer h2 { margin: .4rem 0 1.6rem; font: italic 600 2.7rem/1.1 $font-display; }
+.corner-receipts-drawer__eyebrow { color: #c39c95; font: .6rem $font-mono; letter-spacing: .12em; text-transform: uppercase; }
+.corner-receipts-drawer__quiet { border: 0; background: transparent; color: #d3b7ad; cursor: pointer; padding: .65rem .15rem; font: .72rem/1.5 $font-mono; text-align: left; }
+.corner-receipts-drawer__quiet:hover { color: #f3d9ca; }
+.corner-receipts-drawer button:focus-visible { outline: 2px solid #d8b9a2; outline-offset: 4px; }
+.corner-receipts-drawer button:disabled { opacity: .5; cursor: wait; }
+.corner-receipts-tabs { display: flex; gap: 1.5rem; margin-bottom: 1.7rem; }
+.corner-receipts-tabs button { padding: .5rem 0; border: 0; background: none; cursor: pointer; color: #a68884; font: italic 600 1.3rem $font-display; }
+.corner-receipts-tabs button[aria-pressed='true'] { color: #f4d9c8; text-decoration: underline; text-underline-offset: .35rem; }
+.corner-receipts-tabs span { font: .7rem $font-mono; margin-left: .3rem; }
+.corner-receipt-note { padding: 1.25rem; margin: 1rem 0; background: #cfbba1 url('/images/cart-note-paper.webp') center / cover; border-radius: .12rem .3rem .18rem .25rem; color: #382421; box-shadow: 0 .3rem .8rem rgba(#000,.22); }
+.corner-receipt-note__reference { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem; font: .7rem $font-mono; }
+.corner-receipt-note__date { margin: .65rem 0 0; color: #6a4e43; font: .68rem $font-mono; }
+.corner-receipt-note__status { margin: 1rem 0; font: 600 1.2rem/1.4 $font-display; }
+.corner-receipt-note__actions { display: flex; flex-wrap: wrap; gap: .6rem 1rem; }
+.corner-receipt-note .corner-receipts-drawer__quiet { color: #603d36; }
+.corner-receipts-drawer footer { display: grid; gap: .15rem; padding-top: 1rem; }
+.corner-receipts-drawer footer p, .corner-receipts-drawer__notice { font: .73rem/1.6 $font-mono; color: #c7a8a0; }
+.corner-receipts-drawer__empty { padding: 1.5rem 0; font: italic 1.25rem/1.5 $font-display; }
+body:has(.corner-receipts-drawer[open]) { overflow: hidden; }

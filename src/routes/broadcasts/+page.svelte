@@ -14,7 +14,7 @@
       <article>
         <div class="broadcast-index__number">0{index + 1}</div>
         <div><p>{broadcast.date} / {broadcast.type}</p><h2>{broadcast.title}</h2></div>
-        <span>↗</span>
+        
       </article>
     {/each}
   </div>

@@ -183,3 +183,13 @@ fails, inspect payment logs using the displayed request reference and retain the
 original checkout. No actual Stripe call was performed during this change's tests.
 
 Stripe event retrieval reference: https://docs.stripe.com/api/events/retrieve.
+
+## Your Corner receipt drawer
+
+Your receipts opens a drawer with Current and History tabs. Closed, cancelled, expired and refunded attempts stay in History. Processing payments and uncertain outcomes remain in Current; shipped orders remain there until delivered.
+
+History entries can be hidden on this device and restored with Show hidden receipts. Hiding changes local display preferences only and keeps receipt credentials intact. Active payments cannot be hidden. Existing cancellation and receipt authorization use the same backend endpoints.
+
+Textured action buttons use plain labels; directional arrows remain on a few quiet navigation links.
+
+The receipts launcher sits quietly in the account bar beside Leave the room. A checkout closed by Check on it stays visible with Resolve × until dismissed; reloading puts it directly in History. Logged-in room items omit ownership labels.
