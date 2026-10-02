@@ -64,3 +64,19 @@ test('pending contact recovery is cookie backed and never forwarded to public br
  await page.request.post('/session/v1/orders/22222222-2222-4222-8222-222222222222/checkout-status', { headers: { Origin: origin }, data: { idempotency_key: body.idempotency_key } });
  expect((await context.cookies(origin + '/session')).find(c => c.name === 'mm_checkout')).toBeUndefined();
 });
+
+
+test('cancellation uses the cookie key, rejects foreign origins and clears recovery only after closure', async ({ page, context }) => {
+ const id = '22222222-2222-4222-8222-222222222222';
+ const cancel = `/session/v1/orders/${id}/checkout-cancel`;
+ const headers = { Origin: origin };
+ await page.request.post('/session/v1/orders/prepare', { headers, data: { idempotency_key: '33333333-3333-4333-8333-333333333333', customer_email: 'reader@example.test' } });
+ await page.request.post('/session/v1/auth/receipt', { headers, data: { id, tracking_proof: 'VALID_EMAIL_PROOF' } });
+ expect((await page.request.post(cancel, { headers, data: {} })).status()).toBe(404);
+ expect((await context.cookies(origin + '/session')).some(c => c.name === 'mm_checkout')).toBeTruthy();
+ await page.request.post('/session/v1/auth/receipt', { headers, data: { id, idempotency_key: '33333333-3333-4333-8333-333333333333' } });
+ expect((await page.request.post(cancel, { headers: { Origin: 'https://evil.example' }, data: {} })).status()).toBe(403);
+ const closed = await page.request.post(cancel, { headers, data: {} });
+ expect(closed.ok()).toBeTruthy(); expect((await closed.json()).restart_allowed).toBe(true);
+ expect((await context.cookies(origin + '/session')).filter(c => c.name === 'mm_checkout' || c.name === `mm_receipt_${id}`)).toHaveLength(0);
+});

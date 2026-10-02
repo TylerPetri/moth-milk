@@ -1,4 +1,4 @@
-import type { Receipt } from './types/checkout.ts';
+import type { Receipt, PendingCheckout } from './types/checkout.ts';
 // Receipt keys authorize guest status reads. Keep them out of URLs and logs.
 function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }
 const receiptKey = 'moth-milk-receipts';
@@ -39,6 +39,7 @@ export function saveReceipt<T extends Receipt>(receipt: T): T {
   // A new email proof remains in memory until the first successful server status read.
   const stored = { id: safe.id, status: safe.status, total: safe.total, currency: safe.currency, confirmedAt: safe.confirmedAt, shipment: safe.shipment, shipment_unavailable: safe.shipment_unavailable, items: (safe.items || []).map(({ name, slug, price, quantity, lineId, image, selectedSize, color }) => ({ name, slug, price, quantity, lineId, image, selectedSize, color })) };
   if (!writeSaved(receiptKey, [stored, ...receipts().filter(item => item.id !== receipt.id)].slice(0, 10))) throw new Error('Your order is confirmed, but this browser could not save the receipt. Keep your order email.');
+  removeCheckoutAttempt(receipt.id);
   return receipt;
 }
 export function money(amount: number, currency = 'CAD') {
@@ -51,3 +52,26 @@ export function shipmentLabel(status: string | undefined) {
 }
 
 export function forgetReceipts() { writeSaved(receiptKey, null); }
+
+const attemptsKey = 'moth-milk-checkout-attempts';
+export function checkoutAttempts(): PendingCheckout[] {
+  const saved = readSaved<PendingCheckout[]>(attemptsKey);
+  const active = readSaved<PendingCheckout>('moth-milk-pending-checkout');
+  const all = [...(active?.id ? [active] : []), ...(Array.isArray(saved) ? saved : [])];
+  return [...new Map(all.filter(item => typeof item?.id === 'string' && typeof item?.idempotency_key === 'string').map(item => [item.id, item])).values()].slice(0, 10);
+}
+export function saveCheckoutAttempt(value: PendingCheckout) {
+  if (!value.id) return;
+  const safe = [value, ...checkoutAttempts().filter(item => item.id !== value.id)].slice(0, 10).map(item => {
+    const { customer_email, customer_name, shipping, ...body } = item.body || {};
+    return { ...item, body };
+  });
+  if (!writeSaved(attemptsKey, safe)) throw new Error('This browser could not save your checkout.');
+}
+export function removeCheckoutAttempt(id: string) {
+  const safe = checkoutAttempts().filter(item => item.id !== id).map(item => {
+    const { customer_email, customer_name, shipping, ...body } = item.body || {};
+    return { ...item, body };
+  });
+  writeSaved(attemptsKey, safe);
+}

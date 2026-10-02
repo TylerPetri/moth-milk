@@ -1,7 +1,7 @@
 // @ts-nocheck — Node test harness uses isolated browser storage doubles.
 import { test, beforeEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { readSaved, writeSaved, saveReceipt, receipts, shipmentLabel, money } from '../src/lib/checkout.ts';
+import { readSaved, writeSaved, saveReceipt, receipts, shipmentLabel, money, checkoutAttempts, saveCheckoutAttempt, removeCheckoutAttempt } from '../src/lib/checkout.ts';
 function storage() { const data = new Map(); return { getItem: key => data.get(key) || null, setItem: (key, value) => data.set(key, value), removeItem: key => data.delete(key) }; }
 beforeEach(() => { globalThis.localStorage = storage(); globalThis.sessionStorage = storage(); });
 test('recovers legacy session checkout and migrates on save', () => {
@@ -41,4 +41,23 @@ test('drafts expire but uncertain payments retain their recovery marker', () => 
  assert.equal(localStorage.getItem('moth-milk-pending-checkout').includes('PRIVATE_ADDRESS'), false);
  assert.equal(readSaved('moth-milk-pending-checkout').paymentSubmitted, true);
  assert.equal(readSaved('moth-milk-pending-checkout').body.shipping.line1, 'PRIVATE_ADDRESS');
+});
+
+test('ongoing attempts migrate active checkout and never archive contact details', () => {
+ writeSaved('moth-milk-pending-checkout', { id: 'one', idempotency_key: 'key-one', body: { customer_email: 'PRIVATE_EMAIL', shipping: { line1: 'PRIVATE_ADDRESS' } }, items: [] });
+ assert.equal(checkoutAttempts()[0].id, 'one');
+ saveCheckoutAttempt({ id: 'two', idempotency_key: 'key-two', body: { customer_name: 'PRIVATE_NAME' }, items: [] });
+ const stored = localStorage.getItem('moth-milk-checkout-attempts');
+ for (const secret of ['PRIVATE_EMAIL', 'PRIVATE_ADDRESS', 'PRIVATE_NAME']) assert.equal(stored.includes(secret), false);
+ assert.equal(checkoutAttempts().length, 2);
+ removeCheckoutAttempt('one'); writeSaved('moth-milk-pending-checkout', null);
+ assert.equal(checkoutAttempts().length, 1);
+});
+
+test('removing another attempt never archives the active checkout contact details', () => {
+ writeSaved('moth-milk-pending-checkout', { id: 'one', idempotency_key: 'key-one', body: { customer_email: 'PRIVATE_EMAIL', shipping: { line1: 'PRIVATE_ADDRESS' } }, items: [] });
+ removeCheckoutAttempt('two');
+ const stored = localStorage.getItem('moth-milk-checkout-attempts');
+ assert.equal(stored.includes('PRIVATE_EMAIL'), false); assert.equal(stored.includes('PRIVATE_ADDRESS'), false);
+ assert.equal(checkoutAttempts()[0].id, 'one');
 });

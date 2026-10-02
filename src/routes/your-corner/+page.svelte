@@ -2,6 +2,7 @@
   import type { Receipt } from '$lib/types/checkout.ts';
   import type { LibraryBook } from '$lib/types/content.ts';
   import { libraryBooks } from '$lib/data/library.ts';
+  import CheckoutAttempts from '$lib/components/CheckoutAttempts.svelte';
   import SofaBooks from '$lib/SofaBooks.svelte';
   import { onMount } from 'svelte';
   import { auth, initAuth, syncVerification, signIn, register, signOut, requestReset, withAuth } from '$lib/stores/auth.svelte.ts';
@@ -136,6 +137,7 @@
     <button class="corner-list-toggle" type="button" aria-expanded={listOpen} aria-controls="corner-list" onclick={() => (listOpen = !listOpen)}>{listOpen ? 'hide list' : 'view as list'} <span aria-hidden="true">{listOpen ? '×' : '☰'}</span></button>
   </section>
 
+  <CheckoutAttempts />
   {#if savedReceipts.length}<section class="corner-list" aria-label="Your receipts"><div><h2>Your things</h2><p>Receipts saved on this device.</p><button type="button" onclick={async () => { try { await api('/v1/auth/receipts/forget', { method: 'POST' }); forgetReceipts(); savedReceipts = []; } catch (error) { sceneNotice = friendlyError(error, 'We could not forget this device yet. Please try again.'); } }}>forget this device’s receipts ↗</button>{#each savedReceipts as receipt (receipt.id)}<a href={`/checkout?order=${encodeURIComponent(receipt.id)}`}>Order {receipt.id.slice(0, 8)} <span>{receipt.total != null ? money(receipt.total, receipt.currency) : 'View receipt'} · shipping ↗</span></a>{/each}</div></section>{/if}
   {#if sceneNotice}<RecoveryNotice message={sceneNotice} busy={sceneBusy} retry={loadScene} />{/if}
   {#if auth.userId}<div class="corner-personal-note"><span>{auth.email}</span>{#if !auth.verified}<span>Check your email to see your past orders here.</span><button type="button" onclick={async () => { try { await withAuth('/v1/auth/email/verify/request', { method: 'POST', body: JSON.stringify({ locale: 'en' }) }); sceneNotice = 'A fresh note is on its way.'; } catch (error) { sceneNotice = friendlyError(error); } }}>resend note ↗</button>{/if}<button type="button" onclick={leaveRoom}>leave the room ↗</button></div>{/if}

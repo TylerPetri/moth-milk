@@ -18,6 +18,7 @@ export interface ApiErrorResponse {
 export interface ApiFailure extends Error {
   status?: number;
   code?: string;
+  requestId?: string;
   retryable?: boolean;
 }
 export interface ProductAttributes {
@@ -61,6 +62,7 @@ export interface PrepareOrderResponse {
   total: number;
   status: OrderStatus;
   payment_client_secret: string;
+  publishable_key?: string;
 }
 export interface CheckoutStatusRequest {
   idempotency_key?: UUID;
@@ -78,6 +80,13 @@ export interface CheckoutStatusResponse {
   success?: boolean;
   shipment?: Shipment | null;
   shipment_unavailable?: boolean;
+  checkout_state?: string;
+  payment_status?: string;
+  payment_environment?: string;
+  restart_allowed?: boolean;
+  actions?: { resume: boolean; cancel: boolean; restart: boolean; check: boolean };
+  total?: number;
+  currency?: Currency;
 }
 export interface OrderItem {
   product_id: UUID;
@@ -132,12 +141,16 @@ export interface ApiResponses {
   '/v1/auth/me/books': BooksResponse;
   '/v1/auth/recovery': RecoveryResponse;
   '/v1/orders/prepare': PrepareOrderResponse;
+  '/v1/checkouts/query': { checkouts: CheckoutStatusResponse[]; count: number };
+  '/v1/checkouts': { checkouts: CheckoutStatusResponse[]; count: number };
   '/v1/orders': Pick<Order, 'id' | 'status' | 'total'>;
 }
 export type ApiResponseFor<Path extends string> =
   Path extends keyof ApiResponses ? ApiResponses[Path] :
   Path extends `/v1/products?${string}` ? CatalogResponse :
   Path extends `/v1/stock/${string}` ? StockResponse :
+  Path extends `/v1/orders/${string}/checkout-cancel` ? { id: UUID; status: 'failed'; restart_allowed: boolean } :
   Path extends `/v1/orders/${string}/checkout-status` ? CheckoutStatusResponse :
+  Path extends `/v1/orders/${string}/checkout-resume` ? CheckoutStatusResponse & { payment_client_secret: string; publishable_key?: string } :
   Path extends `/v1/users/${string}/orders${string}` ? OrderHistoryResponse :
   unknown;

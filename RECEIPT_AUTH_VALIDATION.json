@@ -1,0 +1,13 @@
+{
+  "scope": "Invalid JWT must not block independent receipt capabilities",
+  "svelte_check": "0 errors, 0 warnings",
+  "node_tests": "14 passed",
+  "session_proxy_regressions": "12 passed using request fixtures in desktop/mobile project configurations; no browser rendering needed",
+  "production_auth_configuration": "Not accessed or verified",
+  "changes": [
+    "src/routes/session/[...path]/+server.ts",
+    "e2e/security-upstream.ts",
+    "e2e/receipt-auth.spec.ts",
+    "RECEIPT_AUTH_FIX.md"
+  ]
+}

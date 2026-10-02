@@ -24,7 +24,7 @@ export const test = base.extend({
    const state = { catalogDown: false, stockDown: false, statusDown: false, authDown: false, signedIn: false, prepareDown: false, prepareConflict: false, status: 'paid', shipment: null, shipmentUnavailable: false, prepares: [], confirms: 0, statusReads: [], activeReads: 0, maxActiveReads: 0, statusDelay: 0, prepareDelay: 0, abortStatus: false, authCalls: 0, stripeIntent: 'processing', orderItems: [{ product_id: 'plush-id' }] };
    await page.addInitScript(() => {
      // External Stripe boundary only. The real storefront and API client execute.
-     window.Stripe = () => ({
+     window.Stripe = (publishableKey) => (window.__stripeKeys = [...(window.__stripeKeys || []), publishableKey], {
        elements: () => ({ submit: async () => ({}), create: () => { let destroyed = false; return { mount: node => { if (destroyed) throw new Error('This Element has already been destroyed'); node.textContent = 'Secure card fixture'; }, destroy() { if (destroyed) throw new Error('This Element has already been destroyed'); destroyed = true; } }; } }),
        retrievePaymentIntent: async () => ({ paymentIntent: { status: window.__stripeIntent || 'processing' } }),
        confirmPayment: async () => { window.__confirms = (window.__confirms || 0) + 1; if (window.__holdConfirm) await new Promise(resolve => { window.__releaseConfirm = resolve; }); if (window.__stripeNetworkFailure) throw new TypeError('Connection lost'); return {}; }
@@ -38,15 +38,18 @@ export const test = base.extend({
      if (path === '/v1/auth/receipt' || path === '/v1/auth/receipts/forget') return json({ ok: true });
      if (path === '/v1/auth/register') return json({ error: 'already_exists', message: 'PRIVATE database email collision' }, 409);
      if (path === '/v1/auth/login') return json({ error: 'unauthorized', message: 'PRIVATE authentication detail' }, 401);
+     if (path === '/v1/checkouts/query' || path === '/v1/checkouts') return json({ checkouts: state.checkoutList || [], count: (state.checkoutList || []).length });
+     if (path.endsWith('/checkout-resume')) { state.resumes ||= []; state.resumes.push(route.request().postDataJSON()); return json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret', publishable_key: 'pk_test_saved_profile' }); }
      if (path === '/v1/auth/recovery') return json({ body: null });
      if (path === '/v1/products') return state.catalogDown ? down() : json({ products });
      if (path.startsWith('/v1/stock/')) return state.stockDown ? down() : json({ available: 20 });
+     if (path.endsWith('/checkout-cancel')) { state.cancelCalls ||= []; state.cancelCalls.push(route.request().postDataJSON()); if (state.cancelWait) await state.cancelWait; return state.cancelDown ? down() : state.cancelRefused ? json({ error: 'checkout_recovery_pending', message: 'PRIVATE payment processing', request_id: 'recovery-reference-123' }, 409) : json({ id: orderId, status: 'failed', restart_allowed: !state.cancelInvalid }); }
      if (path.endsWith('/checkout-status')) {
        state.statusReads.push(route.request().postDataJSON()); state.activeReads++; state.maxActiveReads = Math.max(state.maxActiveReads, state.activeReads);
-       try { if (state.abortStatus) return await route.abort('connectionfailed'); if (state.statusDelay) await new Promise(r => setTimeout(r, state.statusDelay)); return await (state.statusDown ? down() : json({ id: orderId, status: state.status, shipment: state.shipment, shipment_unavailable: state.shipmentUnavailable })); }
+       try { if (state.abortStatus) return await route.abort('connectionfailed'); if (state.statusDelay) await new Promise(r => setTimeout(r, state.statusDelay)); return await (state.statusDown ? down() : json({ ...(state.checkoutSnapshot || {}), id: state.statusID || orderId, status: state.status, shipment: state.shipment, shipment_unavailable: state.shipmentUnavailable })); }
        finally { state.activeReads--; }
      }
-     if (path === '/v1/orders/prepare') { state.prepares.push(route.request().postDataJSON()); if (state.prepareWait) await state.prepareWait; if (state.prepareDelay) await new Promise(r => setTimeout(r, state.prepareDelay)); return state.prepareConflict ? json({ error: 'conflict', message: 'PRIVATE backend signing secret' }, 409) : state.prepareDown ? down() : json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret' }, 202); }
+     if (path === '/v1/orders/prepare') { state.prepares.push(route.request().postDataJSON()); if (state.prepareWait) await state.prepareWait; if (state.prepareDelay) await new Promise(r => setTimeout(r, state.prepareDelay)); return state.prepareConflict ? json({ error: state.restartAllowed ? 'checkout_restart_allowed' : 'conflict', message: 'PRIVATE backend signing secret' }, 409) : state.prepareDown ? down() : json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret' }, 202); }
      if (path === '/v1/auth/me' || path === '/v1/auth/refresh') { if (!state.signedIn) return json({ error: 'unauthorized' }, 401); state.authCalls++; return state.authDown ? down() : path.endsWith('/refresh') ? json({ access_token: 'renewed', refresh_token: 'refresh', access_expires_at: '2099-01-01', user_id: 'reader', email_verified: true }) : json({ user_id: 'reader', email: 'reader@example.test', email_verified: true }); }
      if (path === '/v1/auth/me/books') return state.authDown ? down() : json({ books: ['static'] });
      if (path === '/v1/orders/claim') return state.authDown ? down() : json({ claimed: 1 });

@@ -125,7 +125,7 @@ test('connection loss after payment never exposes another pay button', async ({ 
  app.abortStatus = true; await seed(page, { 'moth-milk-pending-checkout': pending, 'moth-milk-bag': [item] });
  await page.goto('/checkout'); await expect(page.getByRole('alert')).toContainText('Please don’t pay again');
  await expect(page.getByRole('button', { name: /Place order/ })).toHaveCount(0);
- app.abortStatus = false; app.status = 'confirmed'; await page.getByRole('button', { name: 'Check again ↗' }).click();
+ app.abortStatus = false; app.status = 'confirmed';
  await expect(page.getByRole('status')).toContainText('Your order is confirmed'); expect(app.prepares).toHaveLength(0);
 });
 
@@ -144,15 +144,15 @@ test('prepare and pay are guarded; an uncertain Stripe result cannot invite anot
  expect(await page.evaluate(() => JSON.parse(localStorage.getItem('moth-milk-pending-checkout')).paymentSubmitted)).toBe(true);
 });
 
-test('reserved checkout conflict stops checking, hides internals and later confirms the same order', async ({ page, app }) => {
+test('reserved checkout conflict keeps checking, hides internals and confirms the same order', async ({ page, app }) => {
  app.status = 'reserved'; app.prepareConflict = true;
  await seed(page, { 'moth-milk-pending-checkout': { ...pending, paymentSubmitted: false } });
  await page.goto('/checkout');
  await expect(page.getByRole('alert')).toContainText('Please don’t pay again');
- await expect(page.getByRole('button', { name: 'Check again ↗' })).toBeEnabled();
- await expect(page.getByRole('button', { name: 'Checking…' })).toHaveCount(0);
+ await expect(page.getByRole('button', { name: 'Checking…' })).toBeDisabled();
+ await expect(page.getByRole('button', { name: 'Cancel this checkout ↗' })).toBeEnabled();
  await expect(page.locator('body')).not.toContainText('PRIVATE');
- app.status = 'confirmed'; await page.getByRole('button', { name: 'Check again ↗' }).click();
+ app.status = 'confirmed';
  await expect(page.getByRole('status')).toContainText('Your order is confirmed');
  expect(app.prepares).toHaveLength(1);
 });

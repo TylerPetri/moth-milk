@@ -22,14 +22,14 @@ export async function api<Path extends string>(path: Path, options: ApiOptions =
     if (token) headers.set('Authorization', `Bearer ${token}`);
     if (request.body) headers.set('Content-Type', 'application/json');
     const signal = request.signal ? AbortSignal.any([request.signal, AbortSignal.timeout(timeoutMs)]) : AbortSignal.timeout(timeoutMs);
-    const response = await fetch(`${browser && (path.startsWith('/v1/auth/') || path.endsWith('/checkout-status') || path === '/v1/orders/prepare' || path === '/v1/orders' || token) ? '/session' : base}${path}`, { ...request, headers, signal });
+    const response = await fetch(`${browser && (path.startsWith('/v1/auth/') || path.endsWith('/checkout-status') || path.endsWith('/checkout-cancel') || path.endsWith('/checkout-resume') || path.startsWith('/v1/checkouts') || path === '/v1/orders/prepare' || path === '/v1/orders' || token) ? '/session' : base}${path}`, { ...request, headers, signal });
     const result: unknown = response.status === 204 ? {} : await response.json().catch(() => {
       if (response.ok) throw Object.assign(new Error('The shop response was incomplete.'), { retryable: true });
       return {};
     });
     if (!response.ok) {
       const failure = result as Partial<ApiErrorResponse>;
-      throw Object.assign(new Error(failure.message || failure.error || `Request failed (${response.status})`), { status: response.status, code: failure.error, retryable: response.status >= 500 || [408, 429].includes(response.status) });
+      throw Object.assign(new Error(failure.message || failure.error || `Request failed (${response.status})`), { status: response.status, code: failure.error, requestId: failure.request_id, retryable: response.status >= 500 || [408, 429].includes(response.status) });
     }
     return result as ApiResponseFor<Path>;
   } catch (error) {

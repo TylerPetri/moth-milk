@@ -1,3 +1,5 @@
+Checkout cancellation and saved attempts are wired end to end. Deploy the matching backend first; see [CHECKOUT_CANCEL_FLOW.md](CHECKOUT_CANCEL_FLOW.md) for the API and rollout.
+
 # MOTH MILK
 
 A multi-route SvelteKit 5 storefront and free horror-fiction library for the fictional MOTH MILK label.
@@ -131,3 +133,53 @@ All application modules, Svelte scripts, configuration and test files use TypeSc
 Use Node **22.18 or newer** (Node 24 is supported), then run `npm ci`, `npm run check`, `npm test` and `npm run test:e2e`. The Node minimum supports native TypeScript execution for unit tests and the disposable fixture server. Configuration is in `svelte.config.ts`, `vite.config.ts` and `playwright.config.ts`. Stripe types come from `@stripe/stripe-js`; the script loader and payment flow are unchanged.
 
 When applying this ZIP over an existing folder, run `npm run cleanup:legacy` to remove the old `.js` source, configuration and test files that now have `.ts` counterparts, plus the replaced `jsconfig.json`. The script removes only files with an existing replacement; run `node scripts/remove-legacy-js.ts` for a preview. Keeping both versions can cause route/configuration conflicts. Keep your environment file.
+
+## Closing an unfinished checkout
+
+The textured **Cancel this checkout** action closes an unfinished attempt with `POST /v1/orders/{id}/checkout-cancel`. It sends the original checkout key through the same-origin cookie proxy. Tracking links alone cannot cancel an order.
+
+The storefront keeps the bag and saved attempt until the server returns the matching order ID, `status: "failed"`, and `restart_allowed: true`. A replacement uses a fresh UUID. A failed request, timeout, or refused cancellation preserves the original checkout and offers recovery; paid/confirmed orders have no cancellation action. The backend's explicit `checkout_restart_allowed` prepare response also permits returning to details, without automatically creating a replacement payment.
+
+Use the attached backend version that exposes this endpoint. No backend files or migrations were changed in this frontend pass.
+
+Cancellation coverage is in `e2e/cancellation.spec.ts`; the real cookie-proxy checks are in `e2e/security.spec.ts`.
+
+### A paid test checkout is stuck after a webhook failure
+
+`checkout_recovery_pending` from cancellation means the backend could not prove
+that the old payment can no longer complete. It can mean Stripe already succeeded,
+the intent is processing, provider credentials are unavailable, or cleanup failed.
+Keep the saved receipt key. A new key is permitted only after verified closure.
+
+The checkout now continues bounded confirmation polling after a refused closure
+and displays the saved order and backend request reference for support. It never
+marks an order paid from browser Stripe state or silently creates another payment.
+
+For the earlier **local test** payment that succeeded while events were forwarded
+to `/v1/webhooks/stripe` instead of `/v1/webhooks/stripe/test`, recover the original
+Stripe event with the included operator helper. In your terminal, set
+`STRIPE_TEST_SECRET_KEY` to the same sandbox account used by the checkout and
+`STRIPE_TEST_WEBHOOK_SECRET` to the signing secret currently loaded by payment.
+Then, from this storefront directory:
+
+```bash
+python3 scripts/replay-stripe-test-event.py evt_YOUR_ORIGINAL_SUCCESS_EVENT \
+  --order-id YOUR_SAVED_ORDER_UUID
+```
+
+The order check is optional, but useful when several checkouts are waiting.
+The default destination is `http://localhost:8080/v1/webhooks/stripe/test`.
+For a direct payment service connection, pass
+`--url http://localhost:8087/v1/webhooks/stripe/test`.
+
+This helper retrieves the existing event from Stripe, checks its test environment
+and order metadata, signs the unchanged response with the local webhook secret,
+and sends it through the normal webhook handler. It never creates a charge,
+refunds a payment, or edits an order directly. It refuses live and connected-account
+events, external destinations and redirects. Secrets and event bodies are not
+printed. A 200 acknowledgement means the webhook was accepted; use the checkout's
+**Check again** button to wait for asynchronous order confirmation. If replay
+fails, inspect payment logs using the displayed request reference and retain the
+original checkout. No actual Stripe call was performed during this change's tests.
+
+Stripe event retrieval reference: https://docs.stripe.com/api/events/retrieve.

@@ -11,12 +11,16 @@ const server = http.createServer(async (req, res) => {
  if (req.url === '/health') return send(200, { ok: true });
  if (req.url === '/v1/auth/login' || req.url === '/v1/auth/register' || req.url === '/v1/auth/refresh') {
    if (req.url.endsWith('/refresh') && body.refresh_token !== 'SERVER_ONLY_REFRESH') return send(401, { error: 'unauthorized' });
-   return send(200, { access_token: 'SERVER_ONLY_ACCESS', refresh_token: 'SERVER_ONLY_REFRESH', access_expires_at: new Date(Date.now() + 3600000).toISOString(), user_id: 'reader', email_verified: true, shop_id: '11111111-1111-4111-8111-111111111111' });
+   return send(200, { access_token: body.email === 'invalid-signature@example.test' ? 'BROKEN_ACCESS' : 'SERVER_ONLY_ACCESS', refresh_token: 'SERVER_ONLY_REFRESH', access_expires_at: new Date(Date.now() + 3600000).toISOString(), user_id: 'reader', email_verified: true, shop_id: '11111111-1111-4111-8111-111111111111' });
  }
+ if (req.headers.authorization === 'Bearer BROKEN_ACCESS') return send(401, { error: 'invalid_token', message: 'token signature is invalid: crypto/rsa: verification error' });
  if (req.url === '/v1/auth/me') return req.headers.authorization === 'Bearer SERVER_ONLY_ACCESS' ? send(200, { user_id: 'reader', email: 'reader@example.test', email_verified: true }) : send(401, { error: 'unauthorized' });
  if (req.url === '/v1/auth/logout') return send(200, { ok: true });
  if (req.url === '/v1/orders/prepare') return send(202, { id: '22222222-2222-4222-8222-222222222222', status: 'reserved', total: 4200, payment_client_secret: 'fixture_secret' });
  if (req.url.endsWith('/checkout-status') && unavailableOrders.has(req.url.split('/')[3])) return send(503, { error: 'unavailable' });
+ if (req.url === '/v1/checkouts/query') return send(200, { checkouts: [], count: 0 });
+ if (req.url.endsWith('/checkout-resume')) return body.idempotency_key === '33333333-3333-4333-8333-333333333333' ? send(202, { id: req.url.split('/')[3], payment_client_secret: 'fixture_secret', publishable_key: 'pk_test_saved_profile' }) : send(404, { error: 'not_found' });
+ if (req.url.endsWith('/checkout-cancel')) return body.idempotency_key === '33333333-3333-4333-8333-333333333333' && !body.tracking_proof ? send(200, { id: req.url.split('/')[3], status: 'failed', restart_allowed: true }) : send(404, { error: 'not_found' });
  if (req.url.endsWith('/checkout-status')) return body.tracking_proof === 'VALID_EMAIL_PROOF' || body.idempotency_key === '33333333-3333-4333-8333-333333333333' ? send(200, { id: req.url.split('/')[3], status: 'confirmed' }) : send(404, { error: 'not_found' });
  return send(404, { error: 'not_found' });
 });
