@@ -4,6 +4,7 @@ const initialCart: CartLine[] = [];
 const cartKey = 'moth-milk-bag';
 export function initCart() {
   if (typeof sessionStorage === 'undefined') return;
+  ui.cartReady = true;
   try {
     const saved = readSaved(cartKey) || [];
     if (Array.isArray(saved)) ui.cart = saved.filter((item) => typeof item.slug === 'string' && typeof item.selectedSize === 'string' && typeof item.lineId === 'string');
@@ -13,6 +14,7 @@ export function persistCart() { if (typeof window !== 'undefined') writeSaved(ca
 
 export const ui = $state({
   mood: 'soft',
+  cartReady: false,
   cartOpen: false,
   cart: initialCart,
   menuOpen: false

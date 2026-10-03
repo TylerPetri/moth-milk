@@ -109,6 +109,9 @@ export interface Order {
 }
 export interface OrderHistoryResponse { orders: Order[]; count?: number; }
 export interface AccountResponse {
+  shop_id: UUID;
+  identity_kind: 'customer';
+  roles: ['customer'];
   user_id: UUID;
   email: string;
   email_verified: boolean;
@@ -120,7 +123,8 @@ export interface SessionResponse {
   access_expires_at: string;
   user_id: UUID;
   email_verified: boolean;
-  shop_id?: UUID;
+  shop_id: UUID;
+  roles?: ['customer'];
 }
 export interface LoginRequest { email: string; password: string; email_proof_token?: string; }
 export interface RegisterRequest extends LoginRequest { locale: string; }
@@ -138,7 +142,6 @@ export interface ApiResponses {
   '/v1/auth/login': SessionResponse;
   '/v1/auth/register': SessionResponse;
   '/v1/auth/refresh': SessionResponse;
-  '/v1/auth/me/shops/switch': SessionResponse;
   '/v1/auth/me/books': BooksResponse;
   '/v1/auth/recovery': RecoveryResponse;
   '/v1/orders/prepare': PrepareOrderResponse;

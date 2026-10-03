@@ -15,7 +15,7 @@
   let attempts = $state<CheckoutStatusResponse[]>([]); let saved = $state<Receipt[]>([]);
   let hidden = $state<string[]>([]); let showHidden = $state(false); let tab = $state<'current' | 'history'>('current');
   let dialog: HTMLDialogElement; let open = $state(false);
-  let busy = $state(''); let loading = $state(false); let error = $state(''); let disposed = false;
+  let busy = $state(''); let loading = $state(true); let error = $state(''); let disposed = false;
   let mounted = $state(false); let lastActor: string | undefined; let generation = 0;
   const entries = $derived([...new Map([
     ...saved.map(item => ({ ...item, status: item.status || 'reserved', source: 'receipt', date: item.confirmedAt }) as Entry),

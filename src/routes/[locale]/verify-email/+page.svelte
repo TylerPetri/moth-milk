@@ -10,7 +10,7 @@
     history.replaceState(history.state, '', location.pathname);
     if (!token) { message = 'This note has no link inside.'; return; }
     try {
-      await api('/v1/auth/email/verify/confirm', { method: 'POST', noShop: true, body: JSON.stringify({ token }) });
+      await api('/v1/auth/email/verify/confirm', { method: 'POST', body: JSON.stringify({ token }) });
       await initAuth();
       if (auth.refresh) await refreshSession();
       await goto('/your-corner', { replaceState: true });

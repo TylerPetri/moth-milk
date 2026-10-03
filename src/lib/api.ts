@@ -1,3 +1,4 @@
+import { isShopId } from './customer-contract.ts';
 import type { ApiOptions, ApiResponseFor, ApiErrorResponse } from './types/api.ts';
 import { browser } from '$app/environment';
 
@@ -6,10 +7,10 @@ let shopPromise: Promise<string> | undefined;
 export const configured = Boolean(import.meta.env.PUBLIC_API_URL || browser);
 
 export async function shopId() {
-  if (import.meta.env.PUBLIC_SHOP_ID) return import.meta.env.PUBLIC_SHOP_ID;
+  if (import.meta.env.PUBLIC_SHOP_ID) { if (!isShopId(import.meta.env.PUBLIC_SHOP_ID)) throw new Error('The shop is not configured.'); return import.meta.env.PUBLIC_SHOP_ID.toLowerCase(); }
   if (!browser) throw new Error('The shop is not configured.');
-  shopPromise ||= fetch(`${base}/v1/auth/storefront?host=${encodeURIComponent(location.host)}`, { signal: AbortSignal.timeout(15000) })
-    .then(async (response) => { if (!response.ok) throw Object.assign(new Error('This room has not been linked to a shop yet.'), { status: response.status, retryable: response.status >= 500 }); return (await response.json()).shop_id; })
+  shopPromise ||= fetch('/session/v1/auth/storefront', { signal: AbortSignal.timeout(15000) })
+    .then(async (response) => { if (!response.ok) throw Object.assign(new Error('This room has not been linked to a shop yet.'), { status: response.status, retryable: response.status >= 500 }); const shop = (await response.json()).shop_id; if (!isShopId(shop)) throw new Error('This room has not been linked to a shop yet.'); return shop.toLowerCase(); })
     .catch((error) => { shopPromise = undefined; throw error; });
   return shopPromise;
 }

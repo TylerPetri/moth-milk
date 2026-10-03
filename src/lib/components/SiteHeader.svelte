@@ -24,7 +24,7 @@
   <div class="site-header__actions">
     <button class="bag-button" type="button" onclick={() => (ui.cartOpen = true)}>
       <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M7 8V6a5 5 0 0 1 10 0v2M5 8h14l1 13H4L5 8Z" /></svg>
-      <span>{String(ui.cart.length).padStart(2, '0')}</span>
+      <span class:bag-count-pending={!ui.cartReady}>{String(ui.cart.length).padStart(2, '0')}</span>
     </button>
     <button class="menu-button" type="button" onclick={() => (ui.menuOpen = !ui.menuOpen)} aria-label="Toggle menu" aria-expanded={ui.menuOpen}>
       <span></span><span></span>
