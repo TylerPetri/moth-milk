@@ -414,7 +414,7 @@
             {#if !stubMode && testMode}<p class="checkout-payment__test">Testing the room? Use 4242 4242 4242 4242, any future expiry, and any three digits for CVC.</p>{/if}
           </fieldset>
             {#if total !== null}<p>Amount from the shop / {money(total, currency)}</p>{/if}
-            <button type="button" disabled={processing} onclick={pay}>{processing ? 'One moment…' : stubMode ? 'Place test order' : 'Place order'} <span aria-hidden="true">→</span></button>
+            <button type="button" aria-busy={processing} disabled={processing} onclick={pay}>{processing ? 'One moment…' : stubMode ? 'Place test order' : 'Place order'} <span aria-hidden="true">→</span></button>
             <p>Your checkout is saved on this device. Return here to finish it.</p></div>
         {:else}
           <p class="checkout-tv__intro">Where should your things go?</p>
@@ -426,7 +426,7 @@
               <label>Province / region<input autocomplete="address-level1" bind:value={province} required /></label><label>Postal code<input autocomplete="postal-code" bind:value={postalCode} required /></label>
               <label>Country code<input autocomplete="country" bind:value={country} maxlength="2" required /></label>
             </div></fieldset>
-            <button type="submit" disabled={processing}>{processing ? 'A moment…' : 'Continue to payment'} <span aria-hidden="true">→</span></button>
+            <button type="submit" aria-busy={processing} disabled={processing}>{processing ? 'A moment…' : 'Continue to payment'} <span aria-hidden="true">→</span></button>
           </form>
         {/if}
         {#if canCancel && phase !== 'failed'}<div class="checkout-receipt__actions"><button class="checkout-receipt__action" type="button" disabled={processing || recovering} onclick={cancelPending}>{cancelling ? 'Closing…' : 'Cancel this checkout'}</button></div>{/if}
@@ -437,8 +437,8 @@
       </div></div>
       <div class="checkout-tv__controls" aria-hidden="true"><span class="checkout-tv__brand">MM</span><span class="checkout-tv__dial"></span><span class="checkout-tv__dial checkout-tv__dial--small"></span><span class="checkout-tv__power"></span></div><div class="checkout-tv__foot" aria-hidden="true"><span></span><span></span></div>
     </section>
-    <aside class="checkout-summary" aria-label="Order summary"><span class="checkout-summary__eyebrow">Your things</span><h2>{receipt ? 'Yours.' : checkout || stubCheckout ? 'This checkout.' : 'In your bag.'}</h2>
-      {#if summaryItems.length === 0}<p>{receipt ? 'See your order email for the item details.' : 'Nothing here yet.'}</p>{:else}<ul>{#each summaryItems as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>{total !== null ? 'Shop total' : 'Estimated subtotal / CAD'}</span><strong>{total !== null ? money(total, currency) : `$${subtotal}`}</strong></div>{#if !receipt}<p>Final amount appears on the TV before payment.</p>{/if}{/if}<a href="/shop">Keep looking</a>
+    <aside class="checkout-summary" aria-label="Order summary"><span class="checkout-summary__eyebrow">Your things</span><h2>{phase === 'restoring' ? 'Your things.' : receipt ? 'Yours.' : checkout || stubCheckout ? 'This checkout.' : 'In your bag.'}</h2>
+      {#if phase === 'restoring'}<p>Finding your saved checkout…</p>{:else if summaryItems.length === 0}<p>{receipt ? 'See your order email for the item details.' : 'Nothing here yet.'}</p>{:else}<ul>{#each summaryItems as item (item.lineId)}<li><img src={item.image} alt="" /><div><strong>{item.name}</strong><span>{item.selectedSize} · {item.color}</span></div><b>${item.price}</b></li>{/each}</ul><div class="checkout-summary__subtotal"><span>{total !== null ? 'Shop total' : 'Estimated subtotal / CAD'}</span><strong>{total !== null ? money(total, currency) : `$${subtotal}`}</strong></div>{#if !receipt}<p>Final amount appears on the TV before payment.</p>{/if}{/if}<a href="/shop">Keep looking</a>
     </aside>
   </div>
 </main>

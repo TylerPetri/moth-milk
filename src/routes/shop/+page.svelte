@@ -2,14 +2,14 @@
   import type { Product } from '$lib/types/api.ts';
   import ProductCard from '$lib/components/ProductCard.svelte';
   import { products } from '$lib/data/products.ts';
-  import { catalog, variantFor } from '$lib/catalog.ts';
+  import { catalog, cachedCatalog, variantFor } from '$lib/catalog.ts';
   import RecoveryNotice from '$lib/components/RecoveryNotice.svelte';
   import { friendlyError, watchRecovery } from '$lib/recovery.ts';
   import { onMount } from 'svelte';
-  let listings = $state<Product[]>([]); let catalogNotice = $state(''); let loading = $state(true); let refreshing = false; let disposed = false;
+  let listings = $state<Product[]>(cachedCatalog() ?? []); let catalogNotice = $state(''); let loading = $state(!cachedCatalog()); let refreshing = false; let disposed = false;
   async function loadShop() {
     if (refreshing || disposed) return;
-    refreshing = true; loading = true;
+    refreshing = true; loading = listings.length === 0;
     try { const items = await catalog(); if (!disposed) { listings = items; catalogNotice = ''; } }
     catch (error) { if (!disposed) catalogNotice = friendlyError(error, 'Something’s wrong on our end. The shop is temporarily unavailable. Please try again or come back later.'); }
     finally { refreshing = false; if (!disposed) loading = false; }

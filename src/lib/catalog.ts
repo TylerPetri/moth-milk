@@ -2,6 +2,7 @@ import type { Product } from './types/api.ts';
 import { api } from '$lib/api.ts';
 let cached: Product[] | undefined;
 let pending: Promise<Product[]> | undefined;
+export function cachedCatalog() { return cached; }
 export async function catalog() {
   if (cached) return cached;
   pending ||= api('/v1/products?limit=100').then(({ products }) => { if (!Array.isArray(products)) throw Object.assign(new Error('Catalog response unavailable.'), { retryable: true }); return (cached = products); }).finally(() => { pending = undefined; });

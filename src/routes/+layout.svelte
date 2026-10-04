@@ -13,6 +13,8 @@
   import navFont from '@fontsource/ibm-plex-sans-condensed/files/ibm-plex-sans-condensed-latin-500-normal.woff2?url';
   import roomFont from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url';
   import monoFont from '@fontsource/courier-prime/files/courier-prime-latin-400-normal.woff2?url';
+  import displayFont from '@fontsource/cormorant-garamond/files/cormorant-garamond-latin-700-normal.woff2?url';
+  import checkoutFont from '@fontsource/bodoni-moda/files/bodoni-moda-latin-700-normal.woff2?url';
   import '../styles/main.scss';
   import SiteHeader from '$lib/components/SiteHeader.svelte';
   import SiteFooter from '$lib/components/SiteFooter.svelte';
@@ -45,7 +47,7 @@
 </script>
 
 <svelte:head>
-  {#each [bodyFont, navFont, roomFont, monoFont] as font}<link rel="preload" href={font} as="font" type="font/woff2" crossorigin="anonymous" />{/each}
+  {#each [bodyFont, navFont, roomFont, monoFont, displayFont, checkoutFont] as font}<link rel="preload" href={font} as="font" type="font/woff2" crossorigin="anonymous" />{/each}
   <link rel="preload" as="image" href="/images/header-brocade.webp" />
   <link rel="preload" as="image" href="/images/hero-type/wordmark.webp" />
   <link rel="icon" href="/favicon.svg" />

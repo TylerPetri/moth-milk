@@ -55,6 +55,8 @@ Chosen books use `GET/PUT /v1/auth/me/books`. Verified customer order history de
 
 Refresh/logout share browser Web Locks when supported; concurrent refreshes are also coalesced within a server process. **Multiple server instances need shared refresh coordination or session affinity.** The in-memory coordinator is not a distributed lock; browsers without Web Locks retain per-tab coordination only.
 
+Product pages reuse successful stock checks for up to 30 seconds within the mounted page; selecting an unchecked size keeps Add to bag disabled until its own response arrives. Late responses cannot enable a different size. Checkout always reserves against backend stock. Loaded catalog data is reused during client navigation to avoid briefly emptying the shop grid.
+
 ## Checkout, receipts and recovery
 
 Stripe checkout reserves through `POST /v1/orders/prepare`, mounts Payment Element and waits for backend confirmation. A browser Stripe result alone never confirms the order. Explicit local stub mode posts `/v1/orders` with the backend's test payment method; do not use it for production.
@@ -95,7 +97,7 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-The controlled suite starts a production build/preview on port 4173 and a disposable upstream fixture on 4174. Desktop/mobile tests cover account/cookie scope, receipt recovery, cancellation, outages, history and reload behaviour. Some tests use browser API/Stripe fixtures; server-boundary tests exercise the actual cookie proxy. These checks cannot charge a real card and do not establish live database, email, tenant or Stripe behaviour. Inspect failures with `npx playwright show-report`. Run checks and production/browser builds sequentially because they share generated SvelteKit output.
+The controlled suite starts a production build/preview on port 4173 and a disposable upstream fixture on 4174. Desktop/mobile tests cover account/cookie scope, receipt recovery, cancellation, outages, history, size-selection stability, ordering feedback and reload behaviour. Some tests use browser API/Stripe fixtures; server-boundary tests exercise the actual cookie proxy. These checks cannot charge a real card and do not establish live database, email, tenant or Stripe behaviour. Inspect failures with `npx playwright show-report`. Run checks and production/browser builds sequentially because they share generated SvelteKit output.
 
 The guarded live smoke test creates a real **test-mode** order. Use a disposable stocked shop, a running storefront/backend, matching Stripe test keys and working webhook delivery:
 

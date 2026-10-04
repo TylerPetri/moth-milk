@@ -93,7 +93,7 @@
 .checkout-payment__demo strong { align-self: end; font: 600 clamp(1.05rem, 2vw, 1.4rem) $font-serif; letter-spacing: .12em; }
 .checkout-payment__demo small { font: .67rem $font-mono; color: #d9b9b3; }
 .checkout-form > button:not(:disabled) { cursor: pointer; opacity: 1; }
-.checkout-form > button:disabled { cursor: wait; opacity: .6; }
+.checkout-form > button:disabled { cursor: wait; opacity: 1; }
 .checkout-form > .checkout-form__secondary { margin-top: 1rem; border: 0; background: transparent; color: #dac2b5; font: .8rem 'Courier Prime', monospace; text-transform: none; }
 .checkout-tv__empty button:not(.checkout-receipt__action) { border: 0; border-bottom: 1px solid #b98a7d; background: transparent; color: #ebd3c3; cursor: pointer; }
 
