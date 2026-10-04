@@ -1,0 +1,5 @@
+Mobile navigation dismissal
+
+The menu closes when tapping outside the navigation/menu toggle, including the logo, bag button and page content. It also closes before SvelteKit navigation, including history navigation, and on Escape (restoring focus to the menu button). Navigation/menu-toggle taps retain their existing behaviour. Styling is unchanged. Document event listeners are cleaned up on unmount.
+
+Validation: Svelte check 0 errors/0 warnings; production build passed; mobile Chromium checks passed for outside touch, toggling, menu-link navigation, history navigation, Escape/focus, bag action and logo navigation. No backend is needed for this UI change.
