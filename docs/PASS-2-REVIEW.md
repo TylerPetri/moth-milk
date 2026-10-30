@@ -36,7 +36,7 @@ No GitHub Actions workflow exists in this repository. The prior head had no Acti
 
 **MERGE: NO-GO pending owner review/acceptance of the listed rights and privacy decisions.** The technical changes are locally reviewable and tested; this is not a claim that merging would deploy safely or certify the private backend. No merge is performed.
 
-**Portfolio readiness:** suitable as a technical review candidate with a working isolated rehearsal and truthful integration boundaries. A rights-cleared, freely reusable portfolio recommendation remains **NO-GO** pending provider/input rights, story origin and acceptance of remaining disclosures. The owner has already resolved the AI-origin category and reserved-rights preference; the project is not offered for free reuse. Existing public visibility is unchanged.
+**Portfolio readiness:** suitable as a technical review candidate with a working isolated rehearsal and truthful integration boundaries. A rights-cleared portfolio-showcase recommendation remains **NO-GO** pending provider/input rights, story origin and acceptance of remaining disclosures. The owner has resolved the AI-origin category and reserved-rights preference. Public reuse is intentionally reserved; choosing a permissive license is not a condition for showcasing the project. Existing public visibility is unchanged.
 
 Suggested GitHub description (recommendation only):
 
