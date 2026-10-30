@@ -9,7 +9,7 @@ Branch: `portfolio/publication-readiness`. Existing [draft PR #1](https://github
 - Stub mode rejects public remote API origins and live keys; the server refuses stub order submission to a non-loopback private upstream. `npm run demo` explicitly selects a local synthetic shop and fixture upstream, binds both processes to loopback and labels simulation in the UI. No private backend is needed to explore and complete a fixture order.
 - Isolated desktop/mobile tests verify missing-backend failure and rehearsal checkout. The main suite additionally checks raw storage privacy and unexpected live-key prepare/resume responses. No tests use live Stripe or customer data.
 - The README is shorter and links detailed account/checkout/operator notes separately. Actual home/mobile/shop captures, a simple diagram, technologies, local setup and explicit simulated/external feature status are included. Existing SCSS, source images and production-mode visual composition are unchanged.
-- [Asset/story/dependency inventories](ASSET-RIGHTS.md) now identify files and hashes rather than broad globs. Cormorant font tables match the locked OFL font apart from checksum/timestamp metadata. Artwork is not labeled original, third-party or AI-generated without evidence, and no significant assets were removed or replaced.
+- [Asset/story/dependency inventories](ASSET-RIGHTS.md) now identify files and hashes rather than broad globs. Cormorant font tables match the locked OFL font apart from checksum/timestamp metadata. Following owner confirmation, images/textures are labeled owner-attested AI-generated with Grok Imagine and ChatGPT; per-file provider/terms records remain outstanding. No significant assets were removed or replaced.
 
 ## Remaining security concerns
 
@@ -19,9 +19,9 @@ Unfinished checkout keys remain browser-accessible to preserve existing device r
 
 ## Owner decisions, with recommended options
 
-1. **Art and story origins:** use the inventory to confirm which groups are original, AI-generated (provider/terms/reference inputs) or third-party (source/license/credit). Keep the design intact while deciding. A script-generated derivative is not automatically AI-generated. Rights remain uncertain where evidence is absent.
-2. **Attribution:** publish a small credits ledger only for confirmed sources; retain the four OFL font notices already included. Standalone Cormorant provenance now has a reproducible table comparison.
-3. **Project code license:** recommend MIT for owner-controlled code, expressly excluding creative assets/stories/fonts. Apache-2.0 or reserved rights are alternatives. Do not apply any until ownership and scope are confirmed. This PR applies none.
+1. **Image/texture origin recorded:** the owner confirms all were AI-generated with Grok Imagine and ChatGPT. Remaining: provider grouping/dates, applicable terms and reference-input rights. Story authorship remains unconfirmed.
+2. **Attribution:** retain OFL/dependency notices; record any provider/input attribution obligations after checking applicable terms. No third-party stock source or mandatory AI attribution is invented.
+3. **Rights preference recorded:** the owner selected reserved rights for project code and creative assets. [RIGHTS.md](../RIGHTS.md) and npm `UNLICENSED` metadata record that choice without overriding third-party licenses or claiming exclusive copyright in AI output. MIT/Apache/Creative Commons licensing is not selected.
 4. **Historical/privacy risk:** assess historical operational references and Git author email, browser receipt-key access and contact retention. Explicitly accept or separately scope cleanup/hardening. This PR neither rewrites history nor removes recovery credentials.
 
 Private source/permission contracts should stay private; record only non-sensitive attribution and owner decisions in public documentation. See [the focused asset decision table](ASSET-RIGHTS.md#focused-owner-decisions).
@@ -36,7 +36,7 @@ No GitHub Actions workflow exists in this repository. The prior head had no Acti
 
 **MERGE: NO-GO pending owner review/acceptance of the listed rights and privacy decisions.** The technical changes are locally reviewable and tested; this is not a claim that merging would deploy safely or certify the private backend. No merge is performed.
 
-**Portfolio readiness:** suitable as a technical review candidate with a working isolated rehearsal and truthful integration boundaries. A rights-cleared, freely reusable portfolio recommendation remains **NO-GO** until the owner resolves creative provenance/licensing and accepts remaining disclosures. Existing public visibility is unchanged.
+**Portfolio readiness:** suitable as a technical review candidate with a working isolated rehearsal and truthful integration boundaries. A rights-cleared, freely reusable portfolio recommendation remains **NO-GO** pending provider/input rights, story origin and acceptance of remaining disclosures. The owner has already resolved the AI-origin category and reserved-rights preference; the project is not offered for free reuse. Existing public visibility is unchanged.
 
 Suggested GitHub description (recommendation only):
 

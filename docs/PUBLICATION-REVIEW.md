@@ -1,6 +1,6 @@
 # Publication review — 2026-10-30
 
-Pass 1 history-audit baseline is retained below. [Pass 2](PASS-2-REVIEW.md) and the [security boundary matrix](SECURITY-BOUNDARIES.md) record the current changes, precise inventories and resolved Cormorant OFL evidence.
+Owner follow-up: all images/textures are attested AI-generated using Grok Imagine and ChatGPT; project-code and creative-asset rights are reserved in [RIGHTS.md](../RIGHTS.md). Provider/input terms and story authorship are still unconfirmed. Pass 1 history-audit baseline is retained below. [Pass 2](PASS-2-REVIEW.md) and the [security boundary matrix](SECURITY-BOUNDARIES.md) record the current changes, precise inventories and resolved Cormorant OFL evidence.
 
 **PUBLICATION: NO-GO.** GitHub reported the repository already public during this review; no visibility setting was changed. This is a readiness recommendation, not a claim that existing exposure has been reversed.
 

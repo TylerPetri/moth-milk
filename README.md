@@ -99,6 +99,6 @@ See the [security boundary matrix](docs/SECURITY-BOUNDARIES.md) for storage, URL
 
 ## Review and reuse status
 
-The repository is already public. This PR changes neither visibility nor production. **Portfolio rights clearance remains NO-GO** until the owner confirms artwork/story origins, attribution and code-license scope. Fontsource and the bundled Cormorant derivative have concrete OFL evidence and retained notices. No open-source license has been invented for project code or creative assets.
+The repository is already public. This PR changes neither visibility nor production. **Portfolio rights clearance remains NO-GO** pending applicable AI-provider/input terms, story-origin confirmation and historical/privacy review. The owner confirms images/textures were AI-generated with Grok Imagine and ChatGPT and reserves project-code and creative-asset rights; see [RIGHTS.md](RIGHTS.md). Fontsource and the bundled Cormorant derivative have concrete OFL evidence and retained notices. Project npm metadata is `UNLICENSED`; no open-source or Creative Commons project license is granted, and third-party font/dependency licenses remain unaffected.
 
 Start with the [Pass 2 review and focused owner decisions](docs/PASS-2-REVIEW.md), [exact asset/story/dependency inventories](docs/ASSET-RIGHTS.md), and [historical publication audit](docs/PUBLICATION-REVIEW.md).

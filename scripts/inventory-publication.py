@@ -19,15 +19,17 @@ for path in paths:
     p = Path(path)
     if not p.exists() or not (path.startswith(('static/', 'docs/screenshots/')) or path in ['contact.png', 'scripts/cormorant-garamond-600.ttf']):
         continue
-    role, origin, evidence, decision = 'project imagery', 'unverified: human/AI/third-party unresolved', 'Tracked file; no source/license ledger', 'Owner confirms source and rights; preserve asset'
+    role, origin, evidence, decision = 'project imagery', 'owner-attested AI-generated: Grok Imagine and ChatGPT; per-file provider unmapped', 'Owner statement 2026-10-30 in RIGHTS.md; provider terms/reference inputs not independently verified', 'Project rights reserved; provider/input terms review remains; preserve asset'
     if path.startswith('static/textures/') or path == 'static/favicon.svg':
-        role, evidence = 'procedural vector source', 'SVG filters/shapes in repository; original authorship unconfirmed'
+        role, evidence = 'procedural vector source', 'SVG filters/shapes; owner attests all images/textures AI-generated with Grok Imagine and ChatGPT (RIGHTS.md)'
     if '/sofa-books/' in path and p.suffix == '.webp':
-        role, evidence = 'generated derivative: story cover or positioned book', 'scripts/generate_sofa_books.py describes derivation from atlases/cloth and historical templates; not evidence of AI generation'
+        role, evidence = 'generated derivative: story cover or positioned book', 'scripts/generate_sofa_books.py describes derivation from atlases/cloth and historical templates; source images/textures owner-attested AI-generated (RIGHTS.md)'
     if 'atlas' in path:
         role = 'source artwork atlas'
     if path.startswith('docs/screenshots/') or path == 'contact.png':
         role = 'review screenshot/contact sheet derivative'
+        origin = 'application render/contact sheet derived from owner-attested AI artwork'
+        evidence = 'Actual application capture or project contact sheet; source art attestation in RIGHTS.md'
     if p.suffix == '.temporary':
         role, evidence, decision = 'empty build remnant', f'{p.stat().st_size} bytes; no visible artwork', 'No meaningful image content; no deletion needed for review'
     if p.suffix == '.ttf':
@@ -40,7 +42,7 @@ source = Path('src/lib/data/library.ts').read_text()
 with (out / 'stories.csv').open('w') as f:
     writer = csv.writer(f, lineterminator='\n'); writer.writerow(['slug', 'title', 'source', 'content', 'authorship', 'decision'])
     for slug, title in re.findall(r"slug: '([^']+)', title: '([^']+)'", source):
-        writer.writerow([slug, title, 'src/lib/data/library.ts', 'description and excerpt; displayed minutes do not establish a full-length story', 'Unverified: human/AI/third-party unresolved', 'Owner confirms authorship and separate story license'])
+        writer.writerow([slug, title, 'src/lib/data/library.ts', 'description and excerpt; displayed minutes do not establish a full-length story', 'Unverified: human/AI/third-party unresolved', 'Owner reserves creative rights; authorship/source confirmation still needed'])
 lock = json.loads(Path('package-lock.json').read_text())
 with (out / 'dependencies.csv').open('w') as f:
     writer = csv.writer(f, lineterminator='\n'); writer.writerow(['lock_path', 'version', 'declared_license', 'dev_dependency', 'optional', 'notice_status'])
@@ -52,6 +54,6 @@ with (out / 'dependencies.csv').open('w') as f:
 # Historical-only asset sources remain distributed with Git history.
 historical = subprocess.check_output(['git', 'log', '--all', '--format=', '--name-only', '--', 'assets', 'static'], text=True).splitlines()
 with (out / 'historical-assets.txt').open('w') as f:
-    f.write('Historical-only paths: provenance unresolved; history is not rewritten.\n')
+    f.write('Historical-only paths: image/texture family owner-attested AI-generated (RIGHTS.md); per-file provider/input/terms records remain unverified; history is not rewritten.\n')
     f.write('\n'.join(sorted(set(p for p in historical if p and not Path(p).exists()))) + '\n')
 print(f'Inventoried {len(rows)} current asset/font files; {len(lock["packages"])-1} locked dependency entries.')

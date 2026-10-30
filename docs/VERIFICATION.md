@@ -1,3 +1,7 @@
+# Owner follow-up — rights/provenance metadata
+
+The owner confirms images/textures were AI-generated with Grok Imagine and ChatGPT and selects reserved rights for project code/creative assets. Updated RIGHTS.md, rights/review/README text, inventory classifications and npm root license metadata (`UNLICENSED`). Font/dependency licenses are unchanged. Inventories regenerated; all 236 asset hashes still match, local Markdown targets resolve, package/lock root license metadata matches, and `git diff --check` passes. This follow-up changes no application behavior or dependency versions; the complete Pass 2 test evidence below remains the most recent runtime verification. Story provenance and provider/input terms remain unresolved.
+
 # Verification — Pass 2, 2026-10-30
 
 Final local results for the existing publication-readiness branch. Node 24.19.0, Chromium 154.0.8037.57, Playwright 1.63.0; no dependency versions changed during Pass 2.

@@ -1,4 +1,4 @@
-Historical-only paths: provenance unresolved; history is not rewritten.
+Historical-only paths: image/texture family owner-attested AI-generated (RIGHTS.md); per-file provider/input/terms records remain unverified; history is not rewritten.
 assets/source/sofa-books/sofa-book-template-desktop.png
 assets/source/sofa-books/sofa-book-template-mobile.png
 assets/source/sofa-books/sofa-books-approved-desktop.png
