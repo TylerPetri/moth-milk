@@ -61,3 +61,37 @@ test('removing another attempt never archives the active checkout contact detail
  assert.equal(stored.includes('PRIVATE_EMAIL'), false); assert.equal(stored.includes('PRIVATE_ADDRESS'), false);
  assert.equal(checkoutAttempts()[0].id, 'one');
 });
+
+test('legacy contact fingerprints migrate without changing recovery credentials or payment state', async () => {
+ const { checkoutFingerprint, migrateCheckoutFingerprints } = await import('../src/lib/checkout.ts');
+ const fingerprint = JSON.stringify({ name: 'PRIVATE_NAME', email: 'private@example.test', shipping: { line1: 'PRIVATE_ADDRESS' } });
+ for (const storage of [localStorage, sessionStorage]) {
+  for (const key of ['moth-milk-pending-checkout', 'moth-milk-stub-checkout', 'moth-milk-checkout-attempts']) {
+   const value = { id: 'one', idempotency_key: 'original-key', paymentSubmitted: true, fingerprint };
+   storage.setItem(key, JSON.stringify(key.endsWith('attempts') ? [value] : value));
+  }
+ }
+ await migrateCheckoutFingerprints();
+ for (const storage of [localStorage, sessionStorage]) {
+  for (const key of ['moth-milk-pending-checkout', 'moth-milk-stub-checkout', 'moth-milk-checkout-attempts']) {
+   const raw = storage.getItem(key); assert.equal(raw.includes('PRIVATE_'), false);
+   const value = key.endsWith('attempts') ? JSON.parse(raw)[0] : JSON.parse(raw);
+   assert.equal(value.fingerprint, await checkoutFingerprint(fingerprint));
+   assert.equal(value.idempotency_key, 'original-key'); assert.equal(value.paymentSubmitted, true);
+  }
+ }
+});
+
+test('fingerprint migration never overwrites recovery saved during asynchronous hashing', async () => {
+ const { migrateCheckoutFingerprints } = await import('../src/lib/checkout.ts');
+ const key = 'moth-milk-pending-checkout';
+ localStorage.setItem(key, JSON.stringify({ idempotency_key: 'old', fingerprint: 'legacy-contact' }));
+ const original = crypto.subtle.digest;
+ crypto.subtle.digest = async function (...args) {
+  localStorage.setItem(key, JSON.stringify({ idempotency_key: 'new', paymentSubmitted: true }));
+  return original.apply(this, args);
+ };
+ try { await migrateCheckoutFingerprints(); }
+ finally { crypto.subtle.digest = original; }
+ assert.deepEqual(JSON.parse(localStorage.getItem(key)), { idempotency_key: 'new', paymentSubmitted: true });
+});

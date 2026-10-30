@@ -1,5 +1,7 @@
 # Publication review — 2026-10-30
 
+Pass 1 history-audit baseline is retained below. [Pass 2](PASS-2-REVIEW.md) and the [security boundary matrix](SECURITY-BOUNDARIES.md) record the current changes, precise inventories and resolved Cormorant OFL evidence.
+
 **PUBLICATION: NO-GO.** GitHub reported the repository already public during this review; no visibility setting was changed. This is a readiness recommendation, not a claim that existing exposure has been reversed.
 
 ## Scope and method
@@ -17,7 +19,7 @@ Baseline: `70b9d1ec4d2cf99102311c3461b4680644e4bcc3` (`origin/main` after fetch)
 | Secrets/customer information scan | No secret-shaped credential matches, private-network endpoint matches, or non-example customer email matches in scanned text. Capability-pattern matches were explicit `SERVER_ONLY_*` fixture literals in security tests/upstream. All email literals used reserved example/test domains. No customer export identified. This is bounded evidence, not a guarantee or a backend audit. |
 | Git author metadata | One distinct author identity uses a non-noreply email address. Owner should confirm consent to keep that metadata public; address not reproduced here. |
 | Dependency advisories | Patched Vite 7.3.6 → 7.3.7 and source-map-js 1.2.1 → 1.2.2 within existing version ranges. Remaining low-severity SvelteKit/enhanced-form/prerender and deepmerge toolchain advisories require separate assessment/major-upgrade planning. `devDependencies` does not mean irrelevant to deployed server code: SvelteKit builds the runtime. No blanket production-safety claim follows from `npm audit --omit=dev`. |
-| Receipt capability boundary | Guest idempotency keys authorize status/cancel/resume; read proofs authorize status only, enforced by backend. HttpOnly receipt storage and token redaction reduce exposure; unfinished attempts still retain idempotency keys in browser storage. XSS, extensions or copied site data could expose these capabilities. README now discloses this; preserve recovery semantics. Backend must enforce shop/ownership/expiry/replay and redact request bodies/URLs. |
+| Receipt capability boundary | Guest idempotency keys authorize status/cancel/resume; read proofs authorize status only, enforced by backend. HttpOnly receipt storage and token redaction reduce exposure; unfinished attempts still retain idempotency keys in browser storage. XSS, extensions or copied site data could expose these capabilities. Pass 2 additionally hashes contact fingerprints and migrates legacy plaintext copies without rotating recovery keys. README now discloses this; preserve recovery semantics. Backend must enforce shop/ownership/expiry/replay and redact request bodies/URLs. |
 | Recovery/contact data | `mm_checkout` is HttpOnly but unsigned/unencrypted client-held JSON with contact/address data for up to 30 days; unsubmitted drafts use session storage up to 24 hours. HttpOnly is not encryption; client recovery data is not trusted authorization or pricing. Production retention/privacy review remains external. |
 | Backend and deployment not certified | No live backend/Stripe/mail/customer data used. Inventory, tenant isolation, revocation, rate limiting, refund fulfillment, distributed refresh coordination and real webhook confirmation remain external acceptance work. Email/account links initially carry proof/token in query URLs; browser removal/no-referrer cannot erase ingress logs. Redact logs and keep analytics away from capability routes. |
 
@@ -27,7 +29,7 @@ See [verification evidence](VERIFICATION.md) for exact check counts and any fail
 
 ## Conditions for a GO recommendation
 
-1. Clear artwork, textures, stories, brand, bundled font and code distribution rights, including historical source assets and screenshot derivatives.
+1. Clear artwork, textures, stories, brand and code distribution rights, including historical source assets and screenshot derivatives. Pass 2 establishes OFL evidence for the bundled font and retains its notice.
 2. Owner resolves or explicitly accepts historical operational disclosures; any rewrite/removal is a separate authorized operation and cannot recall existing clones.
 3. Review backend/payment/privacy boundaries with disposable test-mode resources before claiming end-to-end integration. Document accepted browser receipt-key and recovery-data risks.
 4. Review the proposed branch and all test evidence. Merge, deployment and visibility changes require separate approval.

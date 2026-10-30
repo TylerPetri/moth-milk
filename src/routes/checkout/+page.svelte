@@ -10,7 +10,7 @@
   import { api } from '$lib/api.ts';
   import { loadStripe } from '$lib/stripe.ts';
   import { friendlyError, isUnavailable, watchRecovery } from '$lib/recovery.ts';
-  import { readSaved, writeSaved, saveReceipt, receipts, money, shipmentLabel, checkoutAttempts, saveCheckoutAttempt, removeCheckoutAttempt } from '$lib/checkout.ts';
+  import { checkoutFingerprint, migrateCheckoutFingerprints, readSaved, writeSaved, saveReceipt, receipts, money, shipmentLabel, checkoutAttempts, saveCheckoutAttempt, removeCheckoutAttempt } from '$lib/checkout.ts';
 
   const checkoutKey = 'moth-milk-pending-checkout';
   const draftKey = 'moth-milk-checkout-details';
@@ -169,6 +169,7 @@
     }, Math.min(2000 * 2 ** recoveryRetries, 10000));
   }
   async function resume() {
+    await migrateCheckoutFingerprints();
     if (recovering || polling || processing || stopped) return;
     recovering = true;
     try { await restoreCheckout(); } catch (err) { if (!stopped) showError(err); } finally { recovering = false; }
@@ -256,6 +257,7 @@
     event.preventDefault(); if (processing || recovering || polling) return;
     processing = true; error = '';
     try {
+      await migrateCheckoutFingerprints();
       if (!ui.cart.length) throw new Error('Your bag is empty.');
       if (!stubMode && !import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) throw new Error('This room is not ready to take payments yet.');
       writeSaved(draftKey, { customer_email: email, customer_name: `${firstName} ${lastName}`.trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
@@ -269,7 +271,7 @@
       if (currencies.length !== 1) throw new Error('These things cannot be checked out together.');
       currency = currencies[0];
       const items = lines.map((item) => ({ product_id: item.id, quantity: 1 }));
-      const fingerprint = JSON.stringify({ items, name: `${firstName} ${lastName}`.trim(), email: email.toLowerCase().trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } });
+      const fingerprint = await checkoutFingerprint(JSON.stringify({ items, name: `${firstName} ${lastName}`.trim(), email: email.toLowerCase().trim(), shipping: { line1, city, state: province, postal_code: postalCode, country } }));
       if (stubMode) {
         const existingStub = readSaved<PendingCheckout>(stubKey);
         if (existingStub && existingStub.fingerprint !== fingerprint) throw new Error('Finish the earlier checkout before changing your bag.');

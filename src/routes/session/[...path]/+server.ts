@@ -4,6 +4,7 @@ import { env as publicEnv } from '$env/dynamic/public';
 import type { RequestHandler } from '@sveltejs/kit';
 import type { CheckoutStatusRequest, ShippingAddress } from '$lib/types/api.ts';
 import { isShopId, validCustomer, validCustomerSession } from '$lib/customer-contract.ts';
+import { isLoopback } from '$lib/payment-policy.ts';
 import { coordinatedRefresh } from '$lib/server/refresh.ts';
 import { json } from '@sveltejs/kit';
 interface ProxyPayload {
@@ -51,6 +52,8 @@ const handle: RequestHandler = async ({ request, params, url, cookies }) => {
   try {
     const upstream = new URL(env.API_ORIGIN || publicEnv.PUBLIC_API_URL || '');
     if (upstream.username || upstream.password || upstream.search || upstream.hash || !['http:', 'https:'].includes(upstream.protocol) || (url.protocol === 'https:' && upstream.protocol !== 'https:')) throw new Error('Invalid API origin');
+    // Stub order submission is reserved for a loopback test upstream.
+    if (path === '/v1/orders' && publicEnv.PUBLIC_PAYMENT_MODE === 'stub' && !isLoopback(upstream.hostname)) return json({ error: 'unavailable' }, { status: 503 });
     const headers = new Headers({ 'Content-Type': 'application/json' });
     // Do not pass browser Authorization, Cookie, forwarding headers, or arbitrary shop switches upstream.
     let shop = publicEnv.PUBLIC_SHOP_ID;

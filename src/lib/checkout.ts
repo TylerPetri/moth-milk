@@ -2,6 +2,35 @@ import type { Receipt, PendingCheckout } from './types/checkout.ts';
 // Receipt keys authorize guest status reads. Keep them out of URLs and logs.
 function isRecord(value: unknown): value is Record<string, unknown> { return typeof value === 'object' && value !== null && !Array.isArray(value); }
 const receiptKey = 'moth-milk-receipts';
+export async function checkoutFingerprint(value: string) {
+  if (/^sha256:[a-f0-9]{64}$/.test(value)) return value;
+  const bytes = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value));
+  return 'sha256:' + Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('');
+}
+let migrating: Promise<void> | undefined;
+export function migrateCheckoutFingerprints() {
+  // Do not remove an uncertain attempt or rotate its payment capability during migration.
+  return migrating ||= (async () => {
+    for (const storageName of ['localStorage', 'sessionStorage'] as const) {
+      for (const key of ['moth-milk-pending-checkout', 'moth-milk-stub-checkout', 'moth-milk-checkout-attempts']) {
+        try {
+          const storage = globalThis[storageName];
+          const raw = storage.getItem(key); if (!raw) continue;
+          const value = JSON.parse(raw);
+          const entries = Array.isArray(value) ? value : [value];
+          let changed = false;
+          for (const entry of entries) {
+            if (typeof entry?.fingerprint === 'string' && !/^sha256:[a-f0-9]{64}$/.test(entry.fingerprint)) {
+              entry.fingerprint = await checkoutFingerprint(entry.fingerprint); changed = true;
+            }
+          }
+          // A later write may have completed while hashing. Never overwrite newer recovery state.
+          if (changed && storage.getItem(key) === raw) storage.setItem(key, JSON.stringify(value));
+        } catch { /* Malformed/blocked storage must not erase recovery information. */ }
+      }
+    }
+  })().finally(() => { migrating = undefined; });
+}
 export function readSaved<T = unknown>(key: string): T | null {
   for (const name of (['localStorage', 'sessionStorage'] as const)) {
     try {
