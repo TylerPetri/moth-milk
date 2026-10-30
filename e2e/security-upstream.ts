@@ -6,7 +6,9 @@ let sequence = 0;
 const server = http.createServer(async (req, res) => {
  let raw = ''; for await (const part of req) raw += part;
  let body = {}; try { body = JSON.parse(raw || '{}'); } catch {}
- const send = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json' }); res.end(JSON.stringify(data)); };
+ const cors = req.headers.origin === 'http://127.0.0.1:4173' ? { 'Access-Control-Allow-Origin': req.headers.origin, 'Access-Control-Allow-Headers': 'Content-Type, X-Shop-ID', 'Access-Control-Allow-Methods': 'GET, POST, OPTIONS', Vary: 'Origin' } : {};
+ if (req.method === 'OPTIONS') { res.writeHead(204, cors); return res.end(); }
+ const send = (status, data) => { res.writeHead(status, { ...cors, 'Content-Type': 'application/json' }); res.end(JSON.stringify(data)); };
  if (req.url === '/_fixture/status') { if (typeof body.order_id !== 'string') return send(400, { error: 'order_id_required' });
    if (body.down) unavailableOrders.add(body.order_id); else unavailableOrders.delete(body.order_id);
    return send(200, { ok: true }); }
@@ -42,6 +44,8 @@ const server = http.createServer(async (req, res) => {
  if (req.url === '/v1/checkouts') return send(200, { checkouts: [], count: 0 });
  if (['/v1/auth/email/verify/confirm', '/v1/auth/password/reset/confirm', '/v1/auth/password/reset/request'].includes(req.url)) return send(200, { ok: true });
  if (req.url === '/v1/auth/logout') return send(200, { ok: true });
+ if (req.url?.startsWith('/v1/stock/')) return send(200, { available: 20 });
+ if (req.url === '/v1/orders') return send(200, { id: '22222222-2222-4222-8222-222222222222', status: 'confirmed', total: 4200 });
  if (req.url === '/v1/orders/prepare') return send(202, { id: '22222222-2222-4222-8222-222222222222', status: 'reserved', total: 4200, payment_client_secret: 'fixture_secret' });
  if (req.url.endsWith('/checkout-status') && unavailableOrders.has(req.url.split('/')[3])) return send(503, { error: 'unavailable' });
  if (req.url === '/v1/checkouts/query') return send(200, { checkouts: [], count: 0 });

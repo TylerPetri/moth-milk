@@ -35,8 +35,9 @@
   seedSession();
 
   import { api } from '$lib/api.ts';
-  import { receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.ts';
+  import { migrateCheckoutFingerprints, receipts, saveReceipt, readSaved, writeSaved } from '$lib/checkout.ts';
   onMount(() => { void (async () => {
+    await migrateCheckoutFingerprints();
     // Migrate older saved receipts without losing recovery during an outage.
     for (const receipt of receipts().slice(0, 10)) {
       if (!receipt.idempotency_key && !receipt.tracking_proof) continue;
@@ -54,6 +55,7 @@
 </svelte:head>
 
 <div class:feral={ui.mood === 'feral'} class:quiet-backdrop={page.url.pathname === '/lookbook' || page.url.pathname === '/checkout' || page.url.pathname === '/your-corner' || page.url.pathname.startsWith('/product/')} class="app-shell">
+  {#if import.meta.env.PUBLIC_PAYMENT_MODE === 'stub'}<aside role="note" style="padding: .7rem; text-align: center; background: #261719; color: #f2e2d6;">The rehearsal room. Catalog, accounts and orders are simulated locally. No money moves.</aside>{/if}
   <ReactiveBackdrop />
   <SiteHeader />
   {@render children()}

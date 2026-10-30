@@ -1,9 +1,11 @@
+import { assertPaymentEnvironment } from './payment-policy.ts';
 import type { StripeClient } from '$lib/types/stripe.ts';
 const clients = new Map<string, Promise<StripeClient>>();
 let scriptPromise: Promise<void> | undefined;
 export function loadStripe(publishableKey = import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY) {
   if (typeof window === 'undefined') return Promise.reject(new Error('Checkout is available in the browser.'));
   if (!publishableKey || !/^pk_(test|live)_/.test(publishableKey)) return Promise.reject(new Error('Stripe publishable key is not configured.'));
+  try { assertPaymentEnvironment(import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY, publishableKey); } catch (error) { return Promise.reject(error); }
   if (clients.has(publishableKey)) return clients.get(publishableKey)!;
   scriptPromise ||= new Promise<void>((resolve, reject) => {
     if (window.Stripe) return resolve();

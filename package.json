@@ -12,7 +12,10 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:live": "playwright test --config playwright.live.config.ts",
-    "cleanup:legacy": "node scripts/remove-legacy-js.ts --apply"
+    "cleanup:legacy": "node scripts/remove-legacy-js.ts --apply",
+    "demo": "node scripts/demo.ts",
+    "test:e2e:boundaries": "playwright test --config playwright.boundaries.config.ts",
+    "test:e2e:demo": "playwright test --config playwright.demo.config.ts"
   },
   "devDependencies": {
     "@fontsource/bodoni-moda": "^5.3.0",
@@ -38,5 +41,6 @@
   },
   "engines": {
     "node": ">=22.18.0"
-  }
+  },
+  "license": "UNLICENSED"
 }

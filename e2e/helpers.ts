@@ -6,7 +6,7 @@ export const key = '33333333-3333-4333-8333-333333333333';
 export const item = { slug: 'mimi-plush', name: 'Mimi Moth Plush', selectedSize: 'One soft size', price: 42, lineId: 'purchased-line', image: '/images/mimi-plush.webp', color: 'Sleepy charcoal', sizes: ['One soft size'] };
 export const body = { idempotency_key: key, customer_email: 'reader@example.test', customer_name: 'June Reader', currency: 'CAD', shipping: { line1: '12 Moon Street', city: 'Montreal', state: 'QC', postal_code: 'H2H2H2', country: 'CA' }, items: [{ product_id: 'plush-id', quantity: 1 }] };
 export const pending = { id: orderId, idempotency_key: key, body, items: [item], total: 4200, currency: 'CAD', paymentSubmitted: true };
-export const receipt = { ...pending, status: 'confirmed', confirmedAt: '2026-09-30T20:00:00Z' };
+export const receipt = { ...pending, status: 'confirmed', confirmedAt: new Date(Date.now() - 86400000).toISOString() };
 export const products = [
  { id: 'plush-id', is_active: true, amount: 4200, currency: 'CAD', attributes: { style_slug: 'mimi-plush', size: 'One soft size' } },
  { id: 'hoodie-id', is_active: true, amount: 11800, currency: 'CAD', attributes: { style_slug: 'night-shift-hoodie', size: 'XS' } },
@@ -39,7 +39,7 @@ export const test = base.extend({
      if (path === '/v1/auth/register') return json({ error: 'already_exists', message: 'PRIVATE database email collision' }, 409);
      if (path === '/v1/auth/login') return json({ error: 'unauthorized', message: 'PRIVATE authentication detail' }, 401);
      if (path === '/v1/checkouts/query' || path === '/v1/checkouts') return json({ checkouts: state.checkoutList || [], count: (state.checkoutList || []).length });
-     if (path.endsWith('/checkout-resume')) { state.resumes ||= []; state.resumes.push(route.request().postDataJSON()); return json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret', publishable_key: 'pk_test_saved_profile' }); }
+     if (path.endsWith('/checkout-resume')) { state.resumes ||= []; state.resumes.push(route.request().postDataJSON()); return json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret', publishable_key: state.resumeKey || 'pk_test_saved_profile' }); }
      if (path === '/v1/auth/recovery') return json({ body: null });
      if (path === '/v1/products') return state.catalogDown ? down() : json({ products });
      if (path.startsWith('/v1/stock/')) return state.stockDown ? down() : json({ available: 20 });
@@ -49,7 +49,7 @@ export const test = base.extend({
        try { if (state.abortStatus) return await route.abort('connectionfailed'); if (state.statusDelay) await new Promise(r => setTimeout(r, state.statusDelay)); return await (state.statusDown ? down() : json({ ...(state.checkoutSnapshot || {}), id: state.statusID || orderId, status: state.status, shipment: state.shipment, shipment_unavailable: state.shipmentUnavailable })); }
        finally { state.activeReads--; }
      }
-     if (path === '/v1/orders/prepare') { state.prepares.push(route.request().postDataJSON()); if (state.prepareWait) await state.prepareWait; if (state.prepareDelay) await new Promise(r => setTimeout(r, state.prepareDelay)); return state.prepareConflict ? json({ error: state.restartAllowed ? 'checkout_restart_allowed' : 'conflict', message: 'PRIVATE backend signing secret' }, 409) : state.prepareDown ? down() : json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret' }, 202); }
+     if (path === '/v1/orders/prepare') { state.prepares.push(route.request().postDataJSON()); if (state.prepareWait) await state.prepareWait; if (state.prepareDelay) await new Promise(r => setTimeout(r, state.prepareDelay)); return state.prepareConflict ? json({ error: state.restartAllowed ? 'checkout_restart_allowed' : 'conflict', message: 'PRIVATE backend signing secret' }, 409) : state.prepareDown ? down() : json({ id: orderId, total: 4200, status: 'reserved', payment_client_secret: 'fixture_secret', publishable_key: state.prepareKey }, 202); }
      if (path === '/v1/auth/me' || path === '/v1/auth/refresh') { if (!state.signedIn) return json({ error: 'unauthorized' }, 401); state.authCalls++; return state.authDown ? down() : path.endsWith('/refresh') ? json({ access_token: 'renewed', refresh_token: 'refresh', access_expires_at: '2099-01-01', user_id: 'reader', email_verified: true }) : json({ user_id: 'reader', email: 'reader@example.test', email_verified: true }); }
      if (path === '/v1/auth/me/books') return state.authDown ? down() : json({ books: ['static'] });
      if (path === '/v1/orders/claim') return state.authDown ? down() : json({ claimed: 1 });
