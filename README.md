@@ -1,6 +1,39 @@
 # Moth Milk
 
-A SvelteKit 5 storefront and free horror-fiction library with an after-hours bedroom atmosphere. Apparel, plush, stories and customer accounts share the room; styling uses raw SCSS and existing photographic/textured assets.
+A SvelteKit 2 / Svelte 5 storefront and free horror-fiction library with an after-hours bedroom atmosphere. Apparel, plush, stories and customer accounts share the room; styling uses raw SCSS and existing photographic/textured assets.
+
+## Portfolio status and screenshots
+
+**PUBLICATION NO-GO pending rights clearance and historical disclosure review.** See [publication review](docs/PUBLICATION-REVIEW.md) and [asset rights](docs/ASSET-RIGHTS.md). No license to reuse artwork or stories is implied by repository access.
+
+Actual local Chromium screenshots of the anonymous home page (1440×1000 desktop and 390×844 mobile). External browser requests were blocked; no customer data or live backend was used. These images inherit the artwork's unresolved rights.
+
+![Desktop home page](docs/screenshots/home-desktop.png)
+![Mobile home page](docs/screenshots/home-mobile.png)
+
+| Feature | Implemented here | Verification / dependency |
+| --- | --- | --- |
+| Responsive room, navigation, shop, product pages and cart | Svelte components, SCSS and existing assets | Controlled desktop/mobile browser scenarios; visual assets preserved |
+| Horror library and Your Corner | Story excerpts, reading UI, chosen books and owned-item presentation | Full-length fiction is not established by listed reading times; persistence/ownership require backend |
+| Customer accounts, verification and reset | Shop-scoped UI and cookie proxy | Controlled fixtures; real identity, mail delivery and revocation not verified |
+| Stripe Payment Element and order confirmation/recovery | Reservation, status polling, resume and safe cancellation UI | Browser Stripe fixture and local proxy tests; real Stripe/webhooks not verified |
+| Receipt history and shipping feedback | Local summaries and backend status presentation | Fixtures; fulfillment/refunds require external services |
+| Backend services and database | Not included in this repository | Existing gateway contract required; this is the full-stack storefront layer, not a self-contained commerce backend |
+
+## Architecture and external dependencies
+
+```mermaid
+flowchart LR
+  Browser["Svelte 5 UI / cart / library"] -->|"catalog and stock reads"| Gateway["External shop-scoped gateway"]
+  Browser -->|"same-origin /session"| Server["SvelteKit SSR + restricted cookie proxy"]
+  Server -->|"private API_ORIGIN / shop scope"| Gateway
+  Browser -->|"Payment Element"| Stripe["Stripe"]
+  Stripe -->|"signed webhook"| Payments["External payment service"]
+  Payments --> Gateway
+  Gateway --> Services["External database / inventory / customer auth / mail / shipping"]
+```
+
+The external gateway must implement the contracts in `src/lib/types/api.ts`: product/stock reads; shop-bound customer sessions and books; checkout prepare/query/status/resume/cancel; customer order history and claims. It must resolve the configured shop or exact storefront host and enforce authorization, stock, prices, idempotency and payment state. Database schema, migrations, backend source and production provisioning are not included. A fresh clone can render the visual library, but functional commerce/accounts need that backend. Fixture tests provide an isolated demonstration without it.
 
 ## Getting started
 
@@ -22,7 +55,7 @@ Set `.env` for your environment:
 | `PUBLIC_PAYMENT_MODE` | `stripe` for normal checkout; `stub` only for an explicitly configured local test backend |
 | `PUBLIC_STRIPE_PUBLISHABLE_KEY` | Matching Stripe publishable key for Stripe checkout |
 
-The example deliberately has no shop UUID. Authentication fails closed if the shop cannot be resolved; cookies never determine the storefront's intended shop. Public variables are embedded in browser code. Keep database credentials, operator tokens, Stripe secret/webhook keys and mail credentials on the backend. Use HTTPS gateway origins in production, without embedded credentials or query parameters. Rebuild after changing public settings.
+The example deliberately has no shop UUID. Authentication fails closed if the shop cannot be resolved; cookies never determine the storefront's intended shop. Public variables are embedded in browser code. Build and server response guards allow only the four documented PUBLIC_ names and reject credential-bearing public URLs or secret-key formats. Do not add backend credentials or receipt proofs under any public name. Keep database credentials, operator tokens, Stripe secret/webhook keys and mail credentials on the backend. Use HTTPS gateway origins in production, without embedded credentials or query parameters. Rebuild after changing public settings.
 
 ## Project structure
 
@@ -67,13 +100,13 @@ An unfinished checkout can be replaced only after the backend verifies closure a
 
 The customer tracking path should be configured as `/checkout`. Emailed receipt links can supply the existing `#proof=...` fragment; the storefront removes it from the address bar and imports it into HttpOnly receipt storage. Keep backend-issued capabilities intact; do not expose them in analytics or logs. Account access is not required for an appropriately authorized guest status read.
 
-Receipt cookies are bounded to 10 receipts for 30 days. Browser summaries exclude credentials/contact/address details; local history may retain up to 50 receipts. Unsubmitted address drafts stay in session storage for at most 24 hours. Pending contact details use the current tab and HttpOnly recovery cookie; a minimal persistent marker remains until payment is resolved. Clearing site data removes device recovery information. Emailed receipt links can restore access when available.
+Receipt cookies are bounded to 10 receipts for 30 days. Completed receipt summaries exclude credentials/contact/address details; unfinished checkout attempts still retain idempotency keys in browser storage for recovery, so they are browser-accessible capabilities; local history may retain up to 50 receipts. Unsubmitted address drafts stay in session storage for at most 24 hours. Pending contact details use the current tab and HttpOnly recovery cookie; a minimal persistent marker remains until payment is resolved. Clearing site data removes device recovery information. Emailed receipt links can restore access when available.
 
 Status polling is cancellable, bounded and pauses in the background. API outages, unavailable shipping and uncertain payments have distinct messages. Shipping states and refund progress come from backend data, not browser assumptions. Cross-device item details may remain in the order email when the status endpoint does not return a complete receipt.
 
 ## Deployment
 
-Use the existing Vercel **SvelteKit** preset and server adapter in `svelte.config.ts`, with `npm run build` and dependency installation from `package-lock.json`. Do not use a static export: cookie sessions and recovery require the server boundary.
+The stale `.openai/hosting.json` static build declaration has been removed; its hosting project was not modified. Use the existing Vercel **SvelteKit** preset and server adapter in `svelte.config.ts`, with `npm run build` and dependency installation from `package-lock.json`. Do not use a static export: cookie sessions and recovery require the server boundary.
 
 Configure the existing gateway, this shop's exact storefront URL/host mapping, allowed browser origins, matching Stripe environment, signed webhook delivery and mail delivery. Production/preview settings must point to the intended shop and payment environment. Keep payment webhooks directed to the backend.
 
@@ -82,10 +115,6 @@ The proxy restricts forwarded routes, requires same-origin Origin headers for mu
 Personalized and credential-bearing responses use private/no-store caching. Security headers restrict scripts/Stripe frames, embedding and referrers. Review gateway/proxy/CSP configuration against the actual deployment; frontend fixtures cannot certify it.
 
 Deploy the matching shop-bound customer/session backend and its separately reviewed migrations. Do not reseed an existing shop, reset its database or infer production identity mappings. Legacy dashboard/global sessions cannot be converted into customer sessions by switching shops; a fresh customer login may be needed. Customer history stays attached to backend identities.
-
-For a shared backend serving live Bubbling Bliss, preserve its service/data and Maddie's dashboard access. Review real identities, memberships and cross-service history before any backend cutover; this frontend does not perform that migration or grant customer dashboard roles.
-
-When overlaying this ZIP onto an older JavaScript version, keep your environment file and run `npm run cleanup:legacy`. It removes only legacy files with existing TypeScript replacements. Preview with `node scripts/remove-legacy-js.ts` first if needed.
 
 ## Checks
 
@@ -122,3 +151,9 @@ python3 scripts/replay-stripe-test-event.py evt_YOUR_ORIGINAL_SUCCESS_EVENT \
 ```
 
 Its default destination is `http://localhost:8080/v1/webhooks/stripe/test`; a direct local payment service can use `--url http://localhost:8087/v1/webhooks/stripe/test`. The helper rejects live/connected-account events, external destinations and redirects. It does not create a charge or directly edit an order. A successful webhook acknowledgement still requires checking asynchronous backend order confirmation. Retain the original receipt if recovery fails.
+
+## Screenshot reproduction
+
+While the controlled suite's localhost preview is running on port 4173, run `node scripts/capture-portfolio.ts` (set `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` if using a system browser). Alternatively build and start a local preview on that port without production environment files. The capture script blocks external browser requests and supplies only an empty synthetic catalog. Do not point it at a production service or add customer sessions.
+
+Fontsource OFL notices are retained in [docs/licenses](docs/licenses). Asset attribution and permission remain unresolved; see the asset review before redistributing screenshots or media.

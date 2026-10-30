@@ -25,3 +25,6 @@ Thumbs.db
 # Archives
 *.tar.gz
 *.zip
+# Python utility output
+__pycache__/
+*.pyc

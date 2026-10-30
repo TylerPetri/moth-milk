@@ -1,9 +1,11 @@
+import { validatePublicConfig } from './scripts/public-config.ts';
 import adapter from '@sveltejs/adapter-vercel';
 import { loadEnv } from 'vite';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 
 import type { Config } from '@sveltejs/kit';
 const settings = { ...loadEnv(process.env.NODE_ENV || 'production', process.cwd(), ''), ...process.env };
+validatePublicConfig(settings);
 let apiOrigin; try { apiOrigin = new URL(settings.PUBLIC_API_URL || '').origin; } catch {}
 const config: Config = {
   preprocess: vitePreprocess(),

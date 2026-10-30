@@ -6,7 +6,7 @@ export const key = '33333333-3333-4333-8333-333333333333';
 export const item = { slug: 'mimi-plush', name: 'Mimi Moth Plush', selectedSize: 'One soft size', price: 42, lineId: 'purchased-line', image: '/images/mimi-plush.webp', color: 'Sleepy charcoal', sizes: ['One soft size'] };
 export const body = { idempotency_key: key, customer_email: 'reader@example.test', customer_name: 'June Reader', currency: 'CAD', shipping: { line1: '12 Moon Street', city: 'Montreal', state: 'QC', postal_code: 'H2H2H2', country: 'CA' }, items: [{ product_id: 'plush-id', quantity: 1 }] };
 export const pending = { id: orderId, idempotency_key: key, body, items: [item], total: 4200, currency: 'CAD', paymentSubmitted: true };
-export const receipt = { ...pending, status: 'confirmed', confirmedAt: '2026-09-30T20:00:00Z' };
+export const receipt = { ...pending, status: 'confirmed', confirmedAt: new Date(Date.now() - 86400000).toISOString() };
 export const products = [
  { id: 'plush-id', is_active: true, amount: 4200, currency: 'CAD', attributes: { style_slug: 'mimi-plush', size: 'One soft size' } },
  { id: 'hoodie-id', is_active: true, amount: 11800, currency: 'CAD', attributes: { style_slug: 'night-shift-hoodie', size: 'XS' } },
