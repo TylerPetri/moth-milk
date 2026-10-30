@@ -1,6 +1,6 @@
 # Moth Milk
 
-An after-hours room for horror excerpts, soft goods and the things a reader keeps. The storefront pairs photographed rooms, cloth-and-paper surfaces, a browsable bookshelf and a personal “Your Corner” with a cart and recoverable checkout.
+An after-hours room for horror excerpts, soft goods and the things a reader keeps. The storefront pairs dim room imagery, cloth-and-paper surfaces, a browsable bookshelf and a personal “Your Corner” with a cart and recoverable checkout.
 
 Built with **Svelte 5, SvelteKit 2, TypeScript and SCSS**, using self-hosted Fontsource typography, Stripe Payment Element and the Vercel server adapter. The private commerce backend is external; this repository contains the interface, SSR account pages and restricted session/checkout proxy.
 
@@ -101,4 +101,4 @@ See the [security boundary matrix](docs/SECURITY-BOUNDARIES.md) for storage, URL
 
 The repository is already public. This PR changes neither visibility nor production. **Portfolio rights clearance remains NO-GO** pending applicable AI-provider/input terms, story-origin confirmation and historical/privacy review. The owner confirms images/textures were AI-generated with Grok Imagine and ChatGPT and reserves project-code and creative-asset rights; see [RIGHTS.md](RIGHTS.md). Fontsource and the bundled Cormorant derivative have concrete OFL evidence and retained notices. Project npm metadata is `UNLICENSED`; no open-source or Creative Commons project license is granted, and third-party font/dependency licenses remain unaffected.
 
-Start with the [Pass 2 review and focused owner decisions](docs/PASS-2-REVIEW.md), [exact asset/story/dependency inventories](docs/ASSET-RIGHTS.md), and [historical publication audit](docs/PUBLICATION-REVIEW.md).
+Start with the [final review and exact owner questions](docs/FINAL-REVIEW.md), [Pass 2 review](docs/PASS-2-REVIEW.md), [exact asset/story/dependency inventories](docs/ASSET-RIGHTS.md), and [historical publication audit](docs/PUBLICATION-REVIEW.md).
