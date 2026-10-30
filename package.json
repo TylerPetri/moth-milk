@@ -40,7 +40,7 @@
     "@stripe/stripe-js": "^9.17.0"
   },
   "engines": {
-    "node": ">=22.18.0"
+    "node": "24.x"
   },
   "license": "UNLICENSED"
 }
