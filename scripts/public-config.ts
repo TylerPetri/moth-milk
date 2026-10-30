@@ -1,7 +1,9 @@
 import { isLoopback } from '../src/lib/payment-policy.ts';
 // PUBLIC_* values are serialized to browser code. Fail builds on accidental secrets.
 export function validatePublicConfig(settings: Record<string, string | undefined>) {
-  const allowed = new Set(['PUBLIC_API_URL', 'PUBLIC_SHOP_ID', 'PUBLIC_PAYMENT_MODE', 'PUBLIC_STRIPE_PUBLISHABLE_KEY']);
+  // Vercel injects this browser-side observability setting during builds.
+  // Allow this exact platform key without weakening checks for unknown PUBLIC_* names.
+  const allowed = new Set(['PUBLIC_API_URL', 'PUBLIC_SHOP_ID', 'PUBLIC_PAYMENT_MODE', 'PUBLIC_STRIPE_PUBLISHABLE_KEY', 'PUBLIC_VERCEL_OBSERVABILITY_CLIENT_CONFIG']);
   for (const name of Object.keys(settings)) {
     if (name.startsWith('PUBLIC_') && !allowed.has(name)) throw new Error(`Unsupported public setting: ${name}`);
   }
