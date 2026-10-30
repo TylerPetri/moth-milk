@@ -1,5 +1,7 @@
 # Publication review — 2026-10-30
 
+**Current status:** [the owner follow-up](PROVENANCE-FOLLOWUP.md) supersedes earlier collection-authorship unknowns and merge/portfolio holds below. Stories are mixed human-authored and AI-assisted; artwork was AI-generated in 2026; individual attribution/terms remain unresolved. The owner accepts disclosed experimental showcasing. Earlier review history is retained for context.
+
 Owner follow-up: all images/textures are attested AI-generated using Grok Imagine and ChatGPT; project-code and creative-asset rights are reserved in [RIGHTS.md](../RIGHTS.md). Provider/input terms and story authorship are still unconfirmed. Pass 1 history-audit baseline is retained below. [Pass 2](PASS-2-REVIEW.md) and the [security boundary matrix](SECURITY-BOUNDARIES.md) record the current changes, precise inventories and resolved Cormorant OFL evidence.
 
 **PUBLICATION: NO-GO.** GitHub reported the repository already public during this review; no visibility setting was changed. This is a readiness recommendation, not a claim that existing exposure has been reversed.

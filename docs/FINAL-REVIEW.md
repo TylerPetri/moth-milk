@@ -1,5 +1,7 @@
 # Pass 3 — final review and merge preparation
 
+**Owner follow-up supersedes the earlier provenance hold:** images/textures were generated during 2026 with Grok Imagine and ChatGPT/OpenAI; story content combines owner writing and AI assistance, with individual attribution unverified. The owner confirms no outside materials were supplied by them for reproduction and accepts disclosed experimental showcasing. See [the latest record](PROVENANCE-FOLLOWUP.md) and [provider-terms review](PROVIDER-TERMS.md).
+
 Reviewed the complete `origin/main...portfolio/publication-readiness` diff, including application/configuration changes, fixture/test utilities, package metadata/lockfile, documentation, inventories, screenshot additions and font notices. Main baseline is `70b9d1ec4d2cf99102311c3461b4680644e4bcc3`. No new must-fix engineering defect was identified by code inspection. Pass 3 changes only this review record and two README phrases; final runtime verification is executed against the resulting commit and reported in [draft PR #1](https://github.com/TylerPetri/moth-milk/pull/1), rather than committing a new untested results revision afterwards.
 
 ## Engineering conclusions and limits
@@ -19,20 +21,18 @@ Known security limitations remain documented in [SECURITY-BOUNDARIES.md](SECURIT
 
 ## Provenance and licensing conclusions
 
-- The [236-entry asset inventory](inventory/assets.csv) is consistent with the owner's image/texture attestation: Grok Imagine and ChatGPT were used. Family-level origin is confirmed by the owner, not inferred from appearance. Individual provider assignment, creation dates, reference inputs and applicable terms remain unverified.
+- The [236-entry asset inventory](inventory/assets.csv) is consistent with the owner's image/texture attestation: Grok Imagine and ChatGPT were used. Family-level origin and year 2026 are confirmed by the owner, not inferred from appearance. Individual provider assignment, exact dates/models/plans and applicable terms remain unverified; the owner supplied no outside inputs for reproduction, without independently certifying every asset.
 - Programmatic book derivatives and the four application screenshot/contact-sheet entries inherit source-art provenance; the captures are actual rendered UI, not separately AI-generated screenshots. Empty build remnants have no artwork. No files are removed/replaced for uncertain provenance.
 - No separately sourced stock-image/texture collection is identified by available evidence. This does not exclude third-party reference inputs, recognizable protected material or rights within AI output. Provider or reference-input permission/credit obligations cannot be determined from the attestation alone.
 - Cormorant Garamond, Bodoni Moda, Courier Prime and IBM Plex Sans Condensed require their retained SIL OFL copyright/license notices. The standalone Cormorant font has matching-table evidence against the locked Fontsource font. Dependency licenses remain independent; root reserved rights do not revoke them.
-- All **22 story descriptions/excerpts** are in `src/lib/data/library.ts` and [stories.csv](inventory/stories.csv). No separate full-length story files are claimed. Human/AI/third-party authorship is unconfirmed for every entry; no stories are edited, removed or relicensed.
+- All **22 story descriptions/excerpts** are in `src/lib/data/library.ts` and [stories.csv](inventory/stories.csv). No separate full-length story files are claimed. Owner now confirms mixed human writing and AI assistance at collection level, with individual attribution unverified; no stories are edited, removed or relicensed.
 - `RIGHTS.md`, root `package.json` and lock-root `UNLICENSED` metadata agree with the owner's reserved-rights decision. No MIT/Apache/GPL/Creative Commons project license is applied. No exclusive copyright in AI output or ownership of outside inputs is asserted. A public showcase does not require granting public reuse rights.
 
-## Exact remaining owner questions
+## Owner answers and remaining records
 
-1. **Stories:** For all 22 descriptions/excerpts in `src/lib/data/library.ts`, did you write them, generate/assist them with AI (which provider), receive them from someone else, or adapt existing text? If origin varies, identify the affected story slugs.
-2. **Outside inputs and permissions:** Were any story passages, image references, textures, logos, real-person likenesses or other protected source materials copied/adapted/supplied from outside the project? If yes, identify the affected files/slugs and source, permission/license and required credit; otherwise confirm none were used.
-3. **Provider terms:** What approximate creation dates and Grok Imagine/ChatGPT products or account plans were used, and what records or applicable terms support displaying/distributing the resulting images in this already-public repository and its screenshots? Group by asset family/provider where possible; explicitly note any unmapped files or unknown dates. Do those terms or inputs impose attribution or other restrictions?
+The earlier categorical questions have been answered to the extent records permit. Stories are mixed human-authored and AI-assisted; artwork is AI-generated in 2026 using the confirmed providers; no outside material was supplied by the owner for reproduction. Missing individual mappings are explicitly unresolved, not evidence of infringement or proof of ownership. Only recoverable generation/export records, applicable terms/permissions and any subsequently identified outside-source obligations remain useful; see the concise list in [the follow-up record](PROVENANCE-FOLLOWUP.md#what-can-still-resolve-uncertainty).
 
-Reserved rights have already been chosen and do not need to be decided again. Historical operational references and the author's Git email remain in published history, as disclosed in the earlier audit; no history rewrite or new privacy approval workflow is introduced here.
+Reserved rights are already chosen. Historical operational references and Git author contact metadata remain disclosed; no history rewrite is introduced.
 
 ## Final metadata recommendation
 
@@ -48,4 +48,4 @@ These are recommendations; repository About metadata was read, not modified. The
 
 ## Merge decision
 
-**MERGE NO-GO pending the three provenance/licensing answers above.** If final engineering verification passes, no further engineering expansion is proposed. The local rehearsal is ready for technical review; rights-cleared showcase/distribution remains unconfirmed. No merge, deployment, visibility change, history rewrite, real charge, live customer use or production-backend operation is performed.
+**MERGE GO for the documentation and engineering improvements**, based on the completed runtime verification at `939c149e9f9ac41243d34c4e6d106aafbfa2a672` and the owner's latest scoped provenance confirmations. This follow-up changes documentation/inventory tooling only and retains all limitations. Missing per-file records do not, by themselves, require rejecting an improvement merge or redesigning the project. This is not provider-permission or comprehensive rights clearance and is not approval to execute a merge or deployment. The owner has explicitly kept both on hold.

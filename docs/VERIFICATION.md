@@ -1,3 +1,11 @@
+# Latest provenance follow-up — documentation and inventory only
+
+Latest owner confirmations record mixed human-authored/AI-assisted story content, 2026 AI-generated imagery and a scoped confirmation that the owner supplied no outside material for reproduction. Individual attribution, models/plans/dates and applicable terms remain unverified. Repository history establishes story introduction commits, not authorship. The [follow-up](PROVENANCE-FOLLOWUP.md), [provider review](PROVIDER-TERMS.md) and [credits](CREDITS.md) are current.
+
+This follow-up changes no application source, stories, imagery, layouts, interaction code, dependency versions, font notices or licenses. Inventory regeneration, all asset hashes, story slugs/history grouping, package/lock reserved-rights consistency, Markdown targets and whitespace are checked separately. The latest full runtime verification remains **939c149e9f9ac41243d34c4e6d106aafbfa2a672**: clean installation, zero Svelte/TypeScript errors/warnings, 26 unit tests, 7 mocked Python tests, production build and 138 controlled browser scenarios passed; all three screenshots pixel-matched. Dependency audit then reported 5 low and no moderate/high/critical entries. These are prior-commit runtime results, not a claim of another full run on this metadata follow-up. No new CI test pass is claimed.
+
+The historical records below are retained and may describe earlier incomplete owner answers; the latest scoped confirmations supersede them.
+
 # Owner follow-up — rights/provenance metadata
 
 The owner confirms images/textures were AI-generated with Grok Imagine and ChatGPT and selects reserved rights for project code/creative assets. Updated RIGHTS.md, rights/review/README text, inventory classifications and npm root license metadata (`UNLICENSED`). Font/dependency licenses are unchanged. Inventories regenerated; all 236 asset hashes still match, local Markdown targets resolve, package/lock root license metadata matches, and `git diff --check` passes. This follow-up changes no application behavior or dependency versions; the complete Pass 2 test evidence below remains the most recent runtime verification. Story provenance and provider/input terms remain unresolved.

@@ -1,5 +1,7 @@
 # Pass 2 portfolio review
 
+**Current status:** [the owner follow-up](PROVENANCE-FOLLOWUP.md) supersedes earlier collection-authorship unknowns and merge/portfolio holds below. Stories are mixed human-authored and AI-assisted; artwork was AI-generated in 2026; individual attribution/terms remain unresolved. The owner accepts disclosed experimental showcasing. Earlier review history is retained for context.
+
 Branch: `portfolio/publication-readiness`. Existing [draft PR #1](https://github.com/TylerPetri/moth-milk/pull/1) is the only proposed change. Repository visibility was already public; no production/backend/domain/payment configuration, merge or deployment operation is included.
 
 ## Verified changes
